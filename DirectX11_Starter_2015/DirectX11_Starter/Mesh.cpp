@@ -11,11 +11,7 @@ Mesh::Mesh(std::vector<vec3> v, std::vector<vec3> n, std::vector<vec3> u, Face f
 	h_dims = vec3(-1, -1, -1);
 }
 
-Mesh::~Mesh() {
-	// Release any D3D stuff that's still hanging out
-	ReleaseMacro(vertexBuffer);
-	ReleaseMacro(indexBuffer);
-}
+Mesh::~Mesh() { }
 
 const std::vector<vec3>& Mesh::verts() const { return _verts; } void Mesh::verts(std::vector<vec3>& v) { _verts = v; }
 const std::vector<vec3>& Mesh::uvs() const { return _uvs; } void Mesh::uvs(std::vector<vec3>& u) { _uvs = u; }
@@ -89,7 +85,7 @@ MeshBuffer Mesh::genMeshArrays() {
 	return m;
 }
 
-void Mesh::initBuffers(ID3D11Device* device) {
+void Mesh::initBuffers(ID3D11Device* device, ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer) {
 	_meshBuffer = genMeshArrays();
 
 	// Create the VERTEX BUFFER description -----------------------------------
@@ -133,24 +129,4 @@ void Mesh::initBuffers(ID3D11Device* device) {
 	// Actually create the buffer with the initial data
 	// - Once we do this, we'll NEVER CHANGE THE BUFFER AGAIN
 	HR(device->CreateBuffer(&ibd, &initialIndexData, &indexBuffer));
-}
-
-void Mesh::draw(ID3D11DeviceContext* deviceContext) {
-	// Set buffers in the input assembler
-	//  - Do this ONCE PER OBJECT you're drawing, since each object might
-	//    have different geometry.
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-	deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-	deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	// Finally do the actual drawing
-	//  - Do this ONCE PER OBJECT you intend to draw
-	//  - This will use all of the currently set DirectX "stuff" (shaders, buffers, etc)
-	//  - DrawIndexed() uses the currently set INDEX BUFFER to look up corresponding
-	//     vertices in the currently set VERTEX BUFFER
-	deviceContext->DrawIndexed(
-		_meshBuffer.meshElementArray.size(),     // The number of indices to use (we could draw a subset if we wanted)
-		0,     // Offset to the first index we want to use
-		0);    // Offset to add to each index when looking up vertices
 }

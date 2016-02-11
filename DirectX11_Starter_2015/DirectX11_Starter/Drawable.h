@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DirectXGameCore.h"
+
 #include "Transform.h"
 
 //#include <map>
@@ -22,9 +24,10 @@ public:
 	void setWorldMatrix(vec3 pos, vec3 scale, vec3 rotAxis, float rot);
 	//uint32_t genTexture(const char* texFile);
 protected:
-	uint32_t vBuffer;
-	uint32_t vArray;
-	uint32_t dshaderProg;
+	// Buffers to hold actual geometry data
+	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* indexBuffer;
+	uint32_t _shaderProg;
 	int offset, scale, worldMatrix, dcolorLoc;
 	//static std::map<const char*, GLuint> loadedTextures;//all currently loaded textures
 };

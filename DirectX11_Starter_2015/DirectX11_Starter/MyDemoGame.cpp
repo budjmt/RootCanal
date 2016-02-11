@@ -147,8 +147,8 @@ void MyDemoGame::CreateGeometry()
 	char* m_names[] = { "Assets/basic.obj", "Assets/cube.obj", "Assets/sphere.obj" };
 	for (char* file : m_names) {
 		Mesh* m = loadOBJ(file);
-		m->initBuffers(device);
-		m->pos = vec3(rand() % 2 * 2 - 1 * rand() % 1000 / 1000.f, rand() % 2 * 2 - 1 * rand() % 1000 / 1000.f, rand() % 2 * 2 - 1 * rand() % 1000 / 1000.f);
+		//m->initBuffers(device);
+		//m->pos = vec3(rand() % 2 * 2 - 1 * rand() % 1000 / 1000.f, rand() % 2 * 2 - 1 * rand() % 1000 / 1000.f, rand() % 2 * 2 - 1 * rand() % 1000 / 1000.f);
 		meshes.push_back(m);
 	}
 }

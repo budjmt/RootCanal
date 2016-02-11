@@ -23,8 +23,10 @@ public:
 	vec4 color() const; void color(vec4& c);
 	EntityType type();
 
-	virtual void update(double dt);
-	virtual void draw();
+	//virtual void update(double dt);
+	//virtual void draw();
+	void update(float dt);
+	void draw(ID3D11DeviceContext* deviceContext);
 protected:
 	Drawable* shape;
 	vec4 _color;

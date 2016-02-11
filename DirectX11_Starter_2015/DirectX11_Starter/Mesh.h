@@ -34,17 +34,12 @@ public:
 	vec3 getDims();
 
 	MeshBuffer genMeshArrays();
-	void initBuffers(ID3D11Device* device);
+	void initBuffers(ID3D11Device* device, ID3D11Buffer* vB, ID3D11Buffer* iB);
 
-	void draw(ID3D11DeviceContext* deviceContext);
-	vec3 pos;
 protected:
 	std::vector<vec3> _verts, _normals, _uvs;
 	Face _faces;
 	MeshBuffer _meshBuffer;
-	// Buffers to hold actual geometry data
-	ID3D11Buffer* vertexBuffer;
-	ID3D11Buffer* indexBuffer;
 
 	vec3 h_dims;
 	//friend class DrawMesh;

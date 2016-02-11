@@ -3,9 +3,9 @@
 Drawable::Drawable() : shader(_shader), colorLoc(_colorLoc) { }
 Drawable::Drawable(const Drawable& other) : shader(_shader), colorLoc(_colorLoc) { shaderProg = other.shaderProg; colorLoc = other.colorLoc; }
 Drawable& Drawable::operator=(const Drawable& other) { shaderProg = other.shaderProg; colorLoc = other.colorLoc; }
-Drawable::~Drawable() { glDeleteVertexArrays(1, &vArray); glDeleteBuffers(1, &vBuffer); }
+Drawable::~Drawable() { ReleaseMacro(vertexBuffer);	ReleaseMacro(indexBuffer); }
 
-void Drawable::draw(GLfloat x, GLfloat y, GLfloat xScale, GLfloat yScale) {
+void Drawable::draw(float x, float y, float xScale, float yScale) {
 	vec3 pos = vec3(x, y, 0);
 	vec3 scale = vec3(xScale, yScale, 1);
 	vec3 rotAxis = vec3(0, 0, 1);
