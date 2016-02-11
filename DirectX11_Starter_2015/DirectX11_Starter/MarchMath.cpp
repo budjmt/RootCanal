@@ -9,6 +9,7 @@ vec3::vec3(const vec3& other) : x(v[0]), y(v[1]), z(v[2]) { x = other.x; y = oth
 vec3& vec3::operator=(const vec3& other) { x = other.x; y = other.y; z = other.z; return *this; }
 vec3::vec3(float _x, float _y, float _z) : x(v[0]), y(v[1]), z(v[2]) { x = _x; y = _y; z = _z; }
 vec3::vec3(float* _v) : x(v[0]), y(v[1]), z(v[2]) { x = _v[0]; y = _v[1]; z = _v[2]; }
+vec3::vec3(vec4 _v) : x(v[0]), y(v[1]), z(v[2]) { x = _v.x; y = _v.y; z = _v.z; }
 
 float vec3::operator[](int i) const { return v[i]; } float& vec3::operator[](int i) { return v[i]; }
 vec3 vec3::operator+(const vec3& other) { return vec3(x + other.x, y + other.y, z + other.z); }
@@ -40,8 +41,10 @@ float vec4::dot(vec4& a, vec4& b) { return a.x * b.x + a.y * b.y + a.z * b.z + a
 vec4 vec4::lerp(vec4& a, vec4& b, float t) { return vec4(lerpf(a.x, b.x, t), lerpf(a.y, b.y, t), lerpf(a.z, b.z, t), lerpf(a.w, b.w, t)); }
 
 //mat4
+//the zero matrix
 mat4::mat4() { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 + j] = 0; } mat4::~mat4() {}
-mat4::mat4(float f) { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 + j] = f; }
+//sets the diagonal to f, everything else 0
+mat4::mat4(float f) { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 + j] = 0; for (int i = 0; i < 4; i++) m[i * 5] = f; }
 mat4::mat4(float* _m) { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 + j] = _m[i * 4 + j]; }
 
 const float* mat4::operator[](int i) const { return &m[i * 4]; } float* mat4::operator[](int i) { return &m[i * 4]; }
@@ -50,15 +53,25 @@ mat4 mat4::operator-(const mat4& other) { mat4 r(m); for (int i = 0; i < 4; i++)
 mat4 mat4::operator*(float f) { mat4 r(m); for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] *= f; return r; }
 mat4 mat4::operator/(float f) { mat4 r(m); for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] /= f; return r; }
 
-mat4 mat4::operator*(const mat4& other) {
-	mat4 r;
-	for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 4; k++)
-		r[j][i] += m[k * 4 + i] * other[j][k];
-	return r;
-}
+mat4 mat4::operator*(const mat4& other) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 4; k++) r[j][i] += m[k * 4 + i] * other[j][k]; return r; }
 vec4 mat4::operator*(const vec4& v) { vec4 result; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) result[j] += m[j * 4 + i] * v[i]; return result; }
 
 mat4 mat4::transpose(mat4& m) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] = r[j][i]; return r; }
+
+mat4 mat4::translate(vec3& v) { mat4 t = mat4(); t[3][0] = v.x; t[3][1] = v.y; t[3][2] = v.z; return t; }
+mat4 mat4::rotate(float theta, vec3& a) { 
+	float c = cosf(theta), t = 1 - c, s = sinf(theta); 
+	float tx = t * a.x, ty = t * a.y, txy = tx * a.y, txz = tx * a.z, tyz = ty * a.z;
+	float sx = s * a.x, sy = s * a.y, sz = s * a.z;
+	float m[] = {
+		tx * a.x + c,	txy - sz,		txz + sy,			0,
+		txy + sz,		ty * a.y + c,	tyz - sx,			0,
+		txz - sy, 		tyz + sx,		t * a.z * a.z + c,	0,
+		0,				0,				0,					1
+	};
+	return mat4(m);
+}
+mat4 mat4::scale(vec3& v) { mat4 s = mat4(); s[0][0] = v.x; s[1][1] = v.y; s[2][2] = v.z; return s; }
 
 //quat
 quat::quat() : v(_v), x(v.x), y(v.y), z(v.z), w(v0) { v0 = 0; v = vec3(); _theta = 0; _axis = vec3(); } quat::~quat() {}
@@ -71,14 +84,13 @@ quat::quat(vec3 a, float t) : v(_v), x(v.x), y(v.y), z(v.z), w(v0) { _theta = t 
 float quat::theta() const { return _theta; } void quat::theta(float t) { t *= 0.5f; _theta = t; sin_t_half = sinf(t); v0 = cosf(t); v = _axis * sin_t_half; }
 vec3 quat::axis() const { return _axis; } void quat::axis(vec3 a) { _axis = a; v = a * sin_t_half; }
 
-quat quat::operator+(const quat& other) {} quat quat::operator-(const quat& other) {}
-quat quat::operator*(float f) {} quat quat::operator/(float f) {}
-
+quat quat::operator+(const quat& other) { return quat(w + other.w, v + other.v); } quat quat::operator-(const quat& other) { return quat(w - other.w, v - other.v); }
+quat quat::operator*(float f) { return quat(w * f, v * f); } quat quat::operator/(float f) { return quat(w / f, v / f); }
 quat quat::operator*(const quat& other) const { return quat(w * other.w - vec3::dot(v, other.v), other.v * w + v * other.w + vec3::cross(v, other.v)); }
-vec4 quat::operator*(const vec4& v) const { quat q = quat(v.x, v.y, v.z, v.w); q = *this * q; return vec4(q.x, q.y, q.z, q.w); }
 
 quat quat::pow(const quat& q, int e) { return quat::rotation(q.theta() * e, q.axis()); }
 quat quat::inverse(const quat& q) { return quat(q.w, q.v * -1); }
+quat quat::rotate(const quat& q, float theta, vec3 axis) { return q * quat(axis, theta); }
 
 quat quat::slerp(const quat& a, const quat& b, float t) { return quat::pow(b * quat::inverse(a), t) * a; }
 quat quat::rotation(float theta, vec3 axis) { return quat(axis, theta); }
