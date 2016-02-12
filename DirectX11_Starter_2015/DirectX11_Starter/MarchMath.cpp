@@ -57,7 +57,7 @@ mat4 mat4::operator/(float f) { mat4 r(m); for (int i = 0; i < 4; i++) for (int 
 mat4 mat4::operator*(const mat4& other) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 4; k++) r[j][i] += m[k * 4 + i] * other[j][k]; return r; }
 vec4 mat4::operator*(const vec4& v) { vec4 result; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) result[i] += m[j * 4 + i] * v[j]; return result; }
 
-mat4 mat4::transpose(mat4& m) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] = r[j][i]; return r; }
+mat4 mat4::transpose(mat4& m) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] = m[j][i]; return r; }
 
 mat4 mat4::translate(vec3 v) { mat4 t = mat4(1); t[3][0] = v.x; t[3][1] = v.y; t[3][2] = v.z; return t; }
 mat4 mat4::rotate(float theta, vec3 a) { 

@@ -19,16 +19,11 @@ void Drawable::draw(vec3 pos, vec3 scale, vec3 rotAxis, float rot, ID3D11DeviceC
 	setWorldMatrix(pos, scale, rotAxis, rot);
 }
 
-#include <DirectXMath.h>
 void Drawable::setWorldMatrix(vec3 pos, vec3 scaleV, vec3 rotAxis, float rot) {
 	mat4 translate = mat4::translate(pos);
 	mat4 scale = mat4::scale(scaleV);
 	mat4 rotate = mat4::rotate(rot, rotAxis);
-	//DirectX::XMMATRIX w = DirectX::XMMatrixIdentity();
-	//DirectX::XMFLOAT4X4 world;
-	//DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixTranspose(w));
 	_vertexShader->SetMatrix4x4("world", &mat4::transpose(translate * rotate * scale)[0][0]);
-	//_vertexShader->SetMatrix4x4("world", world);
 }
 
 //std::map<const char*, uint32_t> Drawable::loadedTextures;
