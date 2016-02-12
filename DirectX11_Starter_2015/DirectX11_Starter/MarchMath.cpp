@@ -1,4 +1,5 @@
 #include "MarchMath.h"
+#include <cstdio>
 
 //misc math functions
 float lerpf(float a, float b, float t) { return a * (1 - t) + b * t; }
@@ -71,7 +72,7 @@ mat4 mat4::rotate(float theta, vec3 a) {
 	};
 	return mat4(m);
 }
-mat4 mat4::scale(vec3 v) { mat4 s = mat4(); s[0][0] = v.x; s[1][1] = v.y; s[2][2] = v.z; s[3][3] = 1.f;  return s; }
+mat4 mat4::scale(vec3 v) { mat4 s = mat4(); s[0][0] = v.x; s[1][1] = v.y; s[2][2] = v.z; s[3][3] = 1.f; return s; }
 
 //quat
 quat::quat() : _v(vec3()), v(_v), w(v0) { v0 = 1; v = vec3(); _theta = 0; _axis = vec3(1,0,0); } quat::~quat() {}
@@ -79,9 +80,9 @@ quat::quat(const quat& other) : _v(vec3()), v(_v), w(v0) { w = other.w; v = othe
 quat& quat::operator=(const quat& other) { w = other.w; v = other.v; _theta = other.theta(); _axis = other.axis(); return *this; }
 quat::quat(float _x, float _y, float _z, float _w) : _v(vec3()), v(_v), w(v0) { w = _w; v = vec3(_x, _y, _z); _theta = acosf(v0); sin_t_half = sinf(_theta); _axis = v / sin_t_half; _theta *= 2; }
 quat::quat(float _v0, vec3 v1) : _v(vec3()), v(_v), w(v0) { v0 = _v0; v = v1; _theta = acosf(v0); sin_t_half = sinf(_theta); _axis = v / sin_t_half; _theta *= 2; }
-quat::quat(vec3 a, float t) : _v(vec3()), v(_v), w(v0) { _theta = t * 0.5f; _axis = a; sin_t_half = sinf(_theta); v0 = cosf(_theta); v = a * sin_t_half; }
+quat::quat(vec3 a, float t) : _v(vec3()), v(_v), w(v0) { _theta = t; t *= 0.5f; _axis = a; sin_t_half = sinf(t); v0 = cosf(t); v = a * sin_t_half; }
 
-float quat::theta() const { return _theta; } void quat::theta(float t) { t *= 0.5f; _theta = t; sin_t_half = sinf(t); v0 = cosf(t); v = _axis * sin_t_half; }
+float quat::theta() const { return _theta; } void quat::theta(float t) { _theta = t; t *= 0.5f; sin_t_half = sinf(t); v0 = cosf(t); v = _axis * sin_t_half; }
 vec3 quat::axis() const { return _axis; } void quat::axis(vec3 a) { _axis = a; v = a * sin_t_half; }
 
 quat quat::operator+(const quat& other) { return quat(w + other.w, v + other.v); } quat quat::operator-(const quat& other) { return quat(w - other.w, v - other.v); }

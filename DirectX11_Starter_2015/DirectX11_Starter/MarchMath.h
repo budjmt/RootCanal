@@ -2,10 +2,12 @@
 
 #include <math.h>
 
+const double PI_D = 3.14159265358979323846;
+const float PI = (float)PI_D;
+
 float lerpf(float a, float b, float t);
 
 class vec4;
-
 class vec3 {
 public:
 	vec3(); ~vec3(); vec3(const vec3& other); vec3& operator=(const vec3& other);
