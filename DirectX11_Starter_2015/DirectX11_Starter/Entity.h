@@ -25,6 +25,7 @@ public:
 
 	//virtual void update(double dt);
 	//virtual void draw();
+	void move(vec3 d);
 	void update(float dt);
 	void draw(ID3D11DeviceContext* deviceContext);
 protected:

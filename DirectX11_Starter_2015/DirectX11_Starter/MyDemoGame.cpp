@@ -83,12 +83,11 @@ MyDemoGame::MyDemoGame(HINSTANCE hInstance)
 // --------------------------------------------------------
 MyDemoGame::~MyDemoGame()
 {
-	// Delete our simple shaders
-	delete vertexShader;
-	delete pixelShader;
-
+	delete vertexShader; delete pixelShader;
 	for (Mesh* m : meshes)
 		delete m;
+	for (Entity* e : entities)
+		delete e;
 }
 
 #pragma endregion
@@ -146,10 +145,18 @@ void MyDemoGame::CreateGeometry()
 {
 	char* m_names[] = { "Assets/basic.obj", "Assets/cube.obj", "Assets/sphere.obj" };
 	for (char* file : m_names) {
-		Mesh* m = loadOBJ(file);
-		//m->initBuffers(device);
-		//m->pos = vec3(rand() % 2 * 2 - 1 * rand() % 1000 / 1000.f, rand() % 2 * 2 - 1 * rand() % 1000 / 1000.f, rand() % 2 * 2 - 1 * rand() % 1000 / 1000.f);
-		meshes.push_back(m);
+		Mesh* loadedMesh = loadOBJ(file);
+		assert(loadedMesh != nullptr);
+		DrawMesh* d = new DrawMesh(loadedMesh, nullptr, device);
+		d->vertexShader(vertexShader);
+		d->pixelShader(pixelShader);
+		vec3 vecs[3];
+		vecs[0] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
+		vecs[1] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
+		vecs[2] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
+		Entity* e = new Entity(vecs[0], vecs[1], vecs[2], rand() % 360 / 180.f * 3.141592f, d);
+		meshes.push_back(loadedMesh);
+		entities.push_back(e);
 	}
 }
 
@@ -227,6 +234,9 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
+	
+	for (auto e : entities)
+		e->update(deltaTime);
 }
 
 // --------------------------------------------------------
@@ -264,13 +274,8 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	vertexShader->SetShader(true);
 	pixelShader->SetShader(true);
 	
-	for (Mesh* m : meshes) {
-		XMVECTOR V = XMLoadFloat3(&XMFLOAT3(m->pos.x, m->pos.y, m->pos.z));
-		XMMATRIX W = XMMatrixTranslationFromVector(V);
-		XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W));
-		vertexShader->SetMatrix4x4("world", worldMatrix);
-		vertexShader->SetShader(true);
-		m->draw(deviceContext);
+	for (Entity* e : entities) {
+		e->draw(deviceContext);
 	}
 
 	// Present the buffer

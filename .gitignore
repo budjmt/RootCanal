@@ -1,5 +1,4 @@
-!/OpenGLPractice/bin/*
-!/OpenGLPractice/lib/*
+*.opendb
 
 # Compiled Object files
 *.slo

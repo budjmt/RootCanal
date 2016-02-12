@@ -4,6 +4,8 @@
 
 float lerpf(float a, float b, float t);
 
+class vec4;
+
 class vec3 {
 public:
 	vec3(); ~vec3(); vec3(const vec3& other); vec3& operator=(const vec3& other);
@@ -13,9 +15,9 @@ public:
 	vec3 operator+(const vec3& other); vec3 operator-(const vec3& other);
 	vec3 operator*(float f); vec3 operator/(float f);
 
-	static float length(vec3& v);
-	static float dot(vec3& a, vec3& b); static vec3 cross(vec3& a, vec3& b);
-	static vec3 lerp(vec3& a, vec3& b, float t);
+	static float length(vec3 v);
+	static float dot(vec3 a, vec3 b); static vec3 cross(vec3 a, vec3 b);
+	static vec3 lerp(vec3 a, vec3 b, float t);
 
 private:
 	float v[3];
@@ -30,9 +32,9 @@ public:
 	vec4 operator+(const vec4& other); vec4 operator-(const vec4& other);
 	vec4 operator*(float f); vec4 operator/(float f);
 
-	static float length(vec4& v);
-	static float dot(vec4& a, vec4& b);
-	static vec4 lerp(vec4& a, vec4& b, float t);
+	static float length(vec4 v);
+	static float dot(vec4 a, vec4 b);
+	static vec4 lerp(vec4 a, vec4 b, float t);
 
 private:
 	float v[4];
@@ -49,9 +51,9 @@ public:
 
 	static mat4 transpose(mat4& m);
 
-	static mat4 translate(vec3& v);
-	static mat4 rotate(float t, vec3& a);
-	static mat4 scale(vec3& v);
+	static mat4 translate(vec3 v);
+	static mat4 rotate(float t, vec3 a);
+	static mat4 scale(vec3 v);
 
 private:
 	float m[16];
@@ -63,7 +65,8 @@ public:
 	quat(float _x, float _y, float _z, float _w);
 	quat(float v0, vec3 _v); quat(vec3 a, float t);
 	~quat(); quat(const quat& other); quat& operator=(const quat& other);
-	float& x, &y, &z, &w;
+	//float& x, &y, &z, &w;
+	float& w;
 	vec3& v;
 	float theta() const; void theta(float t);
 	vec3 axis() const; void axis(vec3 a);
@@ -72,7 +75,7 @@ public:
 	quat operator*(float f); quat operator/(float f);
 	quat operator*(const quat& other) const;
 
-	static quat pow(const quat& q, int e);
+	static quat pow(const quat& q, float e);
 	static quat inverse(const quat& q);
 	static quat rotate(const quat& q, float theta, vec3 axis);
 

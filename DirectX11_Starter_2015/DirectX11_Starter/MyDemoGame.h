@@ -3,7 +3,9 @@
 #include <DirectXMath.h>
 #include "DirectXGameCore.h"
 #include "SimpleShader.h"
-#include "Mesh.h"
+
+#include "Entity.h"
+#include "DrawMesh.h"
 
 // Include run-time memory checking in debug builds, so 
 // we can be notified of memory leaks
@@ -49,6 +51,7 @@ private:
 	DirectX::XMFLOAT4X4 viewMatrix;
 	DirectX::XMFLOAT4X4 projectionMatrix;
 
+	std::vector<Entity*> entities;
 	std::vector<Mesh*> meshes;
 
 	// Keeps track of the old mouse position.  Useful for 
