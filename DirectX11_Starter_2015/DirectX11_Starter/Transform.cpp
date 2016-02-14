@@ -83,8 +83,7 @@ void Transform::rotate(float x, float y, float z) {
 }
 
 void Transform::rotate(float theta, vec3 axis) {
-	if (theta)
-		_rotation = quat::rotate(_rotation, theta, axis);
+	if (theta) _rotation = quat::rotate(_rotation, theta, axis);
 	updateRot();
 }
 

@@ -1,0 +1,106 @@
+#include "Camera.h"
+
+Camera::Camera(GLuint shaderProg, GLFWwindow* w)
+{
+	window = w;
+	updateProjection();
+}
+
+Camera::~Camera()
+{
+}
+
+void Camera::updateCamMat(ISimpleShader* shader) {
+	shader->SetMatrix4x4("projection", &mat4::transpose(projection)[0][0]);
+	shader->SetMatrix4x4("view", &mat4::transpose(view)[0][0]);
+}
+
+void Camera::update(double dt) {
+	view = mat4::lookAt(transform.position, getLookAt(), getUp());
+	//update projection
+	//updateProjection();
+	//updateCamMat(cameraMatrix);
+}
+
+void Camera::draw() {
+	//does NOTHING because it's a CAMERA
+	//or maybe there's debug here
+	//who knows
+}
+
+void Camera::turn(float dx, float dy) {
+	transform.rotate(dy, dx, 0);
+}
+
+vec3 Camera::getLookAt() {
+	return transform.position + getForward();
+}
+
+void Camera::updateProjection() {
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+
+	float znear = 0.01f;
+	float zfar = 1000.f;
+	projection = mat4::perspective(CAM_FOV, width * 1.f / height, znear, zfar);
+}
+
+vec3 Camera::getForward() { return transform.forward(); }
+vec3 Camera::getUp() { return transform.up(); }
+vec3 Camera::getRight() { return transform.right(); }
+
+void Camera::mayaCam(GLFWwindow* window, Mouse* m, double dt, Camera* camera) {
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+	if (m->down) {
+		if (m->button == GLFW_MOUSE_BUTTON_LEFT) {
+			float rot = (float)(glm::pi<float>() / 2 / dt);
+			float xDiff = (float)(m->x - m->prevx);
+			float dx = glm::sign(xDiff) * xDiff * xDiff / width * rot;
+			dx = glm::min(glm::pi<float>() / 2, dx);
+			float yDiff = (float)(m->y - m->prevy);
+			float dy = glm::sign(yDiff) * yDiff * yDiff / height * rot;
+			dy = glm::min(glm::pi<float>() / 2, dy);
+			glm::vec3 look = camera->getLookAt();
+			camera->turn(dx, dy);
+			camera->transform.position = look - camera->getForward();
+		}
+		else if (m->button == GLFW_MOUSE_BUTTON_RIGHT) {
+			float avg = (float)((m->y - m->prevy) + (m->x - m->prevx)) / 2;
+			camera->transform.position += avg * camera->getForward();
+		}
+		else if (m->button == GLFW_MOUSE_BUTTON_MIDDLE) {
+			camera->transform.position += camera->getRight() * (float)(m->x - m->prevx);
+			camera->transform.position += camera->getUp() * (float)(m->y - m->prevy);
+		}
+		//I have this commented out on purpose. I don't want it
+		//glfwSetCursorPos(window, width / 2, height / 2);
+		//std::cout << "Position: " << camera->transform.position.x << "," << camera->transform.position.y << "," << camera->transform.position.z << std::endl << "Pitch: " << camera->pitch << std::endl << "Yaw: " << camera->yaw << std::endl;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		camera->transform.position += camera->getForward() * 5.f * (float)dt;
+	}
+	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		camera->transform.position += camera->getForward() * -5.f * (float)dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		camera->transform.position += camera->getRight() * 5.f * (float)dt;
+	}
+	else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		camera->transform.position += camera->getRight() * -5.f * (float)dt;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		camera->transform.position += glm::vec3(0, 1, 0) * 5.f * (float)dt;
+	}
+	else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		camera->transform.position += glm::vec3(0, 1, 0) * -5.f * (float)dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		camera->transform.position += glm::vec3(1, 0, 0) * 5.f * (float)dt;
+	}
+	else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		camera->transform.position += glm::vec3(1, 0, 0) * -5.f * (float)dt;
+	}
+}

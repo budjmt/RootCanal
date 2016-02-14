@@ -9,14 +9,11 @@ public:
 	Transform(const Transform& other);
 	~Transform();
 	Transform& operator=(const Transform& other);
-	vec3& position;
-	vec3& scale;
-	quat& rotation;
-	vec3& rotAxis;
-	float& rotAngle;
+	vec3& position, &scale;
+	quat& rotation;	vec3& rotAxis; float& rotAngle;
 	Transform* parent;
 	Transform computeTransform();
-	void updateNormals();//this will replace the ones below
+	void updateNormals();
 	vec3 forward() const;
 	vec3 up() const;
 	vec3 right() const;
@@ -27,11 +24,8 @@ public:
 
 	vec3 getTransformed(vec3 v);
 private:
-	vec3 _position;
-	vec3 _scale;
-	quat _rotation;
-	vec3 _rotAxis;
-	float _rotAngle;
+	vec3 _position, _scale;
+	quat _rotation; vec3 _rotAxis; float _rotAngle;
 	vec3 _forward, _up, _right;
 };
 
