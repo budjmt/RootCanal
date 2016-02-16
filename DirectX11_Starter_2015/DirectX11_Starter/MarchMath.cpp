@@ -58,6 +58,9 @@ mat4 mat4::operator*(const mat4& other) { mat4 r; for (int i = 0; i < 4; i++) fo
 vec4 mat4::operator*(const vec4& v) { vec4 result; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) result[i] += m[j * 4 + i] * v[j]; return result; }
 
 mat4 mat4::transpose(mat4& m) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] = m[j][i]; return r; }
+mat4 mat4::inverse(mat4& m) {
+
+}
 
 mat4 mat4::translate(vec3 v) { mat4 t = mat4(1); t[3][0] = v.x; t[3][1] = v.y; t[3][2] = v.z; return t; }
 mat4 mat4::rotate(float theta, vec3 a) { 
@@ -73,6 +76,41 @@ mat4 mat4::rotate(float theta, vec3 a) {
 	return mat4(m);
 }
 mat4 mat4::scale(vec3 v) { mat4 s = mat4(); s[0][0] = v.x; s[1][1] = v.y; s[2][2] = v.z; s[3][3] = 1.f; return s; }
+
+mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
+	vec3 z = target - eye; z = z / vec3::length(z);
+	vec3 x = vec3::cross(up, z); x = x / vec3::length(x);
+	vec3 y = vec3::cross(z, x);
+	mat4 r;
+	r[0][0] = x.x; r[0][1] = x.y; r[0][2] = x.z;
+	r[1][0] = y.x; r[1][1] = y.y; r[1][2] = y.z;
+	r[2][0] = -z.x; r[2][1] = -z.y; r[2][2] = -z.z;
+	r[0][3] = -vec3::dot(eye, x); r[1][3] = -vec3::dot(eye, y); r[2][3] = vec3::dot(eye, z); r[3][3] = 1;
+	return r;
+}
+mat4 mat4::perspective(float fov, float aspect, float zNear, float zFar) {
+	mat4 r;
+	float frustDepth = zFar - zNear, _fd = 1.f / frustDepth;
+	//r[0][0] = zNear / right; r[1][1] = zNear / top; r[2][3] = -1;
+	float uw = 1.f / tanf(fov * 0.5f), uh = uw * aspect;
+	r[0][0] = uw; r[1][1] = uh;	r[2][2] = -(zFar + zNear) * _fd; r[3][2] = -2.f * zFar * zNear * _fd;
+	return r;
+}
+mat4 mat4::orthographic(float right, float left, float bottom, float top, float zNear, float zFar) {
+	mat4 r;
+	float rl = right - left, _rl = 1.f / rl, tb = top - bottom, _tb = 1.f / tb, frustDepth = zFar - zNear, _fd = 1 / frustDepth;
+	r[0][0] = 2.f * _rl; r[1][1] = 2.f * _tb; r[2][2] = -2.f * _fd; r[3][3] = 1.f;
+	r[3][0] = -(right + left) * _rl; r[3][1] = -(top + bottom) * _tb; r[3][2] = -(zFar + zNear) * _fd;
+	return r;
+}
+//assumes symmetric view frustrum
+mat4 mat4::orthographic(float width, float height, float zNear, float zFar) {
+	mat4 r;
+	float frustDepth = zFar - zNear, _fd = 1.f / frustDepth, hw = width * 0.5f, hh = height * 0.5f;
+	r[0][0] = 1.f / hw; r[1][1] = 1.f / hh; r[3][3] = 1.f;
+	r[2][2] = -2.f * _fd; r[3][2] = -(zFar + zNear) * _fd;
+	return r;
+}
 
 //quat
 quat::quat() : _v(vec3()), v(_v), w(v0) { v0 = 1; v = vec3(); _theta = 0; _axis = vec3(1,0,0); } quat::~quat() {}
