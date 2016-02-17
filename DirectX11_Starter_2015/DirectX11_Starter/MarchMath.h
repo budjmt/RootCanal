@@ -5,12 +5,17 @@
 const double PI_D = 3.14159265358979323846;
 const float PI = (float)PI_D;
 
+int sign(int i); float sign(float f);
+//float maxf(float a, float b);
+//float minf(float a, float b);
 float lerpf(float a, float b, float t);
 
 class vec4;
 class vec3 {
 public:
 	vec3(); ~vec3(); vec3(const vec3& other); vec3& operator=(const vec3& other);
+	vec3& operator+=(const vec3& other); vec3& operator-=(const vec3& other);
+	vec3& operator*=(float f); vec3& operator/=(float f);
 	vec3(float _x, float _y, float _z); vec3(float* _v); vec3(vec4 v);
 	float& x,& y,& z;
 	float operator[](int i) const;  float& operator[](int i);

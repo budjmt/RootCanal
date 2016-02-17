@@ -158,6 +158,8 @@ void MyDemoGame::CreateGeometry()
 		meshes.push_back(loadedMesh);
 		entities.push_back(e);
 	}
+	camera = new Camera();
+	entities.push_back(camera);
 }
 
 
@@ -173,6 +175,9 @@ void MyDemoGame::CreateMatrices()
 	XMMATRIX W = XMMatrixIdentity();
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
     
+	camera->update(0.f);
+	camera->updateProjection(windowWidth, windowHeight, aspectRatio);
+
 	// Create the View matrix
 	// - In an actual game, recreate this matrix when the camera 
 	//    moves (potentially every frame)
@@ -180,24 +185,25 @@ void MyDemoGame::CreateMatrices()
 	//    camera and the direction you want it to look (as well as "up")
 	// - Another option is the LOOK AT function, to look towards a specific
 	//    point in 3D space
-	XMVECTOR pos = XMVectorSet(0, 0, -5, 0);
+	/*XMVECTOR pos = XMVectorSet(0, 0, -5, 0);
 	XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
 	XMVECTOR up  = XMVectorSet(0, 1, 0, 0);
 	XMMATRIX V   = XMMatrixLookToLH(
 		pos,     // The position of the "camera"
 		dir,     // Direction the camera is looking
 		up);     // "Up" direction in 3D space (prevents roll)
-	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
+	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!*/
 
 	// Create the Projection matrix
 	// - This should match the window's aspect ratio, and also update anytime
 	//   the window resizes (which is already happening in OnResize() below)
-	XMMATRIX P = XMMatrixPerspectiveFovLH(
+	/*XMMATRIX P = XMMatrixPerspectiveFovLH(
 		0.25f * 3.1415926535f,		// Field of View Angle
 		aspectRatio,				// Aspect ratio
 		0.1f,						// Near clip plane distance
 		100.0f);					// Far clip plane distance
 	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
+	*/
 }
 
 #pragma endregion
@@ -214,12 +220,14 @@ void MyDemoGame::OnResize()
 	DirectXGameCore::OnResize();
 
 	// Update our projection matrix since the window size changed
-	XMMATRIX P = XMMatrixPerspectiveFovLH(
+	/*XMMATRIX P = XMMatrixPerspectiveFovLH(
 		0.25f * 3.1415926535f,	// Field of View Angle
 		aspectRatio,		  	// Aspect ratio
 		0.1f,				  	// Near clip plane distance
 		100.0f);			  	// Far clip plane distance
 	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
+	*/
+	if (camera) camera->updateProjection(windowWidth, windowHeight, aspectRatio);
 }
 #pragma endregion
 
@@ -264,8 +272,9 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	//    and then copying that entire buffer to the GPU.  
 	//  - The "SimpleShader" class handles all of that for you.
 	vertexShader->SetMatrix4x4("world", worldMatrix);
-	vertexShader->SetMatrix4x4("view", viewMatrix);
-	vertexShader->SetMatrix4x4("projection", projectionMatrix);
+	//vertexShader->SetMatrix4x4("view", viewMatrix);
+	//vertexShader->SetMatrix4x4("projection", projectionMatrix);
+	camera->updateCamMat(vertexShader);
 	
 	// Set the vertex and pixel shaders to use for the next Draw() command
 	//  - These don't technically need to be set every frame...YET

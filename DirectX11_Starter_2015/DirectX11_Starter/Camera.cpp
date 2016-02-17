@@ -1,25 +1,16 @@
 #include "Camera.h"
 
-Camera::Camera(GLuint shaderProg, GLFWwindow* w)
-{
-	window = w;
-	updateProjection();
-}
-
-Camera::~Camera()
-{
-}
+Camera::Camera() {}
+Camera::~Camera() {}
 
 void Camera::updateCamMat(ISimpleShader* shader) {
-	shader->SetMatrix4x4("projection", &mat4::transpose(projection)[0][0]);
+	//we pre-transpose projection because it doesn't change very often
+	shader->SetMatrix4x4("projection", &projection[0][0]);
 	shader->SetMatrix4x4("view", &mat4::transpose(view)[0][0]);
 }
 
 void Camera::update(double dt) {
 	view = mat4::lookAt(transform.position, getLookAt(), getUp());
-	//update projection
-	//updateProjection();
-	//updateCamMat(cameraMatrix);
 }
 
 void Camera::draw() {
@@ -36,71 +27,66 @@ vec3 Camera::getLookAt() {
 	return transform.position + getForward();
 }
 
-void Camera::updateProjection() {
-	int width, height;
-	glfwGetWindowSize(window, &width, &height);
-
+void Camera::updateProjection(int width, int height, float aspect) {
 	float znear = 0.01f;
 	float zfar = 1000.f;
-	projection = mat4::perspective(CAM_FOV, width * 1.f / height, znear, zfar);
+	//transpose for direct x
+	projection = mat4::transpose(mat4::perspective(CAM_FOV, width, height, znear, zfar));
 }
 
 vec3 Camera::getForward() { return transform.forward(); }
 vec3 Camera::getUp() { return transform.up(); }
 vec3 Camera::getRight() { return transform.right(); }
 
-void Camera::mayaCam(GLFWwindow* window, Mouse* m, double dt, Camera* camera) {
-	int width, height;
-	glfwGetWindowSize(window, &width, &height);
-	if (m->down) {
-		if (m->button == GLFW_MOUSE_BUTTON_LEFT) {
-			float rot = (float)(glm::pi<float>() / 2 / dt);
+void Camera::mayaCam(int width, int height, double dt, Camera* camera) {
+	//normally there is a Mouse struct to contain mouse info, I'll deal with this later
+	/*if (m->down) {
+		if (m->btnState & 0x0001) {
+			float rot = (float)(PI / 2 / dt);
 			float xDiff = (float)(m->x - m->prevx);
-			float dx = glm::sign(xDiff) * xDiff * xDiff / width * rot;
-			dx = glm::min(glm::pi<float>() / 2, dx);
+			float dx = sign(xDiff) * xDiff * xDiff / width * rot;
+			dx = min(PI / 2, dx);
 			float yDiff = (float)(m->y - m->prevy);
-			float dy = glm::sign(yDiff) * yDiff * yDiff / height * rot;
-			dy = glm::min(glm::pi<float>() / 2, dy);
-			glm::vec3 look = camera->getLookAt();
+			float dy = sign(yDiff) * yDiff * yDiff / height * rot;
+			dy = min(PI / 2, dy);
+			vec3 look = camera->getLookAt();
 			camera->turn(dx, dy);
 			camera->transform.position = look - camera->getForward();
 		}
-		else if (m->button == GLFW_MOUSE_BUTTON_RIGHT) {
+		else if (m->btnState & 0x0002) {
 			float avg = (float)((m->y - m->prevy) + (m->x - m->prevx)) / 2;
-			camera->transform.position += avg * camera->getForward();
+			camera->transform.position += camera->getForward() * avg;
 		}
-		else if (m->button == GLFW_MOUSE_BUTTON_MIDDLE) {
+		else if (m->btnState & 0x0010) {
 			camera->transform.position += camera->getRight() * (float)(m->x - m->prevx);
 			camera->transform.position += camera->getUp() * (float)(m->y - m->prevy);
 		}
-		//I have this commented out on purpose. I don't want it
-		//glfwSetCursorPos(window, width / 2, height / 2);
 		//std::cout << "Position: " << camera->transform.position.x << "," << camera->transform.position.y << "," << camera->transform.position.z << std::endl << "Pitch: " << camera->pitch << std::endl << "Yaw: " << camera->yaw << std::endl;
-	}
+	}*/
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+	if (GetAsyncKeyState('W') & 0x8000) {
 		camera->transform.position += camera->getForward() * 5.f * (float)dt;
 	}
-	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+	else if (GetAsyncKeyState('S') & 0x8000) {
 		camera->transform.position += camera->getForward() * -5.f * (float)dt;
 	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+	if (GetAsyncKeyState('D') & 0x8000) {
 		camera->transform.position += camera->getRight() * 5.f * (float)dt;
 	}
-	else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+	else if (GetAsyncKeyState('A') & 0x8000) {
 		camera->transform.position += camera->getRight() * -5.f * (float)dt;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		camera->transform.position += glm::vec3(0, 1, 0) * 5.f * (float)dt;
+	if (GetAsyncKeyState(VK_UP) & 0x8000) {
+		camera->transform.position += vec3(0, 1, 0) * 5.f * (float)dt;
 	}
-	else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		camera->transform.position += glm::vec3(0, 1, 0) * -5.f * (float)dt;
+	else if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+		camera->transform.position += vec3(0, 1, 0) * -5.f * (float)dt;
 	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		camera->transform.position += glm::vec3(1, 0, 0) * 5.f * (float)dt;
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+		camera->transform.position += vec3(1, 0, 0) * 5.f * (float)dt;
 	}
-	else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		camera->transform.position += glm::vec3(1, 0, 0) * -5.f * (float)dt;
+	else if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+		camera->transform.position += vec3(1, 0, 0) * -5.f * (float)dt;
 	}
 }

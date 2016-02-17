@@ -20,8 +20,7 @@ void DrawMesh::draw(float x, float y, float z, float xScale, float yScale, float
 	//  - This will use all of the currently set DirectX "stuff" (shaders, buffers, etc)
 	//  - DrawIndexed() uses the currently set INDEX BUFFER to look up corresponding
 	//     vertices in the currently set VERTEX BUFFER
-	_vertexShader->SetShader(true);
-	_pixelShader->SetShader(true);
+	_material->setActive(true);
 	deviceContext->DrawIndexed(
 		_mesh->meshBuffer().meshElementArray.size(),     // The number of indices to use (we could draw a subset if we wanted)
 		0,     // Offset to the first index we want to use
@@ -36,8 +35,7 @@ void DrawMesh::draw(vec3 pos, vec3 scale, vec3 rotAxis, float rot, ID3D11DeviceC
 	deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 	deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	_vertexShader->SetShader(true);
-	_pixelShader->SetShader(true);
+	_material->setActive(true);
 	deviceContext->DrawIndexed(_mesh->meshBuffer().meshElementArray.size(), 0, 0);
 }
 

@@ -2,12 +2,19 @@
 #include <cstdio>
 
 //misc math functions
+int sign(int i) { return (i > 0) ? 1 : -1; } float sign(float f) { return (f > 0) ? 1.f : -1.f; }
+//float maxf(float a, float b) { return (a > b) ? a : b; }
+//float minf(float a, float b) { return (a < b) ? a : b; }
 float lerpf(float a, float b, float t) { return a * (1 - t) + b * t; }
 
 //vec3
 vec3::vec3() : x(v[0]), y(v[1]), z(v[2]) { for (int i = 0; i < 3; i++) v[i] = 0; } vec3::~vec3() {}
 vec3::vec3(const vec3& other) : x(v[0]), y(v[1]), z(v[2]) { x = other.x; y = other.y; z = other.z; }
 vec3& vec3::operator=(const vec3& other) { x = other.x; y = other.y; z = other.z; return *this; }
+vec3& vec3::operator+=(const vec3& other) { x += other.x; y += other.y; z += other.z; return *this; }
+vec3& vec3::operator-=(const vec3& other) { x -= other.x; y -= other.y; z -= other.z; return *this; }
+vec3& vec3::operator*=(float f) { x *= f; y *= f; z *= f; return *this; }
+vec3& vec3::operator/=(float f) { x /= f; y /= f; z /= f; return *this; }
 vec3::vec3(float _x, float _y, float _z) : x(v[0]), y(v[1]), z(v[2]) { x = _x; y = _y; z = _z; }
 vec3::vec3(float* _v) : x(v[0]), y(v[1]), z(v[2]) { x = _v[0]; y = _v[1]; z = _v[2]; }
 vec3::vec3(vec4 _v) : x(v[0]), y(v[1]), z(v[2]) { x = _v.x; y = _v.y; z = _v.z; }

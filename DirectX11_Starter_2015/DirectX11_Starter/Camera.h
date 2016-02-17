@@ -14,10 +14,8 @@ class Camera :
 	public Entity
 {
 public:
-	Camera(GLuint shaderProg, GLFWwindow* w);
+	Camera();
 	~Camera();
-	GLFWwindow* window;
-
 	void updateCamMat(ISimpleShader* shader);
 	void update(double dt);
 	void draw();
@@ -28,9 +26,9 @@ public:
 	vec3 getRight();
 	void turn(float dx, float dy);
 	vec3 getLookAt();
-	void updateProjection();
+	void updateProjection(int width, int height, float aspect);
 
-	static void mayaCam(GLFWwindow* window, Mouse* m, double dt, Camera* camera);
+	static void mayaCam(int width, int height, double dt, Camera* camera);
 
 private:
 	mat4 projection, view;

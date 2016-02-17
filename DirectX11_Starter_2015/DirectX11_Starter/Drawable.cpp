@@ -3,27 +3,29 @@
 Drawable::Drawable() { }
 Drawable::~Drawable() { ReleaseMacro(vertexBuffer);	ReleaseMacro(indexBuffer); }
 
-void Drawable::vertexShader(SimpleVertexShader* s) { _vertexShader = s; } void Drawable::pixelShader(SimplePixelShader* s) { _pixelShader = s; }
+Material* Drawable::material() const { return _material; } void Drawable::material(Material* m) { _material = m; }
 
 void Drawable::draw(float x, float y, float z, float xScale, float yScale, float zScale, ID3D11DeviceContext* deviceContext) {
 	vec3 pos = vec3(x, y, z);
 	vec3 scale = vec3(xScale, yScale, zScale);
 	vec3 rotAxis = vec3(0, 0, 1);
 	float rot = 0;
-	setWorldMatrix(pos, scale, rotAxis, rot);
+	mat4 world = genWorldMatrix(pos, scale, rotAxis, rot);
+	_material->updateMaterial(&world);
 	//actual draw call is reserved for children
 }
 
 void Drawable::draw(Transform* t, ID3D11DeviceContext* deviceContext) { draw(t->position, t->scale, t->rotAxis, t->rotAngle, deviceContext); }
 void Drawable::draw(vec3 pos, vec3 scale, vec3 rotAxis, float rot, ID3D11DeviceContext* deviceContext) {
-	setWorldMatrix(pos, scale, rotAxis, rot);
+	mat4 world = genWorldMatrix(pos, scale, rotAxis, rot);
+	_material->updateMaterial(&world);
 }
 
-void Drawable::setWorldMatrix(vec3 pos, vec3 scaleV, vec3 rotAxis, float rot) {
+mat4 Drawable::genWorldMatrix(vec3 pos, vec3 scaleV, vec3 rotAxis, float rot) {
 	mat4 translate = mat4::translate(pos);
 	mat4 scale = mat4::scale(scaleV);
 	mat4 rotate = mat4::rotate(rot, rotAxis);
-	_vertexShader->SetMatrix4x4("world", &mat4::transpose(translate * rotate * scale)[0][0]);
+	return translate * rotate * scale;
 }
 
 //std::map<const char*, uint32_t> Drawable::loadedTextures;

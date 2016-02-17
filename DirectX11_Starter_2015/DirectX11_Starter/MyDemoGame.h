@@ -5,6 +5,7 @@
 #include "SimpleShader.h"
 
 #include "Entity.h"
+#include "Camera.h"
 #include "DrawMesh.h"
 
 // Include run-time memory checking in debug builds, so 
@@ -51,6 +52,7 @@ private:
 	DirectX::XMFLOAT4X4 viewMatrix;
 	DirectX::XMFLOAT4X4 projectionMatrix;
 
+	Camera* camera = nullptr;
 	std::vector<Entity*> entities;
 	std::vector<Mesh*> meshes;
 

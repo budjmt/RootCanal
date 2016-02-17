@@ -72,6 +72,7 @@
     <ClCompile Include="DrawMesh.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="MarchMath.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ModelHelper.cpp" />
     <ClCompile Include="MyDemoGame.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="DrawMesh.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="MarchMath.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelHelper.h" />
     <ClInclude Include="MyDemoGame.h" />
