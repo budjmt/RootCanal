@@ -52,14 +52,16 @@ public:
 	mat4 operator*(const mat4& other);	vec4 operator*(const vec4& v);
 
 	static mat4 transpose(mat4& m);
-	static mat4 inverse(mat4& m);
+	//inverse transpose of a transformation matrix
+	static mat4 inv_tp_tf(mat4& m);
 
 	static mat4 translate(vec3 v);
 	static mat4 rotate(float t, vec3 a);
 	static mat4 scale(vec3 v);
 
 	static mat4 lookAt(vec3 pos, vec3 target, vec3 up);
-	static mat4 perspective(float fov, float aspect, float zNear, float zFar);
+	static mat4 perspective(float fovx, float aspect, float zNear, float zFar);
+	static mat4 perspective(float fov, float width, float height, float zNear, float zFar);
 	static mat4 orthographic(float left, float right, float bottom, float top, float zNear, float zFar);
 	static mat4 orthographic(float width, float height, float zNear, float zFar);
 

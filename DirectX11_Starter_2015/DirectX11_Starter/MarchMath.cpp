@@ -58,8 +58,27 @@ mat4 mat4::operator*(const mat4& other) { mat4 r; for (int i = 0; i < 4; i++) fo
 vec4 mat4::operator*(const vec4& v) { vec4 result; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) result[i] += m[j * 4 + i] * v[j]; return result; }
 
 mat4 mat4::transpose(mat4& m) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] = m[j][i]; return r; }
-mat4 mat4::inverse(mat4& m) {
-
+//based on the transform inverse shortcut where the mat is [M 0, v, 1] (columns) and the inverse is [M^-1 0, -M^-1*v 1]
+mat4 mat4::inv_tp_tf(mat4& m) {
+	//the reason we do it this way is to save multiplications
+	//the mat4 [] returns a pointer to m[i*4]
+	float* c1 = m[0], *c2 = m[1], *c3 = m[2];
+	float a = *(c1)++, b = *(c2)++, c = *(c3)++, d = *(c1)++, e = *(c2)++, f = *(c3)++, g = *(c1), h = *(c2), i = *(c3);
+	float ei_fh = e * f - f * h, fg_di = f * g - d * i, dh_eg = d * h - e * g;
+	float det = a * ei_fh + b *  fg_di + c * dh_eg, _det = 1.f / det;
+	//this is already transposed
+	float r[] = {
+		ei_fh		* _det,	fg_di		* _det,	dh_eg		* _det,	0,
+		(c*h - b*i) * _det, (a*i - c*g) * _det, (b*g - a*h) * _det, 0,
+		(b*f - c*e) * _det, (c*d - a*f) * _det, (a*e - b*d) * _det, 0,
+		0,					0,					0,					1
+	};
+	float* c4 = m[3];
+	float x = *(c4)++, y = *(c4)++, z = *(c4);
+	r[12] = -(r[0]*x + r[4]*y + r[8] *z);
+	r[13] = -(r[1]*x + r[5]*y + r[9] *z);
+	r[14] = -(r[2]*x + r[6]*y + r[10]*z);
+	return mat4(r);
 }
 
 mat4 mat4::translate(vec3 v) { mat4 t = mat4(1); t[3][0] = v.x; t[3][1] = v.y; t[3][2] = v.z; return t; }
@@ -88,12 +107,18 @@ mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
 	r[0][3] = -vec3::dot(eye, x); r[1][3] = -vec3::dot(eye, y); r[2][3] = vec3::dot(eye, z); r[3][3] = 1;
 	return r;
 }
-mat4 mat4::perspective(float fov, float aspect, float zNear, float zFar) {
+mat4 mat4::perspective(float fovx, float aspect, float zNear, float zFar) {
 	mat4 r;
 	float frustDepth = zFar - zNear, _fd = 1.f / frustDepth;
-	//r[0][0] = zNear / right; r[1][1] = zNear / top; r[2][3] = -1;
-	float uw = 1.f / tanf(fov * 0.5f), uh = uw * aspect;
-	r[0][0] = uw; r[1][1] = uh;	r[2][2] = -(zFar + zNear) * _fd; r[3][2] = -2.f * zFar * zNear * _fd;
+	float uw = 1.f / tanf(fovx * 0.5f), uh = uw * aspect;
+	r[0][0] = uw; r[1][1] = uh;	r[2][3] = -1; r[2][2] = -(zFar + zNear) * _fd; r[3][2] = -2.f * zFar * zNear * _fd;
+	return r;
+}
+mat4 mat4::perspective(float fov, float width, float height, float zNear, float zFar) {
+	mat4 r;
+	float frustDepth = zFar - zNear, _fd = 1.f / frustDepth;
+	r[0][0] = 2.f * zNear / width; r[1][1] = 2.f * zNear / height; r[2][3] = -1;
+	r[2][2] = -(zFar + zNear) * _fd; r[3][2] = -2.f * zFar * zNear * _fd;
 	return r;
 }
 mat4 mat4::orthographic(float right, float left, float bottom, float top, float zNear, float zFar) {
