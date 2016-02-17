@@ -9,8 +9,7 @@ enum EntityType {
 	CAMERA
 };
 
-class Entity
-{
+class Entity {
 public:
 	Entity();
 	Entity(Drawable* s);

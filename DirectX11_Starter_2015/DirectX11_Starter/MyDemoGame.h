@@ -55,6 +55,7 @@ private:
 	Camera* camera = nullptr;
 	std::vector<Entity*> entities;
 	std::vector<Mesh*> meshes;
+	std::vector<Material*> materials;
 
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.

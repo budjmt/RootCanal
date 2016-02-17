@@ -31,7 +31,7 @@ void Camera::updateProjection(int width, int height, float aspect) {
 	float znear = 0.01f;
 	float zfar = 1000.f;
 	//transpose for direct x
-	projection = mat4::transpose(mat4::perspective(CAM_FOV, width, height, znear, zfar));
+	projection = mat4::transpose(mat4::perspective(CAM_FOV, (float)width, (float)height, znear, zfar));
 }
 
 vec3 Camera::getForward() { return transform.forward(); }

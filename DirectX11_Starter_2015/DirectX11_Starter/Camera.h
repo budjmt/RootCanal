@@ -10,9 +10,7 @@
 
 const float CAM_FOV = 2 * PI / 5;
 
-class Camera :
-	public Entity
-{
+class Camera : public Entity {
 public:
 	Camera();
 	~Camera();

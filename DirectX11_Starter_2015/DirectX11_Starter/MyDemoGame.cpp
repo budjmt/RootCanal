@@ -86,6 +86,8 @@ MyDemoGame::~MyDemoGame()
 	delete vertexShader; delete pixelShader;
 	for (Mesh* m : meshes)
 		delete m;
+	for (Material* m : materials)
+		delete m;
 	for (Entity* e : entities)
 		delete e;
 }
@@ -144,12 +146,13 @@ void MyDemoGame::LoadShaders()
 void MyDemoGame::CreateGeometry()
 {
 	char* m_names[] = { "Assets/basic.obj", "Assets/cube.obj", "Assets/sphere.obj" };
+	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader);
+	materials.push_back(mat);
 	for (char* file : m_names) {
 		Mesh* loadedMesh = loadOBJ(file);
 		assert(loadedMesh != nullptr);
 		DrawMesh* d = new DrawMesh(loadedMesh, nullptr, device);
-		d->vertexShader(vertexShader);
-		d->pixelShader(pixelShader);
+		d->material(mat);
 		vec3 vecs[3];
 		vecs[0] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
 		vecs[1] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));

@@ -70,7 +70,7 @@ mat4 mat4::inv_tp_tf(mat4& m) {
 	//the reason we do it this way is to save multiplications
 	//the mat4 [] returns a pointer to m[i*4]
 	float* c1 = m[0], *c2 = m[1], *c3 = m[2];
-	float a = *(c1)++, b = *(c2)++, c = *(c3)++, d = *(c1)++, e = *(c2)++, f = *(c3)++, g = *(c1), h = *(c2), i = *(c3);
+	float a = *(c1), b = *(c2), c = *(c3), d = *(c1++), e = *(c2++), f = *(c3++), g = *(c1++), h = *(c2++), i = *(c3++);
 	float ei_fh = e * f - f * h, fg_di = f * g - d * i, dh_eg = d * h - e * g;
 	float det = a * ei_fh + b *  fg_di + c * dh_eg, _det = 1.f / det;
 	//this is already transposed
@@ -81,7 +81,7 @@ mat4 mat4::inv_tp_tf(mat4& m) {
 		0,					0,					0,					1
 	};
 	float* c4 = m[3];
-	float x = *(c4)++, y = *(c4)++, z = *(c4);
+	float x = *(c4), y = *(c4++), z = *(c4++);
 	r[12] = -(r[0]*x + r[4]*y + r[8] *z);
 	r[13] = -(r[1]*x + r[5]*y + r[9] *z);
 	r[14] = -(r[2]*x + r[6]*y + r[10]*z);
