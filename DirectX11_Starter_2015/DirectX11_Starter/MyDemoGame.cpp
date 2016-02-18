@@ -146,23 +146,30 @@ void MyDemoGame::LoadShaders()
 void MyDemoGame::CreateGeometry()
 {
 	camera = new Camera();
+	OnResize();
 	entities.push_back(camera);
 
 	char* m_names[] = { "Assets/basic.obj", "Assets/cube.obj", "Assets/sphere.obj" };
 	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader); mat->camera(&camera);
 	materials.push_back(mat);
+	int i = 0;
 	for (char* file : m_names) {
 		Mesh* loadedMesh = loadOBJ(file);
 		assert(loadedMesh != nullptr);
 		DrawMesh* d = new DrawMesh(loadedMesh, nullptr, device);
 		d->material(mat);
 		vec3 vecs[3];
-		vecs[0] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
-		vecs[1] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
-		vecs[2] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
-		Entity* e = new Entity(vecs[0], vecs[1], vecs[2], rand() % 360 / 180.f * 3.141592f, d);
+		float rot = rand() % 360 / 180.f * PI;
+		//vecs[0] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
+		//vecs[1] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
+		//vecs[2] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
+		vecs[0] = vec3(2.f - i * 2.f, 0.f, 0.f);
+		vecs[1] = vec3((i + 1) * 0.5f, (i + 1) * 0.5f, (i + 1) * 0.5f);
+		vecs[2] = vec3(1,0,0);
+		Entity* e = new Entity(vecs[0], vecs[1], vecs[2], rot, d);
 		meshes.push_back(loadedMesh);
 		entities.push_back(e);
+		i++;
 	}
 }
 
@@ -179,6 +186,8 @@ void MyDemoGame::CreateMatrices()
 	XMMATRIX W = XMMatrixIdentity();
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
     
+	camera->transform.position = vec3(0.f, 0.f, 5.f);
+	camera->transform.rotate(0, PI, 0);
 	camera->update(0.f);
 	camera->updateProjection(windowWidth, windowHeight, aspectRatio);
 
@@ -189,25 +198,25 @@ void MyDemoGame::CreateMatrices()
 	//    camera and the direction you want it to look (as well as "up")
 	// - Another option is the LOOK AT function, to look towards a specific
 	//    point in 3D space
-	/*XMVECTOR pos = XMVectorSet(0, 0, -5, 0);
+	XMVECTOR pos = XMVectorSet(0, 0, -5, 0);
 	XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
 	XMVECTOR up  = XMVectorSet(0, 1, 0, 0);
 	XMMATRIX V   = XMMatrixLookToLH(
 		pos,     // The position of the "camera"
 		dir,     // Direction the camera is looking
 		up);     // "Up" direction in 3D space (prevents roll)
-	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!*/
+	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
 
 	// Create the Projection matrix
 	// - This should match the window's aspect ratio, and also update anytime
 	//   the window resizes (which is already happening in OnResize() below)
-	/*XMMATRIX P = XMMatrixPerspectiveFovLH(
+	XMMATRIX P = XMMatrixPerspectiveFovLH(
 		0.25f * 3.1415926535f,		// Field of View Angle
 		aspectRatio,				// Aspect ratio
 		0.1f,						// Near clip plane distance
 		100.0f);					// Far clip plane distance
 	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
-	*/
+	
 }
 
 #pragma endregion
@@ -224,13 +233,13 @@ void MyDemoGame::OnResize()
 	DirectXGameCore::OnResize();
 
 	// Update our projection matrix since the window size changed
-	/*XMMATRIX P = XMMatrixPerspectiveFovLH(
+	XMMATRIX P = XMMatrixPerspectiveFovLH(
 		0.25f * 3.1415926535f,	// Field of View Angle
 		aspectRatio,		  	// Aspect ratio
 		0.1f,				  	// Near clip plane distance
 		100.0f);			  	// Far clip plane distance
 	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
-	*/
+	
 	if (camera) camera->updateProjection(windowWidth, windowHeight, aspectRatio);
 }
 #pragma endregion
@@ -247,6 +256,7 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
 	
+	Camera::mayaCam(windowWidth, windowHeight, deltaTime, camera);
 	for (auto e : entities)
 		e->update(deltaTime);
 }
@@ -276,8 +286,8 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	//    and then copying that entire buffer to the GPU.  
 	//  - The "SimpleShader" class handles all of that for you.
 	vertexShader->SetMatrix4x4("world", worldMatrix);
-	//vertexShader->SetMatrix4x4("view", viewMatrix);
-	//vertexShader->SetMatrix4x4("projection", projectionMatrix);
+	vertexShader->SetMatrix4x4("view", viewMatrix);
+	vertexShader->SetMatrix4x4("projection", projectionMatrix);
 	camera->updateCamMat(vertexShader);
 	
 	// Set the vertex and pixel shaders to use for the next Draw() command

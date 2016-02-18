@@ -15,7 +15,7 @@ public:
 	Camera();
 	~Camera();
 	void updateCamMat(ISimpleShader* shader);
-	void update(double dt);
+	void update(float dt);
 	void draw(ID3D11DeviceContext* deviceContext);
 
 	float zoom;

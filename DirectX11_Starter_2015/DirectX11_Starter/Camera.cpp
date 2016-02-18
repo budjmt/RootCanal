@@ -5,11 +5,11 @@ Camera::~Camera() {}
 
 void Camera::updateCamMat(ISimpleShader* shader) {
 	//we pre-transpose projection because it doesn't change very often
-	shader->SetMatrix4x4("projection", &projection[0][0]);
-	shader->SetMatrix4x4("view", &mat4::transpose(view)[0][0]);
+	//shader->SetMatrix4x4("projection", &projection[0][0]);
+	//shader->SetMatrix4x4("view", &view[0][0]);
 }
 
-void Camera::update(double dt) {
+void Camera::update(float dt) {
 	view = mat4::lookAt(transform.position, getLookAt(), getUp());
 }
 
@@ -32,6 +32,8 @@ void Camera::updateProjection(int width, int height, float aspect) {
 	float zfar = 1000.f;
 	//transpose for direct x
 	projection = mat4::transpose(mat4::perspective(CAM_FOV, (float)width, (float)height, znear, zfar));
+	//projection = mat4::transpose(mat4::perspective(CAM_FOV, aspect, znear, zfar));
+	//projection = mat4::transpose(mat4::orthographic((float)width, (float)height, znear, zfar));
 }
 
 vec3 Camera::getForward() { return transform.forward(); }

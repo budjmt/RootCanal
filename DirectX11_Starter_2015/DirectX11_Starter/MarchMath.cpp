@@ -67,8 +67,8 @@ vec4 mat4::operator*(const vec4& v) { vec4 result; for (int i = 0; i < 4; i++) f
 mat4 mat4::transpose(mat4& m) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] = m[j][i]; return r; }
 //based on the transform inverse shortcut where the mat is [M 0, v, 1] (columns) and the inverse is [M^-1 0, -M^-1*v 1]
 mat4 mat4::inv_tp_tf(mat4& m) {
-	//the reason we do it this way is to save multiplications
-	//the mat4 [] returns a pointer to m[i*4]
+	//the reason we do it this way is to save operations
+	//the mat4 [] returns a pointer to m[i<<2]
 	float* c1 = m[0], *c2 = m[1], *c3 = m[2];
 	float a = *(c1), b = *(c2), c = *(c3), d = *(c1++), e = *(c2++), f = *(c3++), g = *(c1++), h = *(c2++), i = *(c3++);
 	float ei_fh = e * f - f * h, fg_di = f * g - d * i, dh_eg = d * h - e * g;
@@ -103,29 +103,31 @@ mat4 mat4::rotate(float theta, vec3 a) {
 }
 mat4 mat4::scale(vec3 v) { mat4 s = mat4(); s[0][0] = v.x; s[1][1] = v.y; s[2][2] = v.z; s[3][3] = 1.f; return s; }
 
+//this is pre-transposed
 mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
-	vec3 z = target - eye; z = z / vec3::length(z);
-	vec3 x = vec3::cross(up, z); x = x / vec3::length(x);
-	vec3 y = vec3::cross(z, x);
+	vec3 f = target - eye; f /= vec3::length(f);
+	vec3 s = vec3::cross(up, f); s /= vec3::length(s);
+	vec3 u = vec3::cross(f, s);
+	//f *= -1;
 	mat4 r;
-	r[0][0] = x.x; r[0][1] = x.y; r[0][2] = x.z;
-	r[1][0] = y.x; r[1][1] = y.y; r[1][2] = y.z;
-	r[2][0] = -z.x; r[2][1] = -z.y; r[2][2] = -z.z;
-	r[0][3] = -vec3::dot(eye, x); r[1][3] = -vec3::dot(eye, y); r[2][3] = vec3::dot(eye, z); r[3][3] = 1;
+	r[0][0] = s.x; r[0][1] = s.y; r[0][2] = s.z;
+	r[1][0] = u.x; r[1][1] = u.y; r[1][2] = u.z;
+	r[2][0] = f.x; r[2][1] = f.y; r[2][2] = f.z;
+	r[0][3] = -vec3::dot(eye, s); r[1][3] = -vec3::dot(eye, u); r[2][3] = -vec3::dot(eye, f); r[3][3] = 1;
 	return r;
 }
 mat4 mat4::perspective(float fovx, float aspect, float zNear, float zFar) {
 	mat4 r;
-	float frustDepth = zFar - zNear, _fd = 1.f / frustDepth;
-	float uw = 1.f / tanf(fovx * 0.5f), uh = uw * aspect;
-	r[0][0] = uw; r[1][1] = uh;	r[2][3] = -1; r[2][2] = -(zFar + zNear) * _fd; r[3][2] = -2.f * zFar * zNear * _fd;
+	float frustDepth = zFar - zNear, _fd = zFar / frustDepth, hfov = fovx * 0.5f;
+	float uw = cosf(hfov) / sinf(hfov), uh = uw * aspect;
+	r[0][0] = uw; r[1][1] = uh;	r[3][2] = 1; r[2][2] = _fd; r[2][3] = -zNear * _fd;
 	return r;
 }
 mat4 mat4::perspective(float fov, float width, float height, float zNear, float zFar) {
 	mat4 r;
-	float frustDepth = zFar - zNear, _fd = 1.f / frustDepth;
-	r[0][0] = 2.f * zNear / width; r[1][1] = 2.f * zNear / height; r[2][3] = -1;
-	r[2][2] = -(zFar + zNear) * _fd; r[3][2] = -2.f * zFar * zNear * _fd;
+	float frustDepth = zFar - zNear, _fd = zFar / frustDepth;
+	r[0][0] = 2.f * zNear / width; r[1][1] = 2.f * zNear / height; r[3][2] = 1;
+	r[2][2] = _fd; r[2][3] = -zNear * _fd;
 	return r;
 }
 mat4 mat4::orthographic(float right, float left, float bottom, float top, float zNear, float zFar) {
@@ -138,8 +140,8 @@ mat4 mat4::orthographic(float right, float left, float bottom, float top, float 
 //assumes symmetric view frustrum
 mat4 mat4::orthographic(float width, float height, float zNear, float zFar) {
 	mat4 r;
-	float frustDepth = zFar - zNear, _fd = 1.f / frustDepth, hw = width * 0.5f, hh = height * 0.5f;
-	r[0][0] = 1.f / hw; r[1][1] = 1.f / hh; r[3][3] = 1.f;
+	float frustDepth = zFar - zNear, _fd = 1.f / frustDepth;
+	r[0][0] = 2.f / width; r[1][1] = 2.f / height; r[3][3] = 1.f;
 	r[2][2] = -2.f * _fd; r[3][2] = -(zFar + zNear) * _fd;
 	return r;
 }
