@@ -55,7 +55,7 @@ mat4::mat4() { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 +
 mat4::mat4(float f) { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 + j] = 0; for (int i = 0; i < 4; i++) m[i * 5] = f; }
 mat4::mat4(float* _m) { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 + j] = _m[i * 4 + j]; }
 
-const float* mat4::operator[](int i) const { return &m[i * 4]; } float* mat4::operator[](int i) { return &m[i * 4]; }
+const float* mat4::operator[](int i) const { return &m[i << 2]; } float* mat4::operator[](int i) { return &m[i << 2]; }
 mat4 mat4::operator+(const mat4& other) { mat4 r(m); for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] += other[i][j]; return r; }
 mat4 mat4::operator-(const mat4& other) { mat4 r(m); for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] -= other[i][j]; return r; }
 mat4 mat4::operator*(float f) { mat4 r(m); for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] *= f; return r; }
