@@ -13,7 +13,7 @@ void Camera::update(double dt) {
 	view = mat4::lookAt(transform.position, getLookAt(), getUp());
 }
 
-void Camera::draw() {
+void Camera::draw(ID3D11DeviceContext* deviceContext) {
 	//does NOTHING because it's a CAMERA
 	//or maybe there's debug here
 	//who knows

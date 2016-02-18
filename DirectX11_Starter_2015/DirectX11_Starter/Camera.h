@@ -16,7 +16,7 @@ public:
 	~Camera();
 	void updateCamMat(ISimpleShader* shader);
 	void update(double dt);
-	void draw();
+	void draw(ID3D11DeviceContext* deviceContext);
 
 	float zoom;
 	vec3 getForward();

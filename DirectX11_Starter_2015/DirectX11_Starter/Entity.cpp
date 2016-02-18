@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Drawable.h"
 
 Entity::Entity()
 	: transform(_transform), active(_active)

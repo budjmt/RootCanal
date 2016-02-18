@@ -15,7 +15,7 @@ public:
 	void pixelShader(SimplePixelShader* p);
 	void camera(Camera** c);
 
-	void updateMaterial(mat4* world);
+	void updateMaterial(mat4& world);
 	void setActive(bool b);
 
 private:

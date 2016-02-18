@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Drawable.h"
+#include "DirectXGameCore.h"
+
+//#include "Drawable.h"
 #include "Transform.h"
 
 enum EntityType {
@@ -8,6 +10,8 @@ enum EntityType {
 	COLLIDER,
 	CAMERA
 };
+
+class Drawable;
 
 class Entity {
 public:
@@ -25,8 +29,8 @@ public:
 	//virtual void update(double dt);
 	//virtual void draw();
 	void move(vec3 d);
-	void update(float dt);
-	void draw(ID3D11DeviceContext* deviceContext);
+	virtual void update(float dt);
+	virtual void draw(ID3D11DeviceContext* deviceContext);
 protected:
 	Drawable* shape;
 	vec4 _color;

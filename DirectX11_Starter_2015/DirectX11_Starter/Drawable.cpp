@@ -11,14 +11,14 @@ void Drawable::draw(float x, float y, float z, float xScale, float yScale, float
 	vec3 rotAxis = vec3(0, 0, 1);
 	float rot = 0;
 	mat4 world = genWorldMatrix(pos, scale, rotAxis, rot);
-	_material->updateMaterial(&world);
+	_material->updateMaterial(world);
 	//actual draw call is reserved for children
 }
 
 void Drawable::draw(Transform* t, ID3D11DeviceContext* deviceContext) { draw(t->position, t->scale, t->rotAxis, t->rotAngle, deviceContext); }
 void Drawable::draw(vec3 pos, vec3 scale, vec3 rotAxis, float rot, ID3D11DeviceContext* deviceContext) {
 	mat4 world = genWorldMatrix(pos, scale, rotAxis, rot);
-	_material->updateMaterial(&world);
+	_material->updateMaterial(world);
 }
 
 mat4 Drawable::genWorldMatrix(vec3 pos, vec3 scaleV, vec3 rotAxis, float rot) {

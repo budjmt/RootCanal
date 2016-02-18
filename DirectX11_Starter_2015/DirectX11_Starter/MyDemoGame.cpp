@@ -145,8 +145,11 @@ void MyDemoGame::LoadShaders()
 // --------------------------------------------------------
 void MyDemoGame::CreateGeometry()
 {
+	camera = new Camera();
+	entities.push_back(camera);
+
 	char* m_names[] = { "Assets/basic.obj", "Assets/cube.obj", "Assets/sphere.obj" };
-	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader);
+	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader); mat->camera(&camera);
 	materials.push_back(mat);
 	for (char* file : m_names) {
 		Mesh* loadedMesh = loadOBJ(file);
@@ -161,8 +164,6 @@ void MyDemoGame::CreateGeometry()
 		meshes.push_back(loadedMesh);
 		entities.push_back(e);
 	}
-	camera = new Camera();
-	entities.push_back(camera);
 }
 
 
