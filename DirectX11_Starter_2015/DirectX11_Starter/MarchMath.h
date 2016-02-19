@@ -64,9 +64,10 @@ public:
 	static mat4 rotate(float t, vec3 a);
 	static mat4 scale(vec3 v);
 
+	//all of these are pre-transposed
 	static mat4 lookAt(vec3 pos, vec3 target, vec3 up);
-	static mat4 perspective(float fovx, float aspect, float zNear, float zFar);
-	static mat4 perspective(float fov, float width, float height, float zNear, float zFar);
+	static mat4 perspectiveFOV(float fovy, float aspect, float zNear, float zFar);
+	static mat4 perspective(float width, float height, float zNear, float zFar);
 	static mat4 orthographic(float left, float right, float bottom, float top, float zNear, float zFar);
 	static mat4 orthographic(float width, float height, float zNear, float zFar);
 

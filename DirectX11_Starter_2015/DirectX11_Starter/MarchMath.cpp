@@ -103,10 +103,9 @@ mat4 mat4::rotate(float theta, vec3 a) {
 }
 mat4 mat4::scale(vec3 v) { mat4 s = mat4(); s[0][0] = v.x; s[1][1] = v.y; s[2][2] = v.z; s[3][3] = 1.f; return s; }
 
-//this is pre-transposed
 mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
 	vec3 f = target - eye; f /= vec3::length(f);
-	vec3 s = vec3::cross(up, f); s /= vec3::length(s);
+	vec3 s = vec3::cross(f, up); s /= vec3::length(s);
 	vec3 u = vec3::cross(f, s);
 	//f *= -1;
 	mat4 r;
@@ -116,14 +115,14 @@ mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
 	r[0][3] = -vec3::dot(eye, s); r[1][3] = -vec3::dot(eye, u); r[2][3] = -vec3::dot(eye, f); r[3][3] = 1;
 	return r;
 }
-mat4 mat4::perspective(float fovx, float aspect, float zNear, float zFar) {
+mat4 mat4::perspectiveFOV(float fovy, float aspect, float zNear, float zFar) {
 	mat4 r;
-	float frustDepth = zFar - zNear, _fd = zFar / frustDepth, hfov = fovx * 0.5f;
-	float uw = cosf(hfov) / sinf(hfov), uh = uw * aspect;
+	float frustDepth = zFar - zNear, _fd = zFar / frustDepth, hfov = fovy * 0.5f;
+	float uh = cosf(hfov) / sinf(hfov), uw = uh / aspect;
 	r[0][0] = uw; r[1][1] = uh;	r[3][2] = 1; r[2][2] = _fd; r[2][3] = -zNear * _fd;
 	return r;
 }
-mat4 mat4::perspective(float fov, float width, float height, float zNear, float zFar) {
+mat4 mat4::perspective(float width, float height, float zNear, float zFar) {
 	mat4 r;
 	float frustDepth = zFar - zNear, _fd = zFar / frustDepth;
 	r[0][0] = 2.f * zNear / width; r[1][1] = 2.f * zNear / height; r[3][2] = 1;
@@ -133,8 +132,8 @@ mat4 mat4::perspective(float fov, float width, float height, float zNear, float 
 mat4 mat4::orthographic(float right, float left, float bottom, float top, float zNear, float zFar) {
 	mat4 r;
 	float rl = right - left, _rl = 1.f / rl, tb = top - bottom, _tb = 1.f / tb, frustDepth = zFar - zNear, _fd = 1 / frustDepth;
-	r[0][0] = 2.f * _rl; r[1][1] = 2.f * _tb; r[2][2] = -2.f * _fd; r[3][3] = 1.f;
-	r[3][0] = -(right + left) * _rl; r[3][1] = -(top + bottom) * _tb; r[3][2] = -(zFar + zNear) * _fd;
+	r[0][0] = 2.f * _rl; r[1][1] = 2.f * _tb; r[2][2] = 1.f * _fd; r[3][3] = 1.f;
+	r[3][0] = -(right + left) * _rl; r[3][1] = -(top + bottom) * _tb; r[3][2] = -zNear * _fd;
 	return r;
 }
 //assumes symmetric view frustrum
@@ -142,7 +141,7 @@ mat4 mat4::orthographic(float width, float height, float zNear, float zFar) {
 	mat4 r;
 	float frustDepth = zFar - zNear, _fd = 1.f / frustDepth;
 	r[0][0] = 2.f / width; r[1][1] = 2.f / height; r[3][3] = 1.f;
-	r[2][2] = -2.f * _fd; r[3][2] = -(zFar + zNear) * _fd;
+	r[2][2] = 1.f * _fd; r[3][2] = -zNear * _fd;
 	return r;
 }
 
