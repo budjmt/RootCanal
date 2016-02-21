@@ -256,9 +256,9 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
 	
-	Camera::mayaCam(windowWidth, windowHeight, deltaTime, camera);
+	Camera::mayaCam(windowWidth, windowHeight, deltaTime, &mouse, camera);
 	for (auto e : entities)
-		e->update(deltaTime);
+		e->update(deltaTime, &mouse);
 }
 
 // --------------------------------------------------------
@@ -322,8 +322,13 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 void MyDemoGame::OnMouseDown(WPARAM btnState, int x, int y)
 {
 	// Save the previous mouse position, so we have it for the future
-	prevMousePos.x = x;
-	prevMousePos.y = y;
+	mouse.btnState = btnState;
+	mouse.curr.x = x;
+	mouse.curr.y = y;
+	mouse.prev.x = mouse.curr.x;
+	mouse.prev.y = mouse.curr.y;
+	mouse.lastPress = GetCurrentTime();
+	mouse.down = true;
 
 	// Caputure the mouse so we keep getting mouse move
 	// events even if the mouse leaves the window.  we'll be
@@ -338,6 +343,9 @@ void MyDemoGame::OnMouseDown(WPARAM btnState, int x, int y)
 // --------------------------------------------------------
 void MyDemoGame::OnMouseUp(WPARAM btnState, int x, int y)
 {
+	mouse.btnState = btnState;
+	mouse.down = false;
+
 	// We don't care about the tracking the cursor outside
 	// the window anymore (we're not dragging if the mouse is up)
 	ReleaseCapture();
@@ -353,7 +361,10 @@ void MyDemoGame::OnMouseUp(WPARAM btnState, int x, int y)
 void MyDemoGame::OnMouseMove(WPARAM btnState, int x, int y)
 {
 	// Save the previous mouse position, so we have it for the future
-	prevMousePos.x = x;
-	prevMousePos.y = y;
+	mouse.btnState = btnState;
+	mouse.curr.x = x;
+	mouse.curr.y = y;
+	mouse.prev.x = mouse.curr.x;
+	mouse.prev.y = mouse.curr.y;
 }
 #pragma endregion

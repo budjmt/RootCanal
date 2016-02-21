@@ -20,4 +20,3 @@ public:
 private:
 	Mesh* _mesh;
 };
-

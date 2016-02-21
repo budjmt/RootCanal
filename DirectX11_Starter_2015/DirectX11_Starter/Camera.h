@@ -15,7 +15,7 @@ public:
 	Camera();
 	~Camera();
 	void updateCamMat(ISimpleShader* shader);
-	void update(float dt);
+	void update(float dt, Mouse* mouse);
 	void draw(ID3D11DeviceContext* deviceContext);
 
 	float zoom;
@@ -26,7 +26,7 @@ public:
 	vec3 getLookAt();
 	void updateProjection(int width, int height, float aspect);
 
-	static void mayaCam(int width, int height, double dt, Camera* camera);
+	static void mayaCam(int width, int height, float dt, Mouse* mouse, Camera* camera);
 
 private:
 	mat4 projection, view;

@@ -4,6 +4,7 @@
 
 //#include "Drawable.h"
 #include "Transform.h"
+#include "Mouse.h"
 
 enum EntityType {
 	NORMAL,
@@ -26,10 +27,8 @@ public:
 	vec4 color() const; void color(vec4& c);
 	EntityType type();
 
-	//virtual void update(double dt);
-	//virtual void draw();
 	void move(vec3 d);
-	virtual void update(float dt);
+	virtual void update(float dt, Mouse* mouse);
 	virtual void draw(ID3D11DeviceContext* deviceContext);
 protected:
 	Drawable* shape;

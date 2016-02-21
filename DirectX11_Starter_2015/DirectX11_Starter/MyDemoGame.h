@@ -4,6 +4,7 @@
 #include "DirectXGameCore.h"
 #include "SimpleShader.h"
 
+#include "Mouse.h"
 #include "Entity.h"
 #include "Camera.h"
 #include "DrawMesh.h"
@@ -59,5 +60,5 @@ private:
 
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.
-	POINT prevMousePos;
+	Mouse mouse;
 };

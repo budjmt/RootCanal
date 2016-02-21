@@ -39,7 +39,7 @@ vec4 Entity::color() const { return _color; } void Entity::color(vec4& c) { _col
 EntityType Entity::type() { return _type; }
 
 void Entity::move(vec3 d) { _transform.position = _transform.position + d; }
-void Entity::update(float dt) { move(vec3(rand() % 1000 / 1000.f * (rand() % 2 * 2 - 1), rand() % 1000 / 1000.f  * (rand() % 2 * 2 - 1), rand() % 1000 / 1000.f * (rand() % 2 * 2 - 1)) * dt); }
+void Entity::update(float dt, Mouse* mouse) { move(vec3(rand() % 1000 / 1000.f * (rand() % 2 * 2 - 1), rand() % 1000 / 1000.f  * (rand() % 2 * 2 - 1), rand() % 1000 / 1000.f * (rand() % 2 * 2 - 1)) * dt); }
 
 void Entity::draw(ID3D11DeviceContext* deviceContext) {
 	//glUniform4fv(shape->colorLoc, 1, &_color[0]);

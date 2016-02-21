@@ -9,7 +9,7 @@ void Camera::updateCamMat(ISimpleShader* shader) {
 	shader->SetMatrix4x4("view", &view[0][0]);
 }
 
-void Camera::update(float dt) {
+void Camera::update(float dt, Mouse* mouse) {
 	view = mat4::lookAt(transform.position, getLookAt(), getUp());
 }
 
@@ -41,31 +41,31 @@ vec3 Camera::getForward() { return transform.forward(); }
 vec3 Camera::getUp() { return transform.up(); }
 vec3 Camera::getRight() { return transform.right(); }
 
-void Camera::mayaCam(int width, int height, double dt, Camera* camera) {
+void Camera::mayaCam(int width, int height, float dt, Mouse* mouse, Camera* camera) {
 	//normally there is a Mouse struct to contain mouse info, I'll deal with this later
-	/*if (m->down) {
-		if (m->btnState & 0x0001) {
+	if (mouse->down) {
+		if (mouse->btnState & 0x0001) {
 			float rot = (float)(PI / 2 / dt);
-			float xDiff = (float)(m->x - m->prevx);
+			float xDiff = (float)(mouse->curr.x - mouse->prev.x);
 			float dx = sign(xDiff) * xDiff * xDiff / width * rot;
 			dx = min(PI / 2, dx);
-			float yDiff = (float)(m->y - m->prevy);
+			float yDiff = (float)(mouse->curr.y - mouse->prev.y);
 			float dy = sign(yDiff) * yDiff * yDiff / height * rot;
 			dy = min(PI / 2, dy);
 			vec3 look = camera->getLookAt();
 			camera->turn(dx, dy);
 			camera->transform.position = look - camera->getForward();
 		}
-		else if (m->btnState & 0x0002) {
-			float avg = (float)((m->y - m->prevy) + (m->x - m->prevx)) / 2;
+		else if (mouse->btnState & 0x0002) {
+			float avg = (float)((mouse->curr.y - mouse->prev.y) + (mouse->curr.x - mouse->prev.x)) / 2;
 			camera->transform.position += camera->getForward() * avg;
 		}
-		else if (m->btnState & 0x0010) {
-			camera->transform.position += camera->getRight() * (float)(m->x - m->prevx);
-			camera->transform.position += camera->getUp() * (float)(m->y - m->prevy);
+		else if (mouse->btnState & 0x0010) {
+			camera->transform.position += camera->getRight() * (float)(mouse->curr.x - mouse->prev.x);
+			camera->transform.position += camera->getUp() * (float)(mouse->curr.y - mouse->prev.y);
 		}
 		//std::cout << "Position: " << camera->transform.position.x << "," << camera->transform.position.y << "," << camera->transform.position.z << std::endl << "Pitch: " << camera->pitch << std::endl << "Yaw: " << camera->yaw << std::endl;
-	}*/
+	}
 
 	if (GetAsyncKeyState('W') & 0x8000) {
 		camera->transform.position += camera->getForward() * 5.f * (float)dt;
