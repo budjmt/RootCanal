@@ -188,7 +188,7 @@ void MyDemoGame::CreateMatrices()
     
 	camera->transform.position = vec3(0.f, 0.f, 5.f);
 	camera->transform.rotate(0, PI, 0);
-	camera->update(0.f);
+	camera->update(0.f, &mouse);
 	camera->updateProjection(windowWidth, windowHeight, aspectRatio);
 
 	// Create the View matrix
@@ -259,6 +259,9 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 	Camera::mayaCam(windowWidth, windowHeight, deltaTime, &mouse, camera);
 	for (auto e : entities)
 		e->update(deltaTime, &mouse);
+
+	mouse.prev.x = mouse.curr.x;
+	mouse.prev.y = mouse.curr.y;
 }
 
 // --------------------------------------------------------
@@ -323,11 +326,11 @@ void MyDemoGame::OnMouseDown(WPARAM btnState, int x, int y)
 {
 	// Save the previous mouse position, so we have it for the future
 	mouse.btnState = btnState;
+	//mouse.prev.x = mouse.curr.x;
+	//mouse.prev.y = mouse.curr.y;
 	mouse.curr.x = x;
 	mouse.curr.y = y;
-	mouse.prev.x = mouse.curr.x;
-	mouse.prev.y = mouse.curr.y;
-	mouse.lastPress = GetCurrentTime();
+	//mouse.lastPress = GetCurrentTime();
 	mouse.down = true;
 
 	// Caputure the mouse so we keep getting mouse move
@@ -362,9 +365,9 @@ void MyDemoGame::OnMouseMove(WPARAM btnState, int x, int y)
 {
 	// Save the previous mouse position, so we have it for the future
 	mouse.btnState = btnState;
+	//mouse.prev.x = mouse.curr.x;
+	//mouse.prev.y = mouse.curr.y;
 	mouse.curr.x = x;
 	mouse.curr.y = y;
-	mouse.prev.x = mouse.curr.x;
-	mouse.prev.y = mouse.curr.y;
 }
 #pragma endregion

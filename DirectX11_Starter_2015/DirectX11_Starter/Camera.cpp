@@ -42,16 +42,15 @@ vec3 Camera::getUp() { return transform.up(); }
 vec3 Camera::getRight() { return transform.right(); }
 
 void Camera::mayaCam(int width, int height, float dt, Mouse* mouse, Camera* camera) {
-	//normally there is a Mouse struct to contain mouse info, I'll deal with this later
 	if (mouse->down) {
 		if (mouse->btnState & 0x0001) {
-			float rot = (float)(PI / 2 / dt);
+			float rot = (float)(PI * 20 * dt);
 			float xDiff = (float)(mouse->curr.x - mouse->prev.x);
 			float dx = sign(xDiff) * xDiff * xDiff / width * rot;
-			dx = min(PI / 2, dx);
+			dx = min(rot, dx);
 			float yDiff = (float)(mouse->curr.y - mouse->prev.y);
 			float dy = sign(yDiff) * yDiff * yDiff / height * rot;
-			dy = min(PI / 2, dy);
+			dy = min(rot, dy);
 			vec3 look = camera->getLookAt();
 			camera->turn(dx, dy);
 			camera->transform.position = look - camera->getForward();
@@ -80,11 +79,11 @@ void Camera::mayaCam(int width, int height, float dt, Mouse* mouse, Camera* came
 		camera->transform.position += camera->getRight() * -5.f * (float)dt;
 	}
 
-	if (GetAsyncKeyState(VK_UP) & 0x8000) {
-		camera->transform.position += vec3(0, 1, 0) * 5.f * (float)dt;
-	}
-	else if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+	if (GetAsyncKeyState(VK_UP) & 0x8000 || GetAsyncKeyState(VK_SPACE) & 0x8000) {
 		camera->transform.position += vec3(0, 1, 0) * -5.f * (float)dt;
+	}
+	else if (GetAsyncKeyState(VK_DOWN) & 0x8000 || GetAsyncKeyState('X') & 0x8000) {
+		camera->transform.position += vec3(0, 1, 0) * 5.f * (float)dt;
 	}
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
 		camera->transform.position += vec3(1, 0, 0) * 5.f * (float)dt;
