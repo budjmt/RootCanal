@@ -24,10 +24,10 @@ struct VertexShaderInput
 	//  |   Name          Semantic
 	//  |    |                |
 	//  v    v                v
-	float3 position		: POSITION;     // XYZ position
-	float2 uv			: UV;
-	float3 normal		: NORMAL;
 	float4 color		: COLOR;        // RGBA color
+	float3 position		: POSITION;     // XYZ position
+	float3 normal		: NORMAL;
+	float2 uv			: TEXCOORD;
 };
 
 // Struct representing the data we're sending down the pipeline
@@ -42,10 +42,10 @@ struct VertexToPixel
 	//  |   Name          Semantic
 	//  |    |                |
 	//  v    v                v
-	float4 position		: SV_POSITION;	// XYZW position (System Value Position)
-	float2 uv			: UV;
-	float4 normal		: NORMAL;
 	float4 color		: COLOR;        // RGBA color
+	float4 position		: SV_POSITION;	// XYZW position (System Value Position)
+	float4 normal		: NORMAL;
+	float2 uv			: TEXCOORD;
 };
 
 // --------------------------------------------------------

@@ -11,10 +11,11 @@ struct VertexToPixel
 	//  |   Name          Semantic
 	//  |    |                |
 	//  v    v                v
-	float4 position		: SV_POSITION;
-	float2 uv			: UV;
-	float4 normal		: NORMAL;
 	float4 color		: COLOR;
+	float4 position		: SV_POSITION;
+	float4 normal		: NORMAL;
+	float2 uv			: TEXCOORD;
+
 };
 
 // --------------------------------------------------------
