@@ -13,7 +13,7 @@ struct VertexToPixel
 	//  v    v                v
 	float4 color		: COLOR;
 	float4 position		: SV_POSITION;
-	float4 normal		: NORMAL;
+	float3 normal		: NORMAL;
 	float2 uv			: TEXCOORD;
 
 };
@@ -33,5 +33,5 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// - This color (like most values passing through the rasterizer) is 
 	//   interpolated for each pixel between the corresponding vertices 
 	//   of the triangle we're rendering
-	return input.color;
+	return float4(input.normal,1.f);
 }

@@ -8,6 +8,7 @@
 cbuffer externalData : register(b0)
 {
 	matrix world;
+	matrix inv_trans_world;
 	matrix view;
 	matrix projection;
 };
@@ -44,7 +45,7 @@ struct VertexToPixel
 	//  v    v                v
 	float4 color		: COLOR;        // RGBA color
 	float4 position		: SV_POSITION;	// XYZW position (System Value Position)
-	float4 normal		: NORMAL;
+	float3 normal		: NORMAL;
 	float2 uv			: TEXCOORD;
 };
 
@@ -77,7 +78,8 @@ VertexToPixel main( VertexShaderInput input )
 	output.position = mul(float4(input.position, 1.0f), worldViewProj);
 
 	output.uv = input.uv;
-	output.normal = float4(input.normal, 1.f);
+	output.normal = mul(float4(input.normal,0.f), inv_trans_world).xyz;
+	//output.normal = input.normal;
 
 	// Pass the color through 
 	// - The values will be interpolated per-pixel by the rasterizer

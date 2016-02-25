@@ -5,7 +5,7 @@ Camera::~Camera() {}
 
 void Camera::updateCamMat(ISimpleShader* shader) {
 	//we pre-transpose projection because it doesn't change very often
-	shader->SetMatrix4x4("projection", &projection[0][0]);
+	//shader->SetMatrix4x4("projection", &projection[0][0]);
 	shader->SetMatrix4x4("view", &view[0][0]);
 }
 
@@ -56,12 +56,12 @@ void Camera::mayaCam(int width, int height, float dt, Mouse* mouse, Camera* came
 			camera->transform.position = look - camera->getForward();
 		}
 		else if (mouse->btnState & 0x0002) {
-			float avg = (float)((mouse->curr.y - mouse->prev.y) + (mouse->curr.x - mouse->prev.x)) / 2;
+			float avg = (float)((mouse->curr.y - mouse->prev.y) + (mouse->curr.x - mouse->prev.x)) * 8 * dt;
 			camera->transform.position += camera->getForward() * avg;
 		}
 		else if (mouse->btnState & 0x0010) {
-			camera->transform.position += camera->getRight() * (float)(mouse->curr.x - mouse->prev.x);
-			camera->transform.position += camera->getUp() * (float)(mouse->curr.y - mouse->prev.y);
+			camera->transform.position += camera->getRight() * ((float)(mouse->curr.x - mouse->prev.x) * dt * 8);
+			camera->transform.position += camera->getUp() * ((float)(mouse->curr.y - mouse->prev.y) * dt * 8);
 		}
 		//std::cout << "Position: " << camera->transform.position.x << "," << camera->transform.position.y << "," << camera->transform.position.z << std::endl << "Pitch: " << camera->pitch << std::endl << "Yaw: " << camera->yaw << std::endl;
 	}

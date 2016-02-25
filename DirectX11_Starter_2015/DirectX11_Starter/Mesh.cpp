@@ -64,6 +64,7 @@ MeshBuffer Mesh::genMeshArrays() {
 	for (uint32_t i = 0, numfaceVerts = _faces.verts.size(); i < numfaceVerts; i++) {
 		bool inArr = false;
 		uint32_t index;
+		//TODO: fix this bottleneck! It's super duper slow!
 		for (index = 0; !inArr && index < _faces.combinations.size(); index++) {
 			if ((uint32_t)_faces.combinations[index].x == _faces.verts[i]
 				&& (uint32_t)_faces.combinations[index].y == _faces.uvs[i]
@@ -75,10 +76,10 @@ MeshBuffer Mesh::genMeshArrays() {
 		if (!inArr) {
 			_faces.combinations.push_back(vec3((float)_faces.verts[i], (float)_faces.uvs[i], (float)_faces.normals[i]));
 			m.meshArray.push_back(Vertex{
+				DirectX::XMFLOAT4(rand() % 1000 / 1000.f, rand() % 1000 / 1000.f, rand() % 1000 / 1000.f, 1.f),
 				DirectX::XMFLOAT3(_verts[_faces.verts[i]].x, _verts[_faces.verts[i]].y, _verts[_faces.verts[i]].z),
-				DirectX::XMFLOAT2(_uvs[_faces.uvs[i]].x, _uvs[_faces.uvs[i]].y),
 				DirectX::XMFLOAT3(_normals[_faces.normals[i]].x, _normals[_faces.normals[i]].y, _normals[_faces.normals[i]].z),
-				DirectX::XMFLOAT4(rand() % 1000 / 1000.f, rand() % 1000 / 1000.f, rand() % 1000 / 1000.f, 1.f)
+				DirectX::XMFLOAT2(_uvs[_faces.uvs[i]].x, _uvs[_faces.uvs[i]].y)
 			});
 		}
 		m.meshElementArray.push_back(index);

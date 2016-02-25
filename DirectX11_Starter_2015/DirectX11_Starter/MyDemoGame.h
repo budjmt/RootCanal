@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "DrawMesh.h"
+#include "Lights.h"
 
 // Include run-time memory checking in debug builds, so 
 // we can be notified of memory leaks
@@ -57,6 +58,8 @@ private:
 	std::vector<Entity*> entities;
 	std::vector<Mesh*> meshes;
 	std::vector<Material*> materials;
+
+	DirectionalLight l1, l2;
 
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.

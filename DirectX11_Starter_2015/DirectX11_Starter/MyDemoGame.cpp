@@ -149,7 +149,9 @@ void MyDemoGame::CreateGeometry()
 	OnResize();
 	entities.push_back(camera);
 
-	char* m_names[] = { "Assets/basic.obj", "Assets/cube.obj", "Assets/sphere.obj" };
+	l1 = { XMFLOAT4(0.1f,0.1f,0.f,1.f), XMFLOAT4(1.f,1.f,0,1.f), XMFLOAT3(0.5f,-1.f,1.f) };
+
+	char* m_names[] = { "Assets/given/cone.obj", "Assets/given/cube.obj", "Assets/given/cylinder.obj", "Assets/given/helix.obj", "Assets/given/sphere.obj", "Assets/given/torus.obj" };
 	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader); mat->camera(&camera);
 	materials.push_back(mat);
 	int i = 0;
@@ -161,10 +163,10 @@ void MyDemoGame::CreateGeometry()
 		vec3 vecs[3];
 		float rot = rand() % 360 / 180.f * PI;
 		//vecs[0] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
-		//vecs[1] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
+		vecs[1] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
 		//vecs[2] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
-		vecs[0] = vec3(2.f - i * 2.f, 0.f, 0.f);
-		vecs[1] = vec3((i + 1) * 0.5f, (i + 1) * 0.5f, (i + 1) * 0.5f);
+		vecs[0] = vec3(8.f - i * 4.f, 0.f, 0.f);
+		//vecs[1] = vec3((i + 1) * 0.5f, (i + 1) * 0.5f, (i + 1) * 0.5f);
 		vecs[2] = vec3(1,0,0);
 		Entity* e = new Entity(vecs[0], vecs[1], vecs[2], rot, d);
 		meshes.push_back(loadedMesh);
@@ -289,9 +291,12 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	//    and then copying that entire buffer to the GPU.  
 	//  - The "SimpleShader" class handles all of that for you.
 	vertexShader->SetMatrix4x4("world", worldMatrix);
+	vertexShader->SetMatrix4x4("inv_trans_world", worldMatrix);
 	vertexShader->SetMatrix4x4("view", viewMatrix);
 	vertexShader->SetMatrix4x4("projection", projectionMatrix);
 	camera->updateCamMat(vertexShader);
+
+	pixelShader->SetData("light", &l1, sizeof(DirectionalLight));
 	
 	// Set the vertex and pixel shaders to use for the next Draw() command
 	//  - These don't technically need to be set every frame...YET
