@@ -113,10 +113,10 @@ mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
 	vec3 u = vec3::cross(f, s);
 	//f *= -1;
 	mat4 r;
-	r[0][0] = s.x; r[0][1] = s.y; r[0][2] = s.z;
-	r[1][0] = u.x; r[1][1] = u.y; r[1][2] = u.z;
-	r[2][0] = f.x; r[2][1] = f.y; r[2][2] = f.z;
-	r[0][3] = -vec3::dot(eye, s); r[1][3] = -vec3::dot(eye, u); r[2][3] = -vec3::dot(eye, f); r[3][3] = 1;
+	r[0][0] = s.x; r[1][0] = s.y; r[2][0] = s.z;
+	r[0][1] = u.x; r[1][1] = u.y; r[2][1] = u.z;
+	r[0][2] = f.x; r[1][2] = f.y; r[2][2] = f.z;
+	r[3][0] = -vec3::dot(eye, s); r[3][1] = -vec3::dot(eye, u); r[3][2] = -vec3::dot(eye, f); r[3][3] = 1;
 	return r;
 }
 mat4 mat4::perspectiveFOV(float fovy, float aspect, float zNear, float zFar) {

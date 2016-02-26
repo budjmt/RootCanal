@@ -198,8 +198,8 @@ void MyDemoGame::CreateMatrices()
 	XMMATRIX W = XMMatrixIdentity();
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
     
-	camera->transform.position = vec3(0.f, 0.f, 5.f);
-	camera->transform.rotate(0, PI, 0);
+	camera->transform.position = vec3(0.f, 0.f, -5.f);
+	//camera->transform.rotate(0, PI, 0);
 	camera->update(0.f, &mouse);
 	camera->updateProjection(windowWidth, windowHeight, aspectRatio);
 
