@@ -18,6 +18,7 @@ public:
 	vec3& operator*=(float f); vec3& operator/=(float f);
 	vec3(float _x, float _y, float _z); vec3(float* _v); vec3(vec4 v);
 	float& x,& y,& z;
+	bool operator==(const vec3& other); bool operator<(const vec3& other);
 	float operator[](int i) const;  float& operator[](int i);
 	vec3 operator+(const vec3& other); vec3 operator-(const vec3& other);
 	vec3 operator*(float f); vec3 operator/(float f);

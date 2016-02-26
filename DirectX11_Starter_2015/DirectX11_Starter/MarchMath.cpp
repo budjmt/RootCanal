@@ -19,6 +19,9 @@ vec3::vec3(float _x, float _y, float _z) : x(v[0]), y(v[1]), z(v[2]) { x = _x; y
 vec3::vec3(float* _v) : x(v[0]), y(v[1]), z(v[2]) { x = _v[0]; y = _v[1]; z = _v[2]; }
 vec3::vec3(vec4 _v) : x(v[0]), y(v[1]), z(v[2]) { x = _v.x; y = _v.y; z = _v.z; }
 
+//for std::set
+bool vec3::operator==(const vec3& other) { return x == other.x && y == other.y && z == other.z; }
+bool vec3::operator<(const vec3& other) { return x < other.x && y < other.y && z < other.z; }
 float vec3::operator[](int i) const { return v[i]; } float& vec3::operator[](int i) { return v[i]; }
 vec3 vec3::operator+(const vec3& other) { return vec3(x + other.x, y + other.y, z + other.z); }
 vec3 vec3::operator-(const vec3& other) { return vec3(x - other.x, y - other.y, z - other.z); }
@@ -103,9 +106,10 @@ mat4 mat4::rotate(float theta, vec3 a) {
 }
 mat4 mat4::scale(vec3 v) { mat4 s = mat4(); s[0][0] = v.x; s[1][1] = v.y; s[2][2] = v.z; s[3][3] = 1.f; return s; }
 
+//TODO: FIX THESE FUCKING THINGS
 mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
 	vec3 f = target - eye; f /= vec3::length(f);
-	vec3 s = vec3::cross(f, up); s /= vec3::length(s);
+	vec3 s = vec3::cross(up, f); s /= vec3::length(s);
 	vec3 u = vec3::cross(f, s);
 	//f *= -1;
 	mat4 r;
@@ -115,7 +119,6 @@ mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
 	r[0][3] = -vec3::dot(eye, s); r[1][3] = -vec3::dot(eye, u); r[2][3] = -vec3::dot(eye, f); r[3][3] = 1;
 	return r;
 }
-//TODO: FIX THESE FUCKING THINGS
 mat4 mat4::perspectiveFOV(float fovy, float aspect, float zNear, float zFar) {
 	mat4 r;
 	float frustDepth = zFar - zNear, _fd = zFar / frustDepth, hfov = fovy * 0.5f;

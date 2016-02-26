@@ -34,7 +34,6 @@ public:
 	vec3 getDims();
 
 	MeshBuffer genMeshArrays();
-	void initBuffers(ID3D11Device* device, ID3D11Buffer* vB, ID3D11Buffer* iB);
 
 protected:
 	std::vector<vec3> _verts, _normals, _uvs;

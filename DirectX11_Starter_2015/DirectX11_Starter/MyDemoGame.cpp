@@ -149,9 +149,19 @@ void MyDemoGame::CreateGeometry()
 	OnResize();
 	entities.push_back(camera);
 
-	l1 = { XMFLOAT4(0.1f,0.1f,0.f,1.f), XMFLOAT4(1.f,1.f,0,1.f), XMFLOAT3(0.5f,-1.f,1.f) };
+	l1 = { 
+		XMFLOAT4(0.f,0.1f,0.1f,1.f), 
+		XMFLOAT4(0.8f,1.f,0,1.f), 
+		XMFLOAT3(0.5f,-1.f,1.f) 
+	};
 
-	char* m_names[] = { "Assets/given/cone.obj", "Assets/given/cube.obj", "Assets/given/cylinder.obj", "Assets/given/helix.obj", "Assets/given/sphere.obj", "Assets/given/torus.obj" };
+	l2 = {
+		XMFLOAT4(0.05f,0.1f,0.05f,1.f),
+		XMFLOAT4(0.6f,0.f,0.25f,1.f),
+		XMFLOAT3(-1.f,1.f,-0.5f)
+	};
+
+	char* m_names[] = { "Assets/given/cone.obj", "Assets/given/cube.obj", "Assets/given/cylinder.obj", /*"Assets/given/helix.obj", "Assets/given/sphere.obj", "Assets/given/torus.obj"*/ };
 	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader); mat->camera(&camera);
 	materials.push_back(mat);
 	int i = 0;
@@ -296,7 +306,8 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	vertexShader->SetMatrix4x4("projection", projectionMatrix);
 	camera->updateCamMat(vertexShader);
 
-	pixelShader->SetData("light", &l1, sizeof(DirectionalLight));
+	pixelShader->SetData("light1", &l1, sizeof(DirectionalLight));
+	pixelShader->SetData("light2", &l2, sizeof(DirectionalLight));
 	
 	// Set the vertex and pixel shaders to use for the next Draw() command
 	//  - These don't technically need to be set every frame...YET

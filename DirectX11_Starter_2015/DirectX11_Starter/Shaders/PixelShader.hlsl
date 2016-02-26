@@ -1,4 +1,14 @@
 
+struct DirectionalLight {
+	float4 ambientColor;
+	float4 diffuseColor;
+	float3 direction;
+};
+
+cbuffer externalData : register(b0) {
+	DirectionalLight light1, light2;
+};
+
 // Struct representing the data we expect to receive from earlier pipeline stages
 // - Should match the output of our corresponding vertex shader
 // - The name of the struct itself is unimportant
@@ -33,5 +43,13 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// - This color (like most values passing through the rasterizer) is 
 	//   interpolated for each pixel between the corresponding vertices 
 	//   of the triangle we're rendering
-	return float4(input.normal,1.f);
+	float3 light1Dir = normalize(-light1.direction);
+	float lamb1 = saturate(dot(input.normal, light1Dir));
+	
+	float3 light2Dir = normalize(-light2.direction);
+	float lamb2 = saturate(dot(input.normal, light2Dir));
+
+	return input.color
+		* (light1.diffuseColor * lamb1 + light1.ambientColor 
+		+ light2.diffuseColor * lamb2 + light2.ambientColor);
 }

@@ -11,6 +11,11 @@ void Camera::updateCamMat(ISimpleShader* shader) {
 
 void Camera::update(float dt, Mouse* mouse) {
 	view = mat4::lookAt(transform.position, getLookAt(), getUp());
+	vec3 l = getLookAt(), u = getUp();
+	DirectX::XMVECTOR eye = { transform.position.x, transform.position.y, transform.position.z };
+	DirectX::XMVECTOR target = { l.x, l.y, l.z };
+	DirectX::XMVECTOR up = { u.x, u.y, u.z };
+	DirectX::XMMATRIX x = DirectX::XMMatrixLookAtLH(eye, target, up);
 }
 
 void Camera::draw(ID3D11DeviceContext* deviceContext) {
