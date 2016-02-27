@@ -196,6 +196,10 @@ void MyDemoGame::CreateMatrices()
 	// - In an actual game, each object will need one of these and they should
 	//   update when/if the object moves (every frame)
 	XMMATRIX W = XMMatrixIdentity();
+	/*XMMATRIX W, T = XMMatrixTranslation(.5f, .75f, .5f), R = XMMatrixRotationY(-PI / 4), S = XMMatrixScaling(1.5f, 1.f, 1.f);
+	mat4 w, t = mat4::translate(vec3(0.5f, 0.75f, 0.5f)), r = mat4::rotate(PI / 4, vec3(0,1,0)), s = mat4::scale(vec3(1.5f,1.f,1.f));
+	W = XMMatrixMultiply(T, R); W = XMMatrixMultiply(W, S);
+	w = t * r * s;*/
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
     
 	camera->transform.position = vec3(0.f, 0.f, -5.f);

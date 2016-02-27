@@ -53,19 +53,20 @@ vec4 vec4::lerp(vec4 a, vec4 b, float t) { return vec4(lerpf(a.x, b.x, t), lerpf
 
 //mat4
 //the zero matrix
-mat4::mat4() { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 + j] = 0; } mat4::~mat4() {}
+mat4::mat4() { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[(i << 2) + j] = 0; } mat4::~mat4() {}
 //sets the diagonal to f, everything else 0
-mat4::mat4(float f) { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 + j] = 0; for (int i = 0; i < 4; i++) m[i * 5] = f; }
-mat4::mat4(float* _m) { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[i * 4 + j] = _m[i * 4 + j]; }
+mat4::mat4(float f) { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[(i << 2) + j] = 0; for (int i = 0; i < 4; i++) m[(i << 2) + i] = f; }
+mat4::mat4(float* _m) { for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) m[(i << 2) + j] = _m[(i << 2) + j]; }
 
+//accessor is [col][row]... which is weird, I know
 const float* mat4::operator[](int i) const { return &m[i << 2]; } float* mat4::operator[](int i) { return &m[i << 2]; }
 mat4 mat4::operator+(const mat4& other) { mat4 r(m); for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] += other[i][j]; return r; }
 mat4 mat4::operator-(const mat4& other) { mat4 r(m); for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] -= other[i][j]; return r; }
 mat4 mat4::operator*(float f) { mat4 r(m); for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] *= f; return r; }
 mat4 mat4::operator/(float f) { mat4 r(m); for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] /= f; return r; }
 
-mat4 mat4::operator*(const mat4& other) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 4; k++) r[j][i] += m[k * 4 + i] * other[j][k]; return r; }
-vec4 mat4::operator*(const vec4& v) { vec4 result; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) result[i] += m[j * 4 + i] * v[j]; return result; }
+mat4 mat4::operator*(const mat4& other) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) for (int k = 0; k < 4; k++) r[j][i] += m[(k << 2) + i] * other[j][k]; return r; }
+vec4 mat4::operator*(const vec4& v) { vec4 result; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) result[i] += m[(j << 2) + i] * v[j]; return result; }
 
 mat4 mat4::transpose(mat4& m) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] = m[j][i]; return r; }
 //based on the transform inverse shortcut where the mat is [M 0, v, 1] (columns) and the inverse is [M^-1 0, -M^-1*v 1]
@@ -76,7 +77,7 @@ mat4 mat4::inv_tp_tf(mat4& m) {
 	float a = *(c1), b = *(c2), c = *(c3), d = *(++c1), e = *(++c2), f = *(++c3), g = *(++c1), h = *(++c2), i = *(++c3);
 	float ei_fh = e * f - f * h, fg_di = f * g - d * i, dh_eg = d * h - e * g;
 	float det = a * ei_fh + b *  fg_di + c * dh_eg, _det = det ? 1.f / det : det;
-	//this is already transposed
+	//this is already transposed... or IS IT (remember idiot: rows are columns!!!)
 	float r[] = {
 		ei_fh		* _det,	fg_di		* _det,	dh_eg		* _det,	0,
 		(c*h - b*i) * _det, (a*i - c*g) * _det, (b*g - a*h) * _det, 0,
@@ -91,15 +92,15 @@ mat4 mat4::inv_tp_tf(mat4& m) {
 	return mat4(r);
 }
 
-mat4 mat4::translate(vec3 v) { mat4 t = mat4(1); t[3][0] = v.x; t[3][1] = v.y; t[3][2] = v.z; return t; }
+mat4 mat4::translate(vec3 v) { mat4 t = mat4(1); t[0][3] = v.x; t[1][3] = v.y; t[2][3] = v.z; return t; }
 mat4 mat4::rotate(float theta, vec3 a) { 
-	float c = cosf(theta), t = 1 - c, s = sinf(theta); 
+	float c = cosf(theta), t = 1 - c, s = sinf(theta);
 	float tx = t * a.x, ty = t * a.y, txy = tx * a.y, txz = tx * a.z, tyz = ty * a.z;
 	float sx = s * a.x, sy = s * a.y, sz = s * a.z;
 	float m[] = {
-		tx * a.x + c,	txy - sz,		txz + sy,			0,
-		txy + sz,		ty * a.y + c,	tyz - sx,			0,
-		txz - sy, 		tyz + sx,		t * a.z * a.z + c,	0,
+		tx * a.x + c,	txy + sz,		txz - sy,			0,
+		txy - sz,		ty * a.y + c,	tyz + sx,			0,
+		txz + sy, 		tyz - sx,		t * a.z * a.z + c,	0,
 		0,				0,				0,					1
 	};
 	return mat4(m);
@@ -112,12 +113,13 @@ mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
 	vec3 s = vec3::cross(up, f); s /= vec3::length(s);
 	vec3 u = vec3::cross(f, s);
 	//f *= -1;
-	mat4 r;
-	r[0][0] = s.x; r[1][0] = s.y; r[2][0] = s.z;
-	r[0][1] = u.x; r[1][1] = u.y; r[2][1] = u.z;
-	r[0][2] = f.x; r[1][2] = f.y; r[2][2] = f.z;
-	r[3][0] = -vec3::dot(eye, s); r[3][1] = -vec3::dot(eye, u); r[3][2] = -vec3::dot(eye, f); r[3][3] = 1;
-	return r;
+	float r[] = {
+		s.x,	s.y,	s.z,	-vec3::dot(eye, s),
+		u.x,	u.y,	u.z,	-vec3::dot(eye, u),
+		f.x,	f.y, 	f.z,	-vec3::dot(eye, f),
+		0,		0, 		0,		1
+	};
+	return mat4(r);
 }
 mat4 mat4::perspectiveFOV(float fovy, float aspect, float zNear, float zFar) {
 	mat4 r;

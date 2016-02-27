@@ -15,9 +15,15 @@ void Drawable::draw(float x, float y, float z, float xScale, float yScale, float
 	//actual draw call is reserved for children
 }
 
+//#include "DirectXGameCore.h"
+//using namespace DirectX;
 void Drawable::draw(Transform* t, ID3D11DeviceContext* deviceContext) { draw(t->position, t->scale, t->rotAxis, t->rotAngle, deviceContext); }
 void Drawable::draw(vec3 pos, vec3 scale, vec3 rotAxis, float rot, ID3D11DeviceContext* deviceContext) {
 	mat4 world = genWorldMatrix(pos, scale, rotAxis, rot);
+	/*XMFLOAT3 af = XMFLOAT3(rotAxis.x, rotAxis.y, rotAxis.z);
+	XMVECTOR a = XMLoadFloat3(&af);
+	XMMATRIX W, T = XMMatrixTranslation(pos.x, pos.y, pos.z), R = XMMatrixRotationAxis(a, -rot), S = XMMatrixScaling(scale.x, scale.y, scale.z);
+	W = XMMatrixMultiply(T, R); W = XMMatrixMultiply(W, S);*/
 	_material->updateMaterial(world);
 }
 
