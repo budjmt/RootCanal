@@ -20,8 +20,8 @@ public:
 	float& x,& y,& z;
 	bool operator==(const vec3& other); bool operator<(const vec3& other);
 	float operator[](int i) const;  float& operator[](int i);
-	vec3 operator+(const vec3& other); vec3 operator-(const vec3& other);
-	vec3 operator*(float f); vec3 operator/(float f);
+	vec3 operator+(const vec3& other) const; vec3 operator-(const vec3& other) const;
+	vec3 operator*(float f) const; vec3 operator/(float f) const;
 
 	static float length(vec3 v);
 	static float dot(vec3 a, vec3 b); static vec3 cross(vec3 a, vec3 b);
@@ -30,6 +30,7 @@ public:
 private:
 	float v[3];
 };
+vec3 operator*(float f, const vec3& v); vec3 operator/(float f, const vec3& v);
 
 class vec4 {
 public:

@@ -19,14 +19,15 @@ vec3::vec3(float _x, float _y, float _z) : x(v[0]), y(v[1]), z(v[2]) { x = _x; y
 vec3::vec3(float* _v) : x(v[0]), y(v[1]), z(v[2]) { x = _v[0]; y = _v[1]; z = _v[2]; }
 vec3::vec3(vec4 _v) : x(v[0]), y(v[1]), z(v[2]) { x = _v.x; y = _v.y; z = _v.z; }
 
-//for std::set
 bool vec3::operator==(const vec3& other) { return x == other.x && y == other.y && z == other.z; }
 bool vec3::operator<(const vec3& other) { return x < other.x && y < other.y && z < other.z; }
 float vec3::operator[](int i) const { return v[i]; } float& vec3::operator[](int i) { return v[i]; }
-vec3 vec3::operator+(const vec3& other) { return vec3(x + other.x, y + other.y, z + other.z); }
-vec3 vec3::operator-(const vec3& other) { return vec3(x - other.x, y - other.y, z - other.z); }
-vec3 vec3::operator*(float f) { return vec3(x * f, y * f, z * f); }
-vec3 vec3::operator/(float f) { return vec3(x / f, y / f, z / f); }
+vec3 vec3::operator+(const vec3& other) const { return vec3(x + other.x, y + other.y, z + other.z); }
+vec3 vec3::operator-(const vec3& other) const { return vec3(x - other.x, y - other.y, z - other.z); }
+vec3 vec3::operator*(float f) const { return vec3(x * f, y * f, z * f); }
+vec3 vec3::operator/(float f) const { return vec3(x / f, y / f, z / f); }
+vec3 operator*(float f, const vec3& v) { return vec3(v.x * f, v.y * f, v.z * f); }
+vec3 operator/(float f, const vec3& v) { return vec3(v.x / f, v.y / f, v.z / f); }
 
 float vec3::length(vec3 v) { return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z); }
 float vec3::dot(vec3 a, vec3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
@@ -69,7 +70,7 @@ mat4 mat4::operator*(const mat4& other) { mat4 r; for (int i = 0; i < 4; i++) fo
 vec4 mat4::operator*(const vec4& v) { vec4 result; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) result[i] += m[(j << 2) + i] * v[j]; return result; }
 
 mat4 mat4::transpose(mat4& m) { mat4 r; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) r[i][j] = m[j][i]; return r; }
-//based on the transform inverse shortcut where the mat is [M 0, v, 1] (columns) and the inverse is [M^-1 0, -M^-1*v 1]
+//based on the transform inverse shortcut where the mat is [M 0, v 1] (rows) and the inverse is [M^-1 0, -M^-1*v 1]
 mat4 mat4::inv_tp_tf(mat4& m) {
 	//the reason we do it this way is to save operations
 	//the mat4 [] returns a pointer to m[i<<2]
@@ -77,18 +78,17 @@ mat4 mat4::inv_tp_tf(mat4& m) {
 	float a = *(c1), b = *(c2), c = *(c3), d = *(++c1), e = *(++c2), f = *(++c3), g = *(++c1), h = *(++c2), i = *(++c3);
 	float ei_fh = e * f - f * h, fg_di = f * g - d * i, dh_eg = d * h - e * g;
 	float det = a * ei_fh + b *  fg_di + c * dh_eg, _det = det ? 1.f / det : det;
-	//this is already transposed... or IS IT (remember idiot: rows are columns!!!)
+	//this is already transposed
 	float r[] = {
-		ei_fh		* _det,	fg_di		* _det,	dh_eg		* _det,	0,
-		(c*h - b*i) * _det, (a*i - c*g) * _det, (b*g - a*h) * _det, 0,
-		(b*f - c*e) * _det, (c*d - a*f) * _det, (a*e - b*d) * _det, 0,
-		0,					0,					0,					1
+		ei_fh * _det,	(c*h - b*i) * _det, (b*f - c*e) * _det, 0,
+		fg_di * _det,	(a*i - c*g) * _det, (c*d - a*f) * _det, 0,
+		dh_eg * _det,	(b*g - a*h) * _det, (a*e - b*d) * _det, 0,
+		0,				0,					0,					1
 	};
-	float* c4 = m[3];
-	float x = *(++c4), y = *(++c4), z = *(++c4);
-	r[12] = -(r[0]*x + r[4]*y + r[8] *z);
-	r[13] = -(r[1]*x + r[5]*y + r[9] *z);
-	r[14] = -(r[2]*x + r[6]*y + r[10]*z);
+	float x = *(++c1), y = *(++c2), z = *(++c3);
+	r[3]  = -(r[0] * x + r[1] * y + r[2]  * z);
+	r[7]  = -(r[4] * x + r[5] * y + r[6]  * z);
+	r[11] = -(r[8] * x + r[9] * y + r[10] * z);
 	return mat4(r);
 }
 

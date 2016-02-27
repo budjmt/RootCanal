@@ -23,7 +23,7 @@ void Drawable::draw(vec3 pos, vec3 scale, vec3 rotAxis, float rot, ID3D11DeviceC
 	/*XMFLOAT3 af = XMFLOAT3(rotAxis.x, rotAxis.y, rotAxis.z);
 	XMVECTOR a = XMLoadFloat3(&af);
 	XMMATRIX W, T = XMMatrixTranslation(pos.x, pos.y, pos.z), R = XMMatrixRotationAxis(a, -rot), S = XMMatrixScaling(scale.x, scale.y, scale.z);
-	W = XMMatrixMultiply(T, R); W = XMMatrixMultiply(W, S);*/
+	W = XMMatrixMultiply(S, R); W = XMMatrixMultiply(W, T);*/
 	_material->updateMaterial(world);
 }
 
@@ -31,7 +31,7 @@ mat4 Drawable::genWorldMatrix(vec3 pos, vec3 scaleV, vec3 rotAxis, float rot) {
 	mat4 translate = mat4::translate(pos);
 	mat4 scale = mat4::scale(scaleV);
 	mat4 rotate = mat4::rotate(rot, rotAxis);
-	return translate * rotate * scale;
+	return scale * (rotate * translate);
 }
 
 //std::map<const char*, uint32_t> Drawable::loadedTextures;

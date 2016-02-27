@@ -172,12 +172,13 @@ void MyDemoGame::CreateGeometry()
 		d->material(mat);
 		vec3 vecs[3];
 		float rot = rand() % 360 / 180.f * PI;
-		//vecs[0] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
-		vecs[1] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
-		//vecs[2] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
-		vecs[0] = vec3(8.f - i * 4.f, 0.f, 0.f);
-		//vecs[1] = vec3((i + 1) * 0.5f, (i + 1) * 0.5f, (i + 1) * 0.5f);
-		vecs[2] = vec3(1,0,0);
+		//vecs[0] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 500.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 500.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 500.f));
+		//vecs[1] = vec3((rand() % 1000 / 500.f), (rand() % 1000 / 500.f), (rand() % 1000 / 500.f));
+		vecs[2] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
+		vecs[2] /= vec3::length(vecs[2]);
+		vecs[0] = vec3(8.f - (i + 1) * 4.f, 0.f, 0.f);
+		vecs[1] = vec3((i + 1) * 0.5f, (i + 1) * 0.5f, (i + 1) * 0.5f);
+		//vecs[2] = vec3(1,0,0);
 		Entity* e = new Entity(vecs[0], vecs[1], vecs[2], rot, d);
 		meshes.push_back(loadedMesh);
 		entities.push_back(e);
@@ -202,8 +203,8 @@ void MyDemoGame::CreateMatrices()
 	w = t * r * s;*/
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
     
-	camera->transform.position = vec3(0.f, 0.f, -5.f);
-	//camera->transform.rotate(0, PI, 0);
+	camera->transform.position = vec3(0.f, 0.f, 5.f);
+	camera->transform.rotate(0, PI, 0);
 	camera->update(0.f, &mouse);
 	camera->updateProjection(windowWidth, windowHeight, aspectRatio);
 

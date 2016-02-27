@@ -76,28 +76,28 @@ void Camera::mayaCam(int width, int height, float dt, Mouse* mouse, Camera* came
 	}
 
 	if (GetAsyncKeyState('W') & 0x8000) {
-		camera->transform.position += camera->getForward() * 5.f * (float)dt;
+		camera->transform.position += camera->getForward() * (5.f * (float)dt);
 	}
 	else if (GetAsyncKeyState('S') & 0x8000) {
-		camera->transform.position += camera->getForward() * -5.f * (float)dt;
+		camera->transform.position += camera->getForward() * (-5.f * (float)dt);
 	}
 	if (GetAsyncKeyState('D') & 0x8000) {
-		camera->transform.position += camera->getRight() * 5.f * (float)dt;
+		camera->transform.position += camera->getRight() * (-5.f * (float)dt);
 	}
 	else if (GetAsyncKeyState('A') & 0x8000) {
-		camera->transform.position += camera->getRight() * -5.f * (float)dt;
+		camera->transform.position += camera->getRight() * (5.f * (float)dt);
 	}
 
 	if (GetAsyncKeyState(VK_UP) & 0x8000 || GetAsyncKeyState(VK_SPACE) & 0x8000) {
-		camera->transform.position += vec3(0, 1, 0) * -5.f * (float)dt;
+		camera->transform.position += vec3(0, 1, 0) * (5.f * (float)dt);
 	}
 	else if (GetAsyncKeyState(VK_DOWN) & 0x8000 || GetAsyncKeyState('X') & 0x8000) {
-		camera->transform.position += vec3(0, 1, 0) * 5.f * (float)dt;
+		camera->transform.position += vec3(0, 1, 0) * (-5.f * (float)dt);
 	}
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-		camera->transform.position += vec3(1, 0, 0) * 5.f * (float)dt;
+		camera->transform.position += vec3(1, 0, 0) * (-5.f * (float)dt);
 	}
 	else if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-		camera->transform.position += vec3(1, 0, 0) * -5.f * (float)dt;
+		camera->transform.position += vec3(1, 0, 0) * (5.f * (float)dt);
 	}
 }

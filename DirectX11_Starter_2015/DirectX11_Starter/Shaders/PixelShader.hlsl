@@ -49,6 +49,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 	float3 light2Dir = normalize(-light2.direction);
 	float lamb2 = saturate(dot(input.normal, light2Dir));
 
+	input.color = float4(1, 1, 1, 1);
 	return input.color
 		* (light1.diffuseColor * lamb1 + light1.ambientColor 
 		+ light2.diffuseColor * lamb2 + light2.ambientColor);
