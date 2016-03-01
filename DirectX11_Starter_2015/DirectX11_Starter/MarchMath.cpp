@@ -77,7 +77,7 @@ mat4 mat4::inv_tp_tf(mat4& m) {
 	float* c1 = m[0], *c2 = m[1], *c3 = m[2];
 	float a = *(c1), b = *(c2), c = *(c3), d = *(++c1), e = *(++c2), f = *(++c3), g = *(++c1), h = *(++c2), i = *(++c3);
 	float ei_fh = e * f - f * h, fg_di = f * g - d * i, dh_eg = d * h - e * g;
-	float det = a * ei_fh + b *  fg_di + c * dh_eg, _det = det ? 1.f / det : det;
+	float det = a * ei_fh + b *  fg_di + c * dh_eg, _det = 1.f / det;
 	//this is already transposed
 	float r[] = {
 		ei_fh * _det,	(c*h - b*i) * _det, (b*f - c*e) * _det, 0,
@@ -107,7 +107,6 @@ mat4 mat4::rotate(float theta, vec3 a) {
 }
 mat4 mat4::scale(vec3 v) { mat4 s = mat4(); s[0][0] = v.x; s[1][1] = v.y; s[2][2] = v.z; s[3][3] = 1.f; return s; }
 
-//TODO: FIX THESE FUCKING THINGS
 mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
 	vec3 f = target - eye; f /= vec3::length(f);
 	vec3 s = vec3::cross(up, f); s /= vec3::length(s);
@@ -128,6 +127,7 @@ mat4 mat4::perspectiveFOV(float fovy, float aspect, float zNear, float zFar) {
 	r[0][0] = uw; r[1][1] = uh;	r[3][2] = 1; r[2][2] = _fd; r[2][3] = -zNear * _fd;
 	return r;
 }
+//TODO: fix below
 mat4 mat4::perspective(float width, float height, float zNear, float zFar) {
 	mat4 r;
 	float frustDepth = zFar - zNear, _fd = zFar / frustDepth;
