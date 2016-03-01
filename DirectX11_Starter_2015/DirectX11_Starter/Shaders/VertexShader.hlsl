@@ -13,6 +13,9 @@ cbuffer externalData : register(b0)
 	matrix projection;
 };
 
+Texture2D diffuseTexture : register(t0);
+SamplerState basicSampler : register(s0);
+
 // Struct representing a single vertex worth of data
 // - This should match the vertex definition in our C++ code
 // - By "match", I mean the size, order and number of members
@@ -84,7 +87,9 @@ VertexToPixel main( VertexShaderInput input )
 	// Pass the color through 
 	// - The values will be interpolated per-pixel by the rasterizer
 	// - We don't need to alter it here, but we do need to send it to the pixel shader
-	output.color = input.color;
+	float4 surfaceColor = diffuseTexture.Sample(basicSampler, input.uv);
+
+	output.color = surfaceColor;
 
 	// Whatever we return will make its way through the pipeline to the
 	// next programmable stage we're using (the pixel shader for now)
