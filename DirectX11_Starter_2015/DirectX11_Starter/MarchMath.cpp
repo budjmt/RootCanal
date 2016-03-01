@@ -86,9 +86,9 @@ mat4 mat4::inv_tp_tf(mat4& m) {
 		0,				0,					0,					1
 	};
 	float x = *(++c1), y = *(++c2), z = *(++c3);
-	r[3]  = -(r[0] * x + r[1] * y + r[2]  * z);
-	r[7]  = -(r[4] * x + r[5] * y + r[6]  * z);
-	r[11] = -(r[8] * x + r[9] * y + r[10] * z);
+	r[12] = -(r[0] * x + r[4] * y + r[8]  * z);
+	r[13] = -(r[1] * x + r[5] * y + r[9]  * z);
+	r[14] = -(r[2] * x + r[6] * y + r[10] * z);
 	return mat4(r);
 }
 
@@ -155,8 +155,8 @@ mat4 mat4::orthographic(float width, float height, float zNear, float zFar) {
 quat::quat() : _v(vec3()), v(_v), w(v0) { v0 = 1; v = vec3(); _theta = 0; _axis = vec3(1,0,0); } quat::~quat() {}
 quat::quat(const quat& other) : _v(vec3()), v(_v), w(v0) { w = other.w; v = other.v; _theta = other.theta(); _axis = other.axis(); }
 quat& quat::operator=(const quat& other) { w = other.w; v = other.v; _theta = other.theta(); _axis = other.axis(); return *this; }
-quat::quat(float _x, float _y, float _z, float _w) : _v(vec3()), v(_v), w(v0) { w = _w; v = vec3(_x, _y, _z); _theta = acosf(v0); sin_t_half = sinf(_theta); _axis = v / sin_t_half; _theta *= 2; }
-quat::quat(float _v0, vec3 v1) : _v(vec3()), v(_v), w(v0) { v0 = _v0; v = v1; _theta = acosf(v0); sin_t_half = sinf(_theta); _axis = v / sin_t_half; _theta *= 2; }
+quat::quat(float _x, float _y, float _z, float _w) : _v(vec3()), v(_v), w(v0) { w = _w; v = vec3(_x, _y, _z); _theta = acosf(v0); sin_t_half = sinf(_theta); _axis = (sin_t_half) ? v / sin_t_half : vec3(1, 0, 0); _axis /= vec3::length(_axis); _theta *= 2; }
+quat::quat(float _v0, vec3 v1) : _v(vec3()), v(_v), w(v0) { v0 = _v0; v = v1; _theta = acosf(v0); sin_t_half = sinf(_theta); _axis = (sin_t_half) ? v / sin_t_half : vec3(1,0,0); _axis /= vec3::length(_axis); _theta *= 2; }
 quat::quat(vec3 a, float t) : _v(vec3()), v(_v), w(v0) { _theta = t; t *= 0.5f; _axis = a; sin_t_half = sinf(t); v0 = cosf(t); v = a * sin_t_half; }
 
 float quat::theta() const { return _theta; } void quat::theta(float t) { _theta = t; t *= 0.5f; sin_t_half = sinf(t); v0 = cosf(t); v = _axis * sin_t_half; }

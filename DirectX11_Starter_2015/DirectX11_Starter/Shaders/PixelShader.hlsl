@@ -45,9 +45,11 @@ float4 main(VertexToPixel input) : SV_TARGET
 	//   of the triangle we're rendering
 	float3 light1Dir = normalize(-light1.direction);
 	float lamb1 = saturate(dot(input.normal, light1Dir));
+	//lamb1 = ceil(lamb1 * 3) / 3;
 	
 	float3 light2Dir = normalize(-light2.direction);
 	float lamb2 = saturate(dot(input.normal, light2Dir));
+	//lamb2 = ceil(lamb2 * 3) / 3;
 
 	input.color = float4(1, 1, 1, 1);
 	return input.color

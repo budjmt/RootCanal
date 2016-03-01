@@ -78,8 +78,8 @@ VertexToPixel main( VertexShaderInput input )
 	output.position = mul(float4(input.position, 1.0f), worldViewProj);
 
 	output.uv = input.uv;
-	output.normal = mul(float4(input.normal,0.f), inv_trans_world).xyz;
-	//output.normal = input.normal;
+	//output.normal = normalize(mul(float4(input.normal,0.f), inv_trans_world).xyz);
+	output.normal = normalize(mul(input.normal, (float3x3)world));
 
 	// Pass the color through 
 	// - The values will be interpolated per-pixel by the rasterizer

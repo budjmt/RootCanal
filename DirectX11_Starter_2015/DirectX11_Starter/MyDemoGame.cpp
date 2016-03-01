@@ -161,7 +161,7 @@ void MyDemoGame::CreateGeometry()
 		XMFLOAT3(-1.f,1.f,-0.5f)
 	};
 
-	char* m_names[] = { "Assets/given/cone.obj", "Assets/given/cube.obj", "Assets/given/cylinder.obj", /*"Assets/given/helix.obj", "Assets/given/sphere.obj", "Assets/given/torus.obj"*/ };
+	char* m_names[] = { "Assets/given/cone.obj", "Assets/given/cube.obj", "Assets/given/cylinder.obj", "Assets/given/helix.obj", "Assets/given/sphere.obj", "Assets/given/torus.obj" };
 	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader); mat->camera(&camera);
 	materials.push_back(mat);
 	int i = 0;
@@ -203,8 +203,8 @@ void MyDemoGame::CreateMatrices()
 	w = t * r * s;*/
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
     
-	camera->transform.position = vec3(0.f, 0.f, 5.f);
-	camera->transform.rotate(0, PI, 0);
+	camera->transform.position = vec3(0.f, 0.f, -5.f);
+	//camera->transform.rotate(0, PI, 0);
 	camera->update(0.f, &mouse);
 	camera->updateProjection(windowWidth, windowHeight, aspectRatio);
 

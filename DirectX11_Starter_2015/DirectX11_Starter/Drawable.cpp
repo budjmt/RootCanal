@@ -23,7 +23,10 @@ void Drawable::draw(vec3 pos, vec3 scale, vec3 rotAxis, float rot, ID3D11DeviceC
 	/*XMFLOAT3 af = XMFLOAT3(rotAxis.x, rotAxis.y, rotAxis.z);
 	XMVECTOR a = XMLoadFloat3(&af);
 	XMMATRIX W, T = XMMatrixTranslation(pos.x, pos.y, pos.z), R = XMMatrixRotationAxis(a, -rot), S = XMMatrixScaling(scale.x, scale.y, scale.z);
-	W = XMMatrixMultiply(S, R); W = XMMatrixMultiply(W, T);*/
+	W = XMMatrixMultiply(S, R); W = XMMatrixMultiply(W, T);
+	XMVECTOR d = XMMatrixDeterminant(W);
+	W = XMMatrixTranspose(XMMatrixInverse(&d,W));
+	mat4 w = mat4::inv_tp_tf(world);*/
 	_material->updateMaterial(world);
 }
 
