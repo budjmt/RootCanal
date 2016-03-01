@@ -9,6 +9,9 @@ cbuffer externalData : register(b0) {
 	DirectionalLight light1, light2;
 };
 
+Texture2D diffuseTexture : register(t0);
+SamplerState basicSampler : register(s0);
+
 // Struct representing the data we expect to receive from earlier pipeline stages
 // - Should match the output of our corresponding vertex shader
 // - The name of the struct itself is unimportant
@@ -51,8 +54,10 @@ float4 main(VertexToPixel input) : SV_TARGET
 	float lamb2 = saturate(dot(input.normal, light2Dir));
 	//lamb2 = ceil(lamb2 * 3) / 3;
 
+	float4 surfaceColor = diffuseTexture.Sample(basicSampler, input.uv);
+
 	input.color = float4(1, 1, 1, 1);
-	return input.color
+	return surfaceColor
 		* (light1.diffuseColor * lamb1 + light1.ambientColor 
 		+ light2.diffuseColor * lamb2 + light2.ambientColor);
 }

@@ -11,13 +11,15 @@
 
 class Texture {
 	public:
-		ID3D11ShaderResourceView* resourceView;
-		ID3D11SamplerState* samplerState;
+		~Texture();
+
+		ID3D11ShaderResourceView* resourceView = nullptr;
+		ID3D11SamplerState* samplerState = nullptr;
 
 		static std::map<const wchar_t*, Texture*> loadedTextures;//all currently loaded textures
 		static Texture* getTexture(const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 
-		void updateText(ISimpleShader* shader);
+		void updateTex(ISimpleShader* shader);
 };
 
 class Material
@@ -28,7 +30,7 @@ public:
 	~Material();
 	void vertexShader(SimpleVertexShader* v); 
 	void pixelShader(SimplePixelShader* p);
-	void texture(const wchar_t* tex);
+	void texture(Texture* t);
 	void camera(Camera** c);
 
 	void updateMaterial(mat4& world);

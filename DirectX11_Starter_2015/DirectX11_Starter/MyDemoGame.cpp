@@ -163,6 +163,7 @@ void MyDemoGame::CreateGeometry()
 
 	char* m_names[] = { "Assets/given/cone.obj", "Assets/given/cube.obj", "Assets/given/cylinder.obj", "Assets/given/helix.obj", "Assets/given/sphere.obj", "Assets/given/torus.obj" };
 	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader); mat->camera(&camera);
+	mat->texture(Texture::getTexture(L"Assets/texture.png", device, deviceContext));
 	materials.push_back(mat);
 	int i = 0;
 	for (char* file : m_names) {
