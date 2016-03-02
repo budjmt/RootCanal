@@ -13,7 +13,7 @@ void Material::updateMaterial(mat4& world) {
 	vertex->SetMatrix4x4("world", &world[0][0]);
 	vertex->SetMatrix4x4("inv_trans_world", &mat4::inv_tp_tf(world)[0][0]);
 	(*_camera)->updateCamMat(vertex);
-	_texture->updateTex(pixel);
+	if(_texture) _texture->updateTex(pixel);
 }
 
 void Material::setActive(bool b) {
@@ -27,6 +27,7 @@ Texture::~Texture() {
 
 }
 
+#include "DebugBenchmark.h"
 Texture* Texture::getTexture(const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext) {
 	//check if the texture was already loaded
 	if (loadedTextures.find(texFile) != loadedTextures.end())

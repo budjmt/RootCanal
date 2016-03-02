@@ -28,7 +28,7 @@ public:
 	Material();
 	Material(const wchar_t* tex, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	~Material();
-	void vertexShader(SimpleVertexShader* v); 
+	void vertexShader(SimpleVertexShader* v);
 	void pixelShader(SimplePixelShader* p);
 	void texture(Texture* t);
 	void camera(Camera** c);

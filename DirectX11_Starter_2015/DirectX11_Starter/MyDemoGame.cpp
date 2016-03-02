@@ -107,6 +107,17 @@ bool MyDemoGame::Init()
 	if( !DirectXGameCore::Init() )
 		return false;
 
+	DXInfo& d = DXInfo::getInstance();
+	d.device = device;
+	d.deviceContext = deviceContext;
+	d.swapChain = swapChain;
+	d.depthStencilBuffer = depthStencilBuffer;
+	d.renderTargetView = renderTargetView;
+	d.depthStencilView = depthStencilView;
+	d.viewport = &viewport;
+	d.driverType = &driverType;
+	d.featureLevel = &featureLevel;
+
 	srand((uint32_t)time(NULL));
 
 	// Helper methods to create something to draw, load shaders to draw it 
@@ -161,7 +172,7 @@ void MyDemoGame::CreateGeometry()
 		XMFLOAT3(-1.f,1.f,-0.5f)
 	};
 
-	char* m_names[] = { "Assets/given/cone.obj", "Assets/given/cube.obj", "Assets/given/cylinder.obj", "Assets/given/helix.obj", "Assets/given/sphere.obj", "Assets/given/torus.obj" };
+	char* m_names[] = { "Assets/given/cone.obj", "Assets/given/cube.obj", "Assets/given/cylinder.obj"/*, "Assets/given/helix.obj", "Assets/given/sphere.obj", "Assets/given/torus.obj"*/ };
 	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader); mat->camera(&camera);
 	mat->texture(Texture::getTexture(L"Assets/texture.png", device, deviceContext));
 	materials.push_back(mat);
@@ -352,7 +363,7 @@ void MyDemoGame::OnMouseDown(WPARAM btnState, int x, int y)
 	//mouse.prev.y = mouse.curr.y;
 	mouse.curr.x = x;
 	mouse.curr.y = y;
-	//mouse.lastPress = GetCurrentTime();
+	mouse.lastPress = GetTickCount64();
 	mouse.down = true;
 
 	// Caputure the mouse so we keep getting mouse move

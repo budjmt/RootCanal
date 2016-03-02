@@ -4,6 +4,7 @@
 #include "DirectXGameCore.h"
 #include "SimpleShader.h"
 
+#include "DXInfo.h"
 #include "Mouse.h"
 #include "Entity.h"
 #include "Camera.h"

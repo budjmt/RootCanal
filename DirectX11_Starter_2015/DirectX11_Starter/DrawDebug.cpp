@@ -1,0 +1,171 @@
+#include "DrawDebug.h"
+#include <iostream>
+DrawDebug::DrawDebug() {
+#if DEBUG
+	for (int i = 0; i < 4; i++)
+		debugVectors.push_back(vec3(0, 0, 0));
+
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_DYNAMIC;
+	vbd.ByteWidth = sizeof(Vertex) * _meshBuffer.meshArray.size();       // 3 = number of vertices in the buffer
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER; // Tells DirectX this is a vertex buffer
+	vbd.CPUAccessFlags = 0;
+	vbd.MiscFlags = 0;
+	vbd.StructureByteStride = 0;
+
+	/*vecShader = loadShaderProgram("Shaders/_debug/vecvertexShader.glsl", "Shaders/_debug/vecfragmentShader.glsl");
+	meshShader = loadShaderProgram("Shaders/_debug/meshvertexShader.glsl", "Shaders/_debug/meshfragmentShader.glsl");
+	sphere = loadOBJ("Assets/_debug/sphere.obj");
+	assert(sphere != nullptr);
+
+	glGenVertexArrays(1, &vecVAO);
+	glBindVertexArray(vecVAO);
+	glGenBuffers(1, &vecBuffer);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, vecBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * debugVectors.size() * FLOATS_PER_VERT, &debugVectors[0], GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(0, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT * 2, 0);
+	glVertexAttribPointer(1, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT * 2, (void *)(sizeof(GL_FLOAT) * FLOATS_PER_VERT));
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
+	glGenVertexArrays(1, &arrowVAO);
+	glBindVertexArray(arrowVAO);
+	glGenBuffers(1, &arrowBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, arrowBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * debugVectors.size() / 2 * 3 * FLOATS_PER_VERT, &debugVectors[0], GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(0, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT * 2, 0);
+	glVertexAttribPointer(1, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT * 2, (void *)(sizeof(GL_FLOAT) * FLOATS_PER_VERT));
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
+	glGenVertexArrays(1, &meshVAO);
+	glBindVertexArray(meshVAO);
+	glGenBuffers(1, &sphereBuffer);
+	glGenBuffers(1, &sphereElBuffer);
+
+	glBindBuffer(GL_ARRAY_BUFFER, sphereBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * sphere->verts().size() * FLOATS_PER_VERT, &(sphere->verts()[0]), GL_STATIC_DRAW);
+
+	sphereVerts = sphere->faces().verts.size();
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereElBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GL_UNSIGNED_INT) * sphereVerts, &(sphere->faces().verts[0]), GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT, 0);
+	glEnableVertexAttribArray(0);*/
+
+	debugVectors = std::vector<vec3>();
+#endif
+}
+
+DrawDebug::~DrawDebug() {
+#if DEBUG
+	glDeleteBuffers(1, &vecBuffer);
+	glDeleteBuffers(1, &arrowBuffer);
+	glDeleteBuffers(1, &sphereBuffer);
+#endif
+}
+
+DrawDebug& DrawDebug::getInstance() {
+	static DrawDebug instance;
+	return instance;
+}
+
+void DrawDebug::camera(Camera** c) { cam = c; }
+
+void DrawDebug::draw() {
+#if DEBUG
+	drawVectors();
+	drawSpheres();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
+}
+
+void DrawDebug::drawVectors() {
+	for (int i = 0; i < 4; i++)	debugVectors.push_back(vec3());
+	
+	std::vector<vec3> arrows;
+	for (int i = 0; i < 6; i++) arrows.push_back(vec3());
+	
+	int numVecs = debugVectors.size();
+	for (int i = 0; i < numVecs; i += 4) {
+		vec3 s = debugVectors[i],		c1 = debugVectors[i + 1]
+		   , e = debugVectors[i + 2],	c2 = debugVectors[i + 3];
+		vec3 v = e - s;
+		v *= 0.05f;
+		v = e - v;
+		arrows.push_back(v + vec3(-1,0,-1) * 0.008f);
+		arrows.push_back(c1);
+
+		arrows.push_back(v + vec3(1,0,1)   * 0.008f);
+		arrows.push_back(c1);
+
+		arrows.push_back(e);
+		arrows.push_back(c2);
+	}
+
+	DXInfo& d = DXInfo::getInstance();
+	if ((*cam) != nullptr) (*cam)->updateCamMat(vecVert);
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	//upload and draw vector part
+	for (auto v : debugVectors) vecBuffer.push_back(DirectX::XMFLOAT3{v.x, v.y, v.z});
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	d.deviceContext->IASetVertexBuffers(0, 1, &vecBuffer, &stride, &offset);
+	d.deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	vecVert->SetShader(true);
+	d.deviceContext->DrawIndexed(vecBuffer.size(), 0, 0);
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	//upload and draw arrow part
+	for (auto a : arrows) arrowBuffer.push_back(DirectX::XMFLOAT3{ a.x,a.y,a.z });
+	meshVert->SetShader(true);
+	d.deviceContext->DrawIndexed(arrowBuffer.size(), 0, 0);
+
+	debugVectors = std::vector<vec3>();
+	arrows = std::vector<vec3>();
+}
+
+void DrawDebug::drawSpheres() {
+	DXInfo& d = DXInfo::getInstance();
+	if ((*cam) != nullptr) (*cam)->updateCamMat(meshVert);
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	//glBindVertexArray(meshVAO);
+	//glBindBuffer(GL_ARRAY_BUFFER, sphereBuffer);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereElBuffer);
+
+	int numSpheres = debugSpheres.size();
+	for (int i = 0; i < numSpheres; i++) {
+		Sphere s = debugSpheres[i];
+		mat4 translate, scale;
+		translate = mat4::translate(s.center);
+		scale = mat4::scale(vec3(1, 1, 1) * (s.rad * 2));
+		meshVert->SetMatrix4x4("world", &(scale * translate)[0][0]);
+		meshVert->SetShader(true);
+		d.deviceContext->DrawIndexed(sphereBuffer.size(), 0, 0);
+	}
+
+	debugSpheres = std::vector<Sphere>();
+}
+
+void DrawDebug::drawDebugVector(vec3 start, vec3 end, vec3 color) {
+#if DEBUG
+	debugVectors.push_back(start);
+	debugVectors.push_back(color);
+	debugVectors.push_back(end);
+	debugVectors.push_back(color);
+#endif
+}
+
+void DrawDebug::drawDebugSphere(vec3 pos, float rad) {
+#if DEBUG
+	Sphere s = { pos, rad };
+	debugSpheres.push_back(s);
+	//drawDebugVector(pos, pos + vec3(rad, 0, 0));
+#endif
+}

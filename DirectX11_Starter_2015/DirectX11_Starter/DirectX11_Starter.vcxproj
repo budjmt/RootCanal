@@ -68,7 +68,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugBenchmark.cpp" />
     <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="DrawDebug.cpp" />
     <ClCompile Include="DrawMesh.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="MarchMath.cpp" />
@@ -83,8 +85,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DebugBenchmark.h" />
     <ClInclude Include="Drawable.h" />
+    <ClInclude Include="DrawDebug.h" />
     <ClInclude Include="DrawMesh.h" />
+    <ClInclude Include="DXInfo.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Lights.h" />
     <ClInclude Include="MarchMath.h" />
