@@ -14,6 +14,8 @@
 
 #define DEBUG true
 
+const int MAX_VECTORS = 1000000;
+
 struct Sphere { vec3 center; float rad; };
 
 class DrawDebug
@@ -26,8 +28,8 @@ public:
 	void draw();
 
 	//these are called externally for drawing stuff
-	static void drawDebugVector(vec3 start, vec3 end, vec3 color = vec3(0.7f, 1, 0));
-	static void drawDebugSphere(vec3 pos, float rad);
+	void drawDebugVector(vec3 start, vec3 end, vec3 color = vec3(0.7f, 1, 0));
+	void drawDebugSphere(vec3 pos, float rad);
 private:
 	DrawDebug();
 	~DrawDebug();
@@ -41,7 +43,7 @@ private:
 	Camera** cam = nullptr;
 
 	Mesh *sphere, *arrow;
-	ID3D11Buffer *svb, *sib, *avb, *aib;
+	ID3D11Buffer *svb, *sib, *avb, *aib, *vvb;
 	int sphereVerts;
 
 	SimpleVertexShader *vecVert, *meshVert;
@@ -50,6 +52,6 @@ private:
 	std::vector<vec3> debugVectors;
 	std::vector<Sphere> debugSpheres;
 
-	std::vector<DirectX::XMFLOAT3> vecBufferData, arrowBufferData;
-	std::vector<DebugVertex> sphereBuffer;
+	std::vector<DebugVector> vecBufferData;
+	std::vector<DirectX::XMFLOAT4X4> arrowBufferData, sphereBufferData;
 };

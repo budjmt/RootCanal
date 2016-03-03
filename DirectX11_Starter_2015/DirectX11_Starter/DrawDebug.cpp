@@ -13,21 +13,21 @@ DrawDebug::DrawDebug() {
 	//vector setup
 	D3D11_BUFFER_DESC vbd, ibd;
 	vbd.Usage = D3D11_USAGE_DYNAMIC;
-	//vbd.ByteWidth = sizeof(Vertex) * _meshBuffer.meshArray.size();//this is going to be a bit weird
+	vbd.ByteWidth = sizeof(DebugVector) * MAX_VECTORS;
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER; 
 	vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; 
 	vbd.MiscFlags = 0; vbd.StructureByteStride = 0;
 
 	D3D11_SUBRESOURCE_DATA initialVertexData, initialIndexData;
 	initialVertexData.pSysMem = &debugVectors[0];
-	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &asdafsdjlfdslk));
+	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &vvb));
 
 	//arrow setup
 	arrow = loadOBJ("Assets/_debug/arrow.obj");
 	assert(arrow != nullptr);
 
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(Vertex) * arrow->meshBuffer().meshArray.size();
+	vbd.ByteWidth = sizeof(DebugVertex) * arrow->meshBuffer().meshArray.size();
 	vbd.CPUAccessFlags = 0;
 
 	initialVertexData.pSysMem = &arrow->meshBuffer().meshArray[0];
@@ -45,7 +45,7 @@ DrawDebug::DrawDebug() {
 	sphere = loadOBJ("Assets/_debug/sphere.obj");
 	assert(sphere != nullptr);
 
-	vbd.ByteWidth = sizeof(Vertex) * sphere->meshBuffer().meshArray.size();
+	vbd.ByteWidth = sizeof(DebugVertex) * sphere->meshBuffer().meshArray.size();
 	initialVertexData.pSysMem = &sphere->meshBuffer().meshArray[0];
 	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &svb));
 
@@ -59,9 +59,9 @@ DrawDebug::DrawDebug() {
 
 DrawDebug::~DrawDebug() {
 #if DEBUG
-	glDeleteBuffers(1, &vecBuffer);
-	glDeleteBuffers(1, &arrowBuffer);
-	glDeleteBuffers(1, &sphereBuffer);
+	//glDeleteBuffers(1, &vecBuffer);
+	//glDeleteBuffers(1, &arrowBuffer);
+	//glDeleteBuffers(1, &sphereBuffer);
 #endif
 }
 
@@ -87,20 +87,19 @@ void DrawDebug::drawVectors() {
 	for (int i = 0; i < 6; i++) arrows.push_back(vec3());
 	
 	int numVecs = debugVectors.size();
-	for (int i = 0; i < numVecs; i += 4) {
-		vec3 s = debugVectors[i],		c1 = debugVectors[i + 1]
-		   , e = debugVectors[i + 2],	c2 = debugVectors[i + 3];
+	for (int i = 0, numVecs = debugVectors.size(); i < numVecs; i += 4) {
+		vec3 s = debugVectors[i], sc = debugVectors[i + 1], e = debugVectors[i + 2], ec = debugVectors[i + 3];
+		vecBufferData.push_back(DebugVector{
+			DirectX::XMFLOAT3{ s.x, s.y, s.z },
+			DirectX::XMFLOAT3{ sc.x, sc.y, sc.z },
+			DirectX::XMFLOAT3{ e.x, e.y, e.z },
+			DirectX::XMFLOAT3{ ec.x, ec.y, ec.z }
+		});
+
 		vec3 v = e - s;
 		v *= 0.05f;
 		v = e - v;
-		arrows.push_back(v + vec3(-1,0,-1) * 0.008f);
-		arrows.push_back(c1);
-
-		arrows.push_back(v + vec3(1,0,1)   * 0.008f);
-		arrows.push_back(c1);
-
-		arrows.push_back(e);
-		arrows.push_back(c2);
+		//create rotation matrix based on this
 	}
 
 	DXInfo& d = DXInfo::getInstance();
@@ -108,21 +107,18 @@ void DrawDebug::drawVectors() {
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	//upload and draw vector part
-	for (auto v : debugVectors) vecBuffer.push_back(DirectX::XMFLOAT3{v.x, v.y, v.z});
+	//draw vector part
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
-	d.deviceContext->IASetVertexBuffers(0, 1, &vecBuffer, &stride, &offset);
-	d.deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	d.deviceContext->IASetVertexBuffers(0, 1, &vvb, &stride, &offset);
 	vecVert->SetShader(true);
-	d.deviceContext->DrawIndexed(vecBuffer.size(), 0, 0);
+	d.deviceContext->Draw(vecBufferData.size(), 0);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	//upload and draw arrow part
-	for (auto a : arrows) arrowBuffer.push_back(DirectX::XMFLOAT3{ a.x,a.y,a.z });
+	//draw arrow part
 	meshVert->SetShader(true);
-	d.deviceContext->DrawIndexed(arrowBuffer.size(), 0, 0);
+	d.deviceContext->DrawIndexedInstanced(arrow->meshBuffer().meshElementArray.size(), arrowBufferData.size(), 0, 0, 0);
 
 	debugVectors = std::vector<vec3>();
 	arrows = std::vector<vec3>();
@@ -144,21 +140,20 @@ void DrawDebug::drawSpheres() {
 		mat4 translate, scale;
 		translate = mat4::translate(s.center);
 		scale = mat4::scale(vec3(1, 1, 1) * (s.rad * 2));
-		meshVert->SetMatrix4x4("world", &(scale * translate)[0][0]);
-		meshVert->SetShader(true);
-		d.deviceContext->DrawIndexed(sphereBuffer.size(), 0, 0);
+		sphereBufferData.push_back(DirectX::XMFLOAT4X4(&(scale * translate)[0][0]));
 	}
+	meshVert->SetShader(true);
+	d.deviceContext->DrawIndexedInstanced(sphere->meshBuffer().meshElementArray.size(), sphereBufferData.size(), 0, 0, 0);
 
 	debugSpheres = std::vector<Sphere>();
 }
 
 void DrawDebug::drawDebugVector(vec3 start, vec3 end, vec3 color) {
 #if DEBUG
-	DrawDebug& d = DrawDebug::getInstance();
-	d.debugVectors.push_back(start);
-	d.debugVectors.push_back(color);
-	d.debugVectors.push_back(end);
-	d.debugVectors.push_back(color);
+	debugVectors.push_back(start);
+	debugVectors.push_back(color);
+	debugVectors.push_back(end);
+	debugVectors.push_back(color);
 #endif
 }
 
@@ -166,7 +161,7 @@ void DrawDebug::drawDebugSphere(vec3 pos, float rad) {
 #if DEBUG
 	Sphere s = { pos, rad };
 	DrawDebug& d = DrawDebug::getInstance();
-	d.debugSpheres.push_back(s);
+	debugSpheres.push_back(s);
 	//drawDebugVector(pos, pos + vec3(rad, 0, 0));
 #endif
 }
