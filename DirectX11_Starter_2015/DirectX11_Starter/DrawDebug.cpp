@@ -5,55 +5,54 @@ DrawDebug::DrawDebug() {
 	for (int i = 0; i < 4; i++)
 		debugVectors.push_back(vec3(0, 0, 0));
 
-	D3D11_BUFFER_DESC vbd;
-	vbd.Usage = D3D11_USAGE_DYNAMIC;
-	vbd.ByteWidth = sizeof(Vertex) * _meshBuffer.meshArray.size();       // 3 = number of vertices in the buffer
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER; // Tells DirectX this is a vertex buffer
-	vbd.CPUAccessFlags = 0;
-	vbd.MiscFlags = 0;
-	vbd.StructureByteStride = 0;
+	DXInfo& d = DXInfo::getInstance();
 
-	/*vecShader = loadShaderProgram("Shaders/_debug/vecvertexShader.glsl", "Shaders/_debug/vecfragmentShader.glsl");
-	meshShader = loadShaderProgram("Shaders/_debug/meshvertexShader.glsl", "Shaders/_debug/meshfragmentShader.glsl");
+	//vecShader = loadShaderProgram("Shaders/_debug/vecvertexShader.glsl", "Shaders/_debug/vecfragmentShader.glsl");
+	//meshShader = loadShaderProgram("Shaders/_debug/meshvertexShader.glsl", "Shaders/_debug/meshfragmentShader.glsl");
+
+	//vector setup
+	D3D11_BUFFER_DESC vbd, ibd;
+	vbd.Usage = D3D11_USAGE_DYNAMIC;
+	//vbd.ByteWidth = sizeof(Vertex) * _meshBuffer.meshArray.size();//this is going to be a bit weird
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER; 
+	vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; 
+	vbd.MiscFlags = 0; vbd.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA initialVertexData, initialIndexData;
+	initialVertexData.pSysMem = &debugVectors[0];
+	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &asdafsdjlfdslk));
+
+	//arrow setup
+	arrow = loadOBJ("Assets/_debug/arrow.obj");
+	assert(arrow != nullptr);
+
+	vbd.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd.ByteWidth = sizeof(Vertex) * arrow->meshBuffer().meshArray.size();
+	vbd.CPUAccessFlags = 0;
+
+	initialVertexData.pSysMem = &arrow->meshBuffer().meshArray[0];
+	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &avb));
+
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(int) * arrow->meshBuffer().meshElementArray.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER; ibd.CPUAccessFlags = 0; ibd.MiscFlags = 0;
+	ibd.StructureByteStride = 0;
+
+	initialIndexData.pSysMem = &arrow->meshBuffer().meshElementArray[0];
+	HR(d.device->CreateBuffer(&ibd, &initialIndexData, &aib));
+
+	//sphere setup
 	sphere = loadOBJ("Assets/_debug/sphere.obj");
 	assert(sphere != nullptr);
 
-	glGenVertexArrays(1, &vecVAO);
-	glBindVertexArray(vecVAO);
-	glGenBuffers(1, &vecBuffer);
+	vbd.ByteWidth = sizeof(Vertex) * sphere->meshBuffer().meshArray.size();
+	initialVertexData.pSysMem = &sphere->meshBuffer().meshArray[0];
+	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &svb));
+
+	ibd.ByteWidth = sizeof(int) * arrow->meshBuffer().meshElementArray.size();
+	initialIndexData.pSysMem = &sphere->meshBuffer().meshElementArray[0];
+	HR(d.device->CreateBuffer(&ibd, &initialIndexData, &sib));
 	
-	glBindBuffer(GL_ARRAY_BUFFER, vecBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * debugVectors.size() * FLOATS_PER_VERT, &debugVectors[0], GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT * 2, 0);
-	glVertexAttribPointer(1, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT * 2, (void *)(sizeof(GL_FLOAT) * FLOATS_PER_VERT));
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-
-	glGenVertexArrays(1, &arrowVAO);
-	glBindVertexArray(arrowVAO);
-	glGenBuffers(1, &arrowBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, arrowBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * debugVectors.size() / 2 * 3 * FLOATS_PER_VERT, &debugVectors[0], GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT * 2, 0);
-	glVertexAttribPointer(1, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT * 2, (void *)(sizeof(GL_FLOAT) * FLOATS_PER_VERT));
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-
-	glGenVertexArrays(1, &meshVAO);
-	glBindVertexArray(meshVAO);
-	glGenBuffers(1, &sphereBuffer);
-	glGenBuffers(1, &sphereElBuffer);
-
-	glBindBuffer(GL_ARRAY_BUFFER, sphereBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GL_FLOAT) * sphere->verts().size() * FLOATS_PER_VERT, &(sphere->verts()[0]), GL_STATIC_DRAW);
-
-	sphereVerts = sphere->faces().verts.size();
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereElBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GL_UNSIGNED_INT) * sphereVerts, &(sphere->faces().verts[0]), GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, FLOATS_PER_VERT, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * FLOATS_PER_VERT, 0);
-	glEnableVertexAttribArray(0);*/
-
 	debugVectors = std::vector<vec3>();
 #endif
 }
@@ -155,17 +154,19 @@ void DrawDebug::drawSpheres() {
 
 void DrawDebug::drawDebugVector(vec3 start, vec3 end, vec3 color) {
 #if DEBUG
-	debugVectors.push_back(start);
-	debugVectors.push_back(color);
-	debugVectors.push_back(end);
-	debugVectors.push_back(color);
+	DrawDebug& d = DrawDebug::getInstance();
+	d.debugVectors.push_back(start);
+	d.debugVectors.push_back(color);
+	d.debugVectors.push_back(end);
+	d.debugVectors.push_back(color);
 #endif
 }
 
 void DrawDebug::drawDebugSphere(vec3 pos, float rad) {
 #if DEBUG
 	Sphere s = { pos, rad };
-	debugSpheres.push_back(s);
+	DrawDebug& d = DrawDebug::getInstance();
+	d.debugSpheres.push_back(s);
 	//drawDebugVector(pos, pos + vec3(rad, 0, 0));
 #endif
 }

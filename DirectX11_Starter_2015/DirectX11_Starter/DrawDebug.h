@@ -26,8 +26,8 @@ public:
 	void draw();
 
 	//these are called externally for drawing stuff
-	void drawDebugVector(vec3 start, vec3 end, vec3 color = vec3(0.7f, 1, 0));
-	void drawDebugSphere(vec3 pos, float rad);
+	static void drawDebugVector(vec3 start, vec3 end, vec3 color = vec3(0.7f, 1, 0));
+	static void drawDebugSphere(vec3 pos, float rad);
 private:
 	DrawDebug();
 	~DrawDebug();
@@ -41,6 +41,7 @@ private:
 	Camera** cam = nullptr;
 
 	Mesh *sphere, *arrow;
+	ID3D11Buffer *svb, *sib, *avb, *aib;
 	int sphereVerts;
 
 	SimpleVertexShader *vecVert, *meshVert;
@@ -49,6 +50,6 @@ private:
 	std::vector<vec3> debugVectors;
 	std::vector<Sphere> debugSpheres;
 
-	std::vector<DirectX::XMFLOAT3> vecBuffer, arrowBuffer;
+	std::vector<DirectX::XMFLOAT3> vecBufferData, arrowBufferData;
 	std::vector<DebugVertex> sphereBuffer;
 };

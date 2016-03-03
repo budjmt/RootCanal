@@ -6,8 +6,8 @@ class DebugBenchmark
 public:
 	static DebugBenchmark& getInstance();
 
-	void start(); 
-	double end();
+	static void start(); 
+	static double end();
 private:
 	DebugBenchmark() { start(); };
 	//~DebugBenchmark();
