@@ -96,10 +96,7 @@ void DrawDebug::drawVectors() {
 			DirectX::XMFLOAT3{ ec.x, ec.y, ec.z }
 		});
 
-		vec3 v = e - s;
-		v *= 0.05f;
-		v = e - v;
-		//create rotation matrix based on this
+		arrowBufferData.push_back(DirectX::XMFLOAT4X4(&mat4::lookAt(vec3(), e - s, vec3(0,0,-1))[0][0]));
 	}
 
 	DXInfo& d = DXInfo::getInstance();
@@ -108,7 +105,7 @@ void DrawDebug::drawVectors() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//draw vector part
-	UINT stride = sizeof(Vertex);
+	UINT stride = sizeof(DebugVector);
 	UINT offset = 0;
 	d.deviceContext->IASetVertexBuffers(0, 1, &vvb, &stride, &offset);
 	vecVert->SetShader(true);
@@ -117,6 +114,10 @@ void DrawDebug::drawVectors() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//draw arrow part
+	stride = sizeof(DebugVertex);
+	d.deviceContext->IASetVertexBuffers(0, 2, &avb, &stride, &offset);
+	stride = sizeof(DirectX::XMFLOAT4X4);
+	d.deviceContext->IASetIndexBuffer(aib, DXGI_FORMAT_R32_UINT, 0);
 	meshVert->SetShader(true);
 	d.deviceContext->DrawIndexedInstanced(arrow->meshBuffer().meshElementArray.size(), arrowBufferData.size(), 0, 0, 0);
 
