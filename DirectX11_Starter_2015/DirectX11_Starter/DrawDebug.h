@@ -12,9 +12,10 @@
 #include "ModelHelper.h"
 #include "Mesh.h"
 
-#define DEBUG true
+#define DEBUG false
 
 const int MAX_VECTORS = 1000000;
+const int MAX_SPHERES = 100000;
 
 struct Sphere { vec3 center; float rad; };
 
@@ -40,10 +41,14 @@ private:
 	void drawVectors();
 	void drawSpheres();
 
+	ID3D11RasterizerState *fill, *wireframe;
+
 	Camera** cam = nullptr;
 
 	Mesh *sphere, *arrow;
-	ID3D11Buffer *svb, *sib, *avb, *aib, *vvb;
+	ID3D11Buffer *svb, *sib, *sinstb
+				, *avb, *aib, *ainstb
+				, *vvb;
 	int sphereVerts;
 
 	SimpleVertexShader *vecVert, *meshVert;

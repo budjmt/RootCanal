@@ -62,8 +62,6 @@ void DrawMesh::initBuffers(ID3D11Device* device) {
 	// - Once we do this, we'll NEVER CHANGE THE BUFFER AGAIN
 	HR(device->CreateBuffer(&vbd, &initialVertexData, &vertexBuffer));
 
-
-
 	// Create the INDEX BUFFER description ------------------------------------
 	// - The description is created on the stack because we only need
 	//    it to create the buffer.  The description is then useless.

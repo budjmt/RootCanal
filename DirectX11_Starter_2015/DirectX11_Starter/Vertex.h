@@ -14,10 +14,8 @@ struct Vertex
 };
 
 struct DebugVector {
-	DirectX::XMFLOAT3 Start;
-	DirectX::XMFLOAT3 StartColor;
-	DirectX::XMFLOAT3 End;
-	DirectX::XMFLOAT3 EndColor;
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT3 Color;
 };
 
 struct DebugVertex

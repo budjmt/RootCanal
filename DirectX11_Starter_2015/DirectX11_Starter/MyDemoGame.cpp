@@ -25,6 +25,7 @@
 #include <time.h>
 
 #include "ModelHelper.h"
+#include "DrawDebug.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -107,17 +108,6 @@ bool MyDemoGame::Init()
 	if( !DirectXGameCore::Init() )
 		return false;
 
-	DXInfo& d = DXInfo::getInstance();
-	d.device = device;
-	d.deviceContext = deviceContext;
-	d.swapChain = swapChain;
-	d.depthStencilBuffer = depthStencilBuffer;
-	d.renderTargetView = renderTargetView;
-	d.depthStencilView = depthStencilView;
-	d.viewport = &viewport;
-	d.driverType = &driverType;
-	d.featureLevel = &featureLevel;
-
 	srand((uint32_t)time(NULL));
 
 	// Helper methods to create something to draw, load shaders to draw it 
@@ -130,6 +120,20 @@ bool MyDemoGame::Init()
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives we'll be using and how to interpret them
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DXInfo& d = DXInfo::getInstance();
+	d.device = device;
+	d.deviceContext = deviceContext;
+	deviceContext->RSGetState(&d.rasterState);
+	if(d.rasterState)
+		d.rasterState->GetDesc(&d.rasterDesc);
+	d.swapChain = swapChain;
+	d.depthStencilBuffer = depthStencilBuffer;
+	d.renderTargetView = renderTargetView;
+	d.depthStencilView = depthStencilView;
+	d.viewport = &viewport;
+	d.driverType = &driverType;
+	d.featureLevel = &featureLevel;
 
 	// Successfully initialized
 	return true;
@@ -336,6 +340,9 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	for (Entity* e : entities) {
 		e->draw(deviceContext);
 	}
+	#if DEBUG
+		DrawDebug::getInstance().draw();
+	#endif
 
 	// Present the buffer
 	//  - Puts the image we're drawing into the window so the user can see it
