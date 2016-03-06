@@ -2,9 +2,6 @@
 #include <iostream>
 DrawDebug::DrawDebug() {
 #if DEBUG
-	for (int i = 0; i < 4; i++)
-		debugVectors.push_back(vec3(0, 0, 0));
-
 	DXInfo& d = DXInfo::getInstance();
 
 	D3D11_RASTERIZER_DESC rdesc = d.rasterDesc;
@@ -23,17 +20,16 @@ DrawDebug::DrawDebug() {
 	meshPixel = new SimplePixelShader(d.device, d.deviceContext);
 	meshPixel->LoadShaderFile(L"DebugMeshPixel.cso");
 
-	//vector setup
 	D3D11_BUFFER_DESC vbd, ibd;
+	D3D11_SUBRESOURCE_DATA initialVertexData, initialIndexData;
+
+	//vector setup
 	vbd.Usage = D3D11_USAGE_DYNAMIC;
 	vbd.ByteWidth = sizeof(DebugVector) * MAX_VECTORS;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER; 
-	vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; 
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	vbd.MiscFlags = 0; vbd.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA initialVertexData, initialIndexData;
-	initialVertexData.pSysMem = &debugVectors[0];
-	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &vvb));
+	HR(d.device->CreateBuffer(&vbd, nullptr, &vvb));
 
 	//arrow setup
 	arrow = loadOBJ("Assets/_debug/arrow.obj");
@@ -49,17 +45,15 @@ DrawDebug::DrawDebug() {
 
 	//instance buffer
 	ibd.Usage = D3D11_USAGE_DYNAMIC;
-	ibd.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * MAX_VECTORS;
+	ibd.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * MAX_VECTORS / 2;
 	ibd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	ibd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	ibd.MiscFlags = 0; ibd.StructureByteStride = 0;
-	
-	initialVertexData.pSysMem = &DirectX::XMFLOAT4X4();
-	HR(d.device->CreateBuffer(&ibd, &initialVertexData, &ainstb));
+	HR(d.device->CreateBuffer(&ibd, nullptr, &ainstb));
 
 	//index buffer
 	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-	ibd.ByteWidth = sizeof(int) * arrow->meshBuffer().meshElementArray.size();
+	ibd.ByteWidth = sizeof(uint32_t) * arrow->meshBuffer().meshElementArray.size();
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER; ibd.CPUAccessFlags = 0;
 
 	initialIndexData.pSysMem = &arrow->meshBuffer().meshElementArray[0];
@@ -75,7 +69,7 @@ DrawDebug::DrawDebug() {
 	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &svb));
 
 	//index buffer
-	ibd.ByteWidth = sizeof(int) * arrow->meshBuffer().meshElementArray.size();
+	ibd.ByteWidth = sizeof(uint32_t) * arrow->meshBuffer().meshElementArray.size();
 	initialIndexData.pSysMem = &sphere->meshBuffer().meshElementArray[0];
 	HR(d.device->CreateBuffer(&ibd, &initialIndexData, &sib));
 
@@ -84,10 +78,7 @@ DrawDebug::DrawDebug() {
 	ibd.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * MAX_SPHERES;
 	ibd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	ibd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	initialVertexData.pSysMem = &DirectX::XMFLOAT4X4();
-	HR(d.device->CreateBuffer(&ibd, &initialVertexData, &sinstb));
-	
-	debugVectors = std::vector<vec3>();
+	HR(d.device->CreateBuffer(&ibd, nullptr, &sinstb));
 #endif
 }
 
@@ -120,12 +111,10 @@ void DrawDebug::draw() {
 }
 
 void DrawDebug::drawVectors() {
-	for (int i = 0; i < 4; i++)	debugVectors.push_back(vec3());
-	
-	std::vector<vec3> arrows;
-	for (int i = 0; i < 6; i++) arrows.push_back(vec3());
-	
-	int numVecs = debugVectors.size();
+	vecBufferData.push_back(DebugVector{DirectX::XMFLOAT3{ 0,0,0 }, DirectX::XMFLOAT3{ 0,0,0 }});
+	vecBufferData.push_back(DebugVector{DirectX::XMFLOAT3{ 0,0,0 }, DirectX::XMFLOAT3{ 0,0,0 }});
+	arrowBufferData.push_back(DirectX::XMFLOAT4X4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+
 	for (int i = 0, numVecs = debugVectors.size(); i < numVecs; i += 4) {
 		vec3 s = debugVectors[i], sc = debugVectors[i + 1], e = debugVectors[i + 2], ec = debugVectors[i + 3];
 		vecBufferData.push_back(DebugVector{
@@ -141,7 +130,7 @@ void DrawDebug::drawVectors() {
 	}
 
 	DXInfo& d = DXInfo::getInstance();
-	if ((*cam) != nullptr) (*cam)->updateCamMat(vecVert);
+	if ((*cam) != nullptr) { (*cam)->updateCamMat(vecVert); (*cam)->updateCamMat(meshVert); }
 
 	//upload and draw vector part
 	UINT vstride = sizeof(DebugVector), istride;
@@ -152,11 +141,12 @@ void DrawDebug::drawVectors() {
 	D3D11_MAPPED_SUBRESOURCE mappedRes;
 	ZeroMemory(&mappedRes, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	d.deviceContext->Map(vvb, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes);
-	memcpy(&mappedRes, &vecBufferData[0], vecBufferData.size() * vstride);
+	memcpy(mappedRes.pData, &vecBufferData[0], vecBufferData.size() * vstride);
 	d.deviceContext->Unmap(vvb, 0);
 	
 	//draw
 	vecVert->SetShader(true);
+	vecPixel->SetShader(true);
 	d.deviceContext->RSSetState(wireframe);
 	d.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	d.deviceContext->Draw(vecBufferData.size(), 0);
@@ -171,23 +161,26 @@ void DrawDebug::drawVectors() {
 	//upload
 	ZeroMemory(&mappedRes, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	d.deviceContext->Map(ainstb, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes);
-	memcpy(&mappedRes, &arrowBufferData[0], arrowBufferData.size() * istride);
+	memcpy(mappedRes.pData, &arrowBufferData[0], arrowBufferData.size() * istride);
 	d.deviceContext->Unmap(ainstb, 0);
 
 	//draw
 	meshVert->SetShader(true);
+	meshPixel->SetShader(true);
 	d.deviceContext->RSSetState(fill);
 	d.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	d.deviceContext->DrawIndexedInstanced(arrow->meshBuffer().meshElementArray.size(), arrowBufferData.size(), 0, 0, 0);
 
 	debugVectors = std::vector<vec3>();
-	arrows = std::vector<vec3>();
+	vecBufferData = std::vector<DebugVector>();
+	arrowBufferData = std::vector<DirectX::XMFLOAT4X4>();
 }
 
 void DrawDebug::drawSpheres() {
 	DXInfo& d = DXInfo::getInstance();
 	if ((*cam) != nullptr) (*cam)->updateCamMat(meshVert);
 
+	sphereBufferData.push_back(DirectX::XMFLOAT4X4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 	for (int i = 0, numSpheres = debugSpheres.size(); i < numSpheres; i++) {
 		Sphere s = debugSpheres[i];
 		mat4 translate, scale;
@@ -205,16 +198,18 @@ void DrawDebug::drawSpheres() {
 	D3D11_MAPPED_SUBRESOURCE mappedRes;
 	ZeroMemory(&mappedRes, sizeof(D3D11_MAPPED_SUBRESOURCE));
 	d.deviceContext->Map(sinstb, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes);
-	memcpy(&mappedRes, &sphereBufferData[0], sphereBufferData.size() * istride);
+	memcpy(mappedRes.pData, &sphereBufferData[0], sphereBufferData.size() * istride);
 	d.deviceContext->Unmap(sinstb, 0);
 
 	//draw
 	meshVert->SetShader(true);
+	meshPixel->SetShader(true);
 	d.deviceContext->RSSetState(fill);
 	d.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	d.deviceContext->DrawIndexedInstanced(sphere->meshBuffer().meshElementArray.size(), sphereBufferData.size(), 0, 0, 0);
 
 	debugSpheres = std::vector<Sphere>();
+	sphereBufferData = std::vector<DirectX::XMFLOAT4X4>();
 }
 
 void DrawDebug::drawDebugVector(vec3 start, vec3 end, vec3 color) {

@@ -12,7 +12,7 @@
 #include "ModelHelper.h"
 #include "Mesh.h"
 
-#define DEBUG false
+#define DEBUG true
 
 const int MAX_VECTORS = 1000000;
 const int MAX_SPHERES = 100000;
