@@ -106,7 +106,7 @@ void DrawDebug::draw() {
 	drawSpheres();
 	DXInfo& d = DXInfo::getInstance();
 	d.deviceContext->RSSetState(d.rasterState);
-	d.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	d.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 #endif
 }
 
