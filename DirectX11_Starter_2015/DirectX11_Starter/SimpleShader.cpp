@@ -73,7 +73,7 @@ void ISimpleShader::CleanUp()
 bool ISimpleShader::LoadShaderFile(LPCWSTR shaderFile)
 {
 	// Load the shader to a blob and ensure it worked
-	ID3DBlob* shaderBlob = 0;
+	shaderBlob = 0;
 	HRESULT hr = D3DReadFileToBlob(shaderFile, &shaderBlob);
 	if (hr != S_OK)
 	{
@@ -206,7 +206,7 @@ bool ISimpleShader::LoadShaderFile(LPCWSTR shaderFile)
 
 	// All set
 	refl->Release();
-	shaderBlob->Release();
+	//shaderBlob->Release();
 	return true;
 }
 
@@ -530,6 +530,10 @@ const SimpleConstantBuffer * ISimpleShader::GetBufferInfo(unsigned int index)
 	return &constantBuffers[index];
 }
 
+ID3DBlob * ISimpleShader::GetShaderBlob() 
+{
+	return shaderBlob;
+}
 
 
 
@@ -556,7 +560,7 @@ SimpleVertexShader::SimpleVertexShader(ID3D11Device* device, ID3D11DeviceContext
 // Passing in a valid input layout will stop LoadShader()
 // from creating an input layout from shader reflection
 // --------------------------------------------------------
-SimpleVertexShader::SimpleVertexShader(ID3D11Device * device, ID3D11DeviceContext * context, ID3D11InputLayout * inputLayout)
+SimpleVertexShader::SimpleVertexShader(ID3D11Device * device, ID3D11DeviceContext * context, ID3D11InputLayout *& inputLayout)
 	: ISimpleShader(device, context)
 {
 	// Save the custom input layout
@@ -578,7 +582,10 @@ SimpleVertexShader::~SimpleVertexShader()
 void SimpleVertexShader::CleanUp()
 {
 	ISimpleShader::CleanUp();
-	if (shader) { shader->Release(); shader = 0; }
+	if (shader) { 
+		shader->Release(); shader = 0; 
+		if (shaderBlob) { shaderBlob->Release(); shaderBlob = nullptr; }
+	}
 	if (inputLayout) { inputLayout->Release(); inputLayout = 0; }
 }
 
@@ -782,7 +789,10 @@ SimplePixelShader::~SimplePixelShader()
 void SimplePixelShader::CleanUp()
 {
 	ISimpleShader::CleanUp();
-	if (shader) { shader->Release(); shader = 0; }
+	if (shader) { 
+		shader->Release(); shader = 0; 
+		if (shaderBlob) { shaderBlob->Release(); shaderBlob = nullptr; }
+	}
 }
 
 // --------------------------------------------------------
@@ -905,7 +915,10 @@ SimpleDomainShader::~SimpleDomainShader()
 void SimpleDomainShader::CleanUp()
 {
 	ISimpleShader::CleanUp();
-	if (shader) { shader->Release(); shader = 0; }
+	if (shader) { 
+		shader->Release(); shader = 0; 
+		if (shaderBlob) { shaderBlob->Release(); shaderBlob = nullptr; }
+	}
 }
 
 // --------------------------------------------------------
@@ -1027,7 +1040,10 @@ SimpleHullShader::~SimpleHullShader()
 void SimpleHullShader::CleanUp()
 {
 	ISimpleShader::CleanUp();
-	if (shader) { shader->Release(); shader = 0; }
+	if (shader) { 
+		shader->Release(); shader = 0; 
+		if (shaderBlob) { shaderBlob->Release(); shaderBlob = nullptr; }
+	}
 }
 
 // --------------------------------------------------------
@@ -1151,7 +1167,10 @@ SimpleGeometryShader::~SimpleGeometryShader()
 void SimpleGeometryShader::CleanUp()
 {
 	ISimpleShader::CleanUp();
-	if (shader) { shader->Release(); shader = 0; }
+	if (shader) { 
+		shader->Release(); shader = 0; 
+		if (shaderBlob) { shaderBlob->Release(); shaderBlob = nullptr; }
+	}
 }
 
 // --------------------------------------------------------
@@ -1409,7 +1428,10 @@ SimpleComputeShader::~SimpleComputeShader()
 void SimpleComputeShader::CleanUp()
 {
 	ISimpleShader::CleanUp();
-	if (shader) { shader->Release(); shader = 0; }
+	if (shader) { 
+		shader->Release(); shader = 0; 
+		if (shaderBlob) { shaderBlob->Release(); shaderBlob = nullptr; }
+	}
 
 	uavTable.clear();
 }

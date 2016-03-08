@@ -15,8 +15,20 @@ DrawDebug::DrawDebug() {
 	vecPixel = new SimplePixelShader(d.device, d.deviceContext);
 	vecPixel->LoadShaderFile(L"DebugVecPixel.cso");
 
+	std::vector<D3D11_INPUT_ELEMENT_DESC> meshDescs;
+	meshDescs.push_back(D3D11_INPUT_ELEMENT_DESC{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 });
+	meshDescs.push_back(D3D11_INPUT_ELEMENT_DESC{ "NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 });
+	auto mat =          D3D11_INPUT_ELEMENT_DESC{ "WORLD_MAT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
+	meshDescs.push_back(mat);
+	mat.SemanticIndex = 1; meshDescs.push_back(mat);
+	mat.SemanticIndex = 2; meshDescs.push_back(mat);
+	mat.SemanticIndex = 3; meshDescs.push_back(mat);
+	meshDescs.push_back(D3D11_INPUT_ELEMENT_DESC{ "COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 });
+	
 	meshVert = new SimpleVertexShader(d.device, d.deviceContext);
 	meshVert->LoadShaderFile(L"DebugMeshVertex.cso");
+	HRESULT hr = d.device->CreateInputLayout(&meshDescs[0], meshDescs.size(), meshVert->GetShaderBlob()->GetBufferPointer(), meshVert->GetShaderBlob()->GetBufferSize(), &(meshVert->inputLayout));
+
 	meshPixel = new SimplePixelShader(d.device, d.deviceContext);
 	meshPixel->LoadShaderFile(L"DebugMeshPixel.cso");
 
@@ -34,19 +46,19 @@ DrawDebug::DrawDebug() {
 	//arrow setup
 	arrow = loadOBJ("Assets/_debug/arrow.obj");
 	assert(arrow != nullptr);
+	DebugMeshBuffer dm = genDebugMeshArrays(arrow);
 
 	//vertex buffer
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(DebugVertex) * arrow->meshBuffer().meshArray.size();
+	vbd.ByteWidth = sizeof(DebugVertex) * dm.meshArray.size();
 	vbd.CPUAccessFlags = 0;
 
-	std::vector<DebugVertex> debugMeshArray = arrow->genDebugBuffer();
-	initialVertexData.pSysMem = &debugMeshArray[0];
+	initialVertexData.pSysMem = &dm.meshArray[0];
 	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &avb));
 
 	//instance buffer
 	ibd.Usage = D3D11_USAGE_DYNAMIC;
-	ibd.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * MAX_VECTORS / 2;
+	ibd.ByteWidth = sizeof(DebugMesh) * MAX_VECTORS / 2;
 	ibd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	ibd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	ibd.MiscFlags = 0; ibd.StructureByteStride = 0;
@@ -54,24 +66,25 @@ DrawDebug::DrawDebug() {
 
 	//index buffer
 	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-	ibd.ByteWidth = sizeof(uint32_t) * arrow->meshBuffer().meshElementArray.size();
+	ibd.ByteWidth = sizeof(uint32_t) * dm.meshElementArray.size();
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER; ibd.CPUAccessFlags = 0;
 
-	initialIndexData.pSysMem = &arrow->meshBuffer().meshElementArray[0];
+	initialIndexData.pSysMem = &dm.meshElementArray[0];
 	HR(d.device->CreateBuffer(&ibd, &initialIndexData, &aib));
 
 	//sphere setup
 	sphere = loadOBJ("Assets/_debug/sphere.obj");
 	assert(sphere != nullptr);
+	dm = genDebugMeshArrays(sphere);
 
 	//vertex buffer
-	vbd.ByteWidth = sizeof(DebugVertex) * sphere->meshBuffer().meshArray.size();
-	initialVertexData.pSysMem = &sphere->meshBuffer().meshArray[0];
+	vbd.ByteWidth = sizeof(DebugVertex) * dm.meshArray.size();
+	initialVertexData.pSysMem = &dm.meshArray[0];
 	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &svb));
 
 	//index buffer
-	ibd.ByteWidth = sizeof(uint32_t) * arrow->meshBuffer().meshElementArray.size();
-	initialIndexData.pSysMem = &sphere->meshBuffer().meshElementArray[0];
+	ibd.ByteWidth = sizeof(uint32_t) * dm.meshElementArray.size();
+	initialIndexData.pSysMem = &dm.meshElementArray[0];
 	HR(d.device->CreateBuffer(&ibd, &initialIndexData, &sib));
 
 	//instance buffer
@@ -103,8 +116,8 @@ void DrawDebug::camera(Camera** c) { cam = c; }
 
 void DrawDebug::draw() {
 #if DEBUG
-	drawVectors();
-	//drawSpheres();
+	//drawVectors();
+	drawSpheres();
 	DXInfo& d = DXInfo::getInstance();
 	d.deviceContext->RSSetState(d.rasterState);
 	d.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -114,7 +127,7 @@ void DrawDebug::draw() {
 void DrawDebug::drawVectors() {
 	vecBufferData.push_back(DebugVector{DirectX::XMFLOAT4{ 0,0,0,0 }, DirectX::XMFLOAT4{ 0,0,0,0 }});
 	vecBufferData.push_back(DebugVector{DirectX::XMFLOAT4{ 0,0,0,0 }, DirectX::XMFLOAT4{ 0,0,0,0 }});
-	arrowBufferData.push_back(DirectX::XMFLOAT4X4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+	arrowBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), DirectX::XMFLOAT4{0,0,0,0} });
 
 	for (int i = 0, numVecs = debugVectors.size(); i < numVecs; i += 4) {
 		vec3 s = debugVectors[i], sc = debugVectors[i + 1], e = debugVectors[i + 2], ec = debugVectors[i + 3];
@@ -128,7 +141,7 @@ void DrawDebug::drawVectors() {
 			EC
 		});
 
-		arrowBufferData.push_back(DebugArrow{ DirectX::XMFLOAT4X4(&mat4::lookAt(e, e + e - s, vec3(0,0,-1))[0][0]), EC });
+		arrowBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&mat4::lookAt(e, e + e - s, vec3(0,0,-1))[0][0]), EC });
 	}
 
 	DXInfo& d = DXInfo::getInstance();
@@ -154,7 +167,7 @@ void DrawDebug::drawVectors() {
 	d.deviceContext->Draw(vecBufferData.size(), 0);
 
 	//upload and draw arrow part
-	vstride = sizeof(DebugVertex); istride = sizeof(DirectX::XMFLOAT4X4);
+	vstride = sizeof(DebugVertex); istride = sizeof(DebugMesh);
 	ID3D11Buffer* buffs[] = { avb, ainstb };
 	UINT strides[] = { vstride, istride }, offsets[] = { voffset, ioffset };
 	d.deviceContext->IASetVertexBuffers(0, 2, buffs, strides, offsets);
@@ -175,22 +188,22 @@ void DrawDebug::drawVectors() {
 
 	debugVectors = std::vector<vec3>();
 	vecBufferData = std::vector<DebugVector>();
-	arrowBufferData = std::vector<DirectX::XMFLOAT4X4>();
+	arrowBufferData = std::vector<DebugMesh>();
 }
 
 void DrawDebug::drawSpheres() {
 	DXInfo& d = DXInfo::getInstance();
 	if ((*cam) != nullptr) (*cam)->updateCamMat(meshVert);
 
-	sphereBufferData.push_back(DirectX::XMFLOAT4X4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+	sphereBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), DirectX::XMFLOAT4{0,0,0,0} });
 	for (int i = 0, numSpheres = debugSpheres.size(); i < numSpheres; i++) {
 		Sphere s = debugSpheres[i];
 		mat4 translate, scale;
 		translate = mat4::translate(s.center);
 		scale = mat4::scale(vec3(1, 1, 1) * (s.rad * 2));
-		sphereBufferData.push_back(DirectX::XMFLOAT4X4(&(scale * translate)[0][0]));
+		sphereBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&(scale * translate)[0][0]), DirectX::XMFLOAT4{ 0.f, 0.5f, 0.7f, 0.2f } });
 	}
-	UINT vstride = sizeof(DebugVertex), istride = sizeof(DirectX::XMFLOAT4X4);
+	UINT vstride = sizeof(DebugVertex), istride = sizeof(DebugMesh);
 	UINT voffset = 0, ioffset = 0;
 	ID3D11Buffer* buffs[] = { svb, sinstb };
 	UINT strides[] = { vstride, istride }, offsets[] = { voffset, ioffset };
@@ -211,7 +224,7 @@ void DrawDebug::drawSpheres() {
 	d.deviceContext->DrawIndexedInstanced(sphere->meshBuffer().meshElementArray.size(), sphereBufferData.size(), 0, 0, 0);
 
 	debugSpheres = std::vector<Sphere>();
-	sphereBufferData = std::vector<DirectX::XMFLOAT4X4>();
+	sphereBufferData = std::vector<DebugMesh>();
 }
 
 void DrawDebug::drawDebugVector(vec3 start, vec3 end, vec3 color) {
@@ -229,5 +242,36 @@ void DrawDebug::drawDebugSphere(vec3 pos, float rad) {
 	DrawDebug& d = DrawDebug::getInstance();
 	debugSpheres.push_back(s);
 	//drawDebugVector(pos, pos + vec3(rad, 0, 0));
+#endif
+}
+
+DebugMeshBuffer DrawDebug::genDebugMeshArrays(Mesh* m) {
+#if DEBUG
+	DebugMeshBuffer dm;
+	std::vector<vec3> combs;
+	auto faces = m->faces();
+	auto verts = m->verts(), normals = m->normals();
+	for (uint32_t i = 0, numfaceVerts = faces.verts.size(); i < numfaceVerts; i++) {
+		bool inArr = false;
+		uint32_t index;
+		//TODO: fix this bottleneck! It's super duper slow!
+		uint32_t numCombs = combs.size();
+		for (index = 0; !inArr && index < numCombs; index++) {
+			if ((uint32_t)combs[index].x == faces.verts[i]
+				&& (uint32_t)combs[index].z == faces.normals[i]) {
+				inArr = true;
+				index--;
+			}
+		}
+		if (!inArr) {
+			combs.push_back(vec3((float)faces.verts[i], 0, (float)faces.normals[i]));
+			dm.meshArray.push_back(DebugVertex{
+				DirectX::XMFLOAT3(verts[faces.verts[i]].x, verts[faces.verts[i]].y, verts[faces.verts[i]].z),
+				DirectX::XMFLOAT3(normals[faces.normals[i]].x, normals[faces.normals[i]].y, normals[faces.normals[i]].z)
+			});
+		}
+		dm.meshElementArray.push_back(index);
+	}
+	return dm;
 #endif
 }

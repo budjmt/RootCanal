@@ -346,8 +346,8 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		e->draw(deviceContext);
 	}
 	#if DEBUG
-		//DrawDebug::getInstance().drawDebugSphere(vec3(),0.5f);
-		//DrawDebug::getInstance().drawDebugVector(vec3(), vec3(1,1,1));
+		DrawDebug::getInstance().drawDebugSphere(vec3(0.5f,0.5f,0.5f),0.5f);
+		//DrawDebug::getInstance().drawDebugVector(vec3(0.6f,0.7f,0.f), vec3(1,0,0));
 		DrawDebug::getInstance().draw();
 	#endif
 

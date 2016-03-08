@@ -86,30 +86,3 @@ MeshBuffer Mesh::genMeshArrays() {
 	}
 	return m;
 }
-
-DebugMeshBuffer Mesh::genDebugMeshArrays() {
-	DebugMeshBuffer m;
-	std::vector<vec3> combs;
-	for (uint32_t i = 0, numfaceVerts = _faces.verts.size(); i < numfaceVerts; i++) {
-		bool inArr = false;
-		uint32_t index;
-		//TODO: fix this bottleneck! It's super duper slow!
-		uint32_t numCombs = combs.size();
-		for (index = 0; !inArr && index < numCombs; index++) {
-			if ((uint32_t)combs[index].x == _faces.verts[i]
-				&& (uint32_t)combs[index].z == _faces.normals[i]) {
-				inArr = true;
-				index--;
-			}
-		}
-		if (!inArr) {
-			combs.push_back(vec3((float)_faces.verts[i], 0, (float)_faces.normals[i]));
-			m.meshArray.push_back(DebugVertex{
-				DirectX::XMFLOAT3(_verts[_faces.verts[i]].x, _verts[_faces.verts[i]].y, _verts[_faces.verts[i]].z),
-				DirectX::XMFLOAT3(_normals[_faces.normals[i]].x, _normals[_faces.normals[i]].y, _normals[_faces.normals[i]].z)
-			});
-		}
-		m.meshElementArray.push_back(index);
-	}
-	return m;
-}

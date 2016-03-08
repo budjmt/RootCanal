@@ -108,12 +108,14 @@ public:
 	const SimpleConstantBuffer* GetBufferInfo(std::string name);
 	const SimpleConstantBuffer* GetBufferInfo(unsigned int index);
 
+	ID3DBlob* GetShaderBlob();
 
 protected:
 
 	bool shaderValid;
 	ID3D11Device* device;
 	ID3D11DeviceContext* deviceContext;
+	ID3DBlob* shaderBlob;
 
 	// Resource counts
 	unsigned int constantBufferCount;
@@ -145,16 +147,17 @@ class SimpleVertexShader : public ISimpleShader
 {
 public:
 	SimpleVertexShader(ID3D11Device* device, ID3D11DeviceContext* context);
-	SimpleVertexShader(ID3D11Device* device, ID3D11DeviceContext* context, ID3D11InputLayout* inputLayout);
+	SimpleVertexShader(ID3D11Device* device, ID3D11DeviceContext* context, ID3D11InputLayout*& inputLayout);
 	~SimpleVertexShader();
 	ID3D11VertexShader* GetDirectXShader() { return shader; }
 	ID3D11InputLayout* GetInputLayout() { return inputLayout; }
 
 	bool SetShaderResourceView(std::string name, ID3D11ShaderResourceView* srv);
 	bool SetSamplerState(std::string name, ID3D11SamplerState* samplerState);
+	
+	ID3D11InputLayout* inputLayout;
 
 protected:
-	ID3D11InputLayout* inputLayout;
 	ID3D11VertexShader* shader;
 	bool CreateShader(ID3DBlob* shaderBlob);
 	void SetShaderAndCB();

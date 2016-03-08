@@ -14,11 +14,13 @@ struct VertexInput
 struct InstanceInput 
 {
 	matrix world		: WORLD_MAT;
+	float4 color		: COLOR;
 };
 
 struct VertexToPixel
 {
 	float4 position		: SV_POSITION;
+	float4 color		: COLOR;
 	float3 normal		: NORMAL;
 };
 

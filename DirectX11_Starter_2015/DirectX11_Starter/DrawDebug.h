@@ -17,6 +17,8 @@
 const int MAX_VECTORS = 1000000;
 const int MAX_SPHERES = 100000;
 
+struct DebugMeshBuffer { std::vector<DebugVertex> meshArray = std::vector<DebugVertex>(); std::vector<uint32_t> meshElementArray = std::vector<uint32_t>(); };
+
 struct Sphere { vec3 center; float rad; };
 
 class DrawDebug
@@ -40,6 +42,7 @@ private:
 	//these are to separate the individual processes
 	void drawVectors();
 	void drawSpheres();
+	DebugMeshBuffer genDebugMeshArrays(Mesh* m);
 
 	ID3D11RasterizerState *fill, *wireframe;
 
@@ -58,5 +61,5 @@ private:
 	std::vector<Sphere> debugSpheres;
 
 	std::vector<DebugVector> vecBufferData;
-	std::vector<DirectX::XMFLOAT4X4> arrowBufferData, sphereBufferData;
+	std::vector<DebugMesh> arrowBufferData, sphereBufferData;
 };

@@ -18,7 +18,7 @@ struct DebugVector {
 	DirectX::XMFLOAT4 Color;
 };
 
-struct DebugArrow {
+struct DebugMesh {
 	DirectX::XMFLOAT4X4 World;
 	DirectX::XMFLOAT4 Color;
 };
