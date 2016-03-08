@@ -40,7 +40,8 @@ DrawDebug::DrawDebug() {
 	vbd.ByteWidth = sizeof(DebugVertex) * arrow->meshBuffer().meshArray.size();
 	vbd.CPUAccessFlags = 0;
 
-	initialVertexData.pSysMem = &arrow->meshBuffer().meshArray[0];
+	std::vector<DebugVertex> debugMeshArray = arrow->genDebugBuffer();
+	initialVertexData.pSysMem = &debugMeshArray[0];
 	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &avb));
 
 	//instance buffer
@@ -103,7 +104,7 @@ void DrawDebug::camera(Camera** c) { cam = c; }
 void DrawDebug::draw() {
 #if DEBUG
 	drawVectors();
-	drawSpheres();
+	//drawSpheres();
 	DXInfo& d = DXInfo::getInstance();
 	d.deviceContext->RSSetState(d.rasterState);
 	d.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -111,22 +112,23 @@ void DrawDebug::draw() {
 }
 
 void DrawDebug::drawVectors() {
-	vecBufferData.push_back(DebugVector{DirectX::XMFLOAT3{ 0,0,0 }, DirectX::XMFLOAT3{ 0,0,0 }});
-	vecBufferData.push_back(DebugVector{DirectX::XMFLOAT3{ 0,0,0 }, DirectX::XMFLOAT3{ 0,0,0 }});
+	vecBufferData.push_back(DebugVector{DirectX::XMFLOAT4{ 0,0,0,0 }, DirectX::XMFLOAT4{ 0,0,0,0 }});
+	vecBufferData.push_back(DebugVector{DirectX::XMFLOAT4{ 0,0,0,0 }, DirectX::XMFLOAT4{ 0,0,0,0 }});
 	arrowBufferData.push_back(DirectX::XMFLOAT4X4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
 
 	for (int i = 0, numVecs = debugVectors.size(); i < numVecs; i += 4) {
 		vec3 s = debugVectors[i], sc = debugVectors[i + 1], e = debugVectors[i + 2], ec = debugVectors[i + 3];
+		DirectX::XMFLOAT4 EC = DirectX::XMFLOAT4{ ec.x, ec.y, ec.z, 1 };
 		vecBufferData.push_back(DebugVector{
-			DirectX::XMFLOAT3{ s.x, s.y, s.z },
-			DirectX::XMFLOAT3{ sc.x, sc.y, sc.z }			
+			DirectX::XMFLOAT4{ s.x, s.y, s.z, 1 },
+			DirectX::XMFLOAT4{ sc.x, sc.y, sc.z, 1 }			
 		});
 		vecBufferData.push_back(DebugVector{
-			DirectX::XMFLOAT3{ e.x, e.y, e.z },
-			DirectX::XMFLOAT3{ ec.x, ec.y, ec.z }
+			DirectX::XMFLOAT4{ e.x, e.y, e.z, 1 },
+			EC
 		});
 
-		arrowBufferData.push_back(DirectX::XMFLOAT4X4(&mat4::lookAt(e, e + e - s, vec3(0,0,-1))[0][0]));
+		arrowBufferData.push_back(DebugArrow{ DirectX::XMFLOAT4X4(&mat4::lookAt(e, e + e - s, vec3(0,0,-1))[0][0]), EC });
 	}
 
 	DXInfo& d = DXInfo::getInstance();

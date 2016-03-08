@@ -14,8 +14,13 @@ struct Vertex
 };
 
 struct DebugVector {
-	DirectX::XMFLOAT3 Position;
-	DirectX::XMFLOAT3 Color;
+	DirectX::XMFLOAT4 Position;
+	DirectX::XMFLOAT4 Color;
+};
+
+struct DebugArrow {
+	DirectX::XMFLOAT4X4 World;
+	DirectX::XMFLOAT4 Color;
 };
 
 struct DebugVertex

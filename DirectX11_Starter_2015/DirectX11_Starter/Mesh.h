@@ -14,6 +14,11 @@ struct MeshBuffer {
 	std::vector<uint32_t> meshElementArray = std::vector<uint32_t>();
 };
 
+struct DebugMeshBuffer {
+	std::vector<DebugVertex> meshArray = std::vector<DebugVertex>();
+	std::vector<uint32_t> meshElementArray = std::vector<uint32_t>();
+};
+
 struct Face {
 	//these all correspond to the indices in the vectors
 	std::vector<uint32_t> verts, uvs, normals;
@@ -34,6 +39,7 @@ public:
 	vec3 getDims();
 
 	MeshBuffer genMeshArrays();
+	DebugMeshBuffer genDebugMeshArrays();
 
 protected:
 	std::vector<vec3> _verts, _normals, _uvs;
