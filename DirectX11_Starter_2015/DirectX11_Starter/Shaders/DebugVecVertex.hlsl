@@ -7,8 +7,8 @@ cbuffer externalData : register(b0)
 
 struct VertexShaderInput
 { 
-	float3 position		: POSITION;
-	float3 color		: COLOR;
+	float4 position		: POSITION;
+	float4 color		: COLOR;
 };
 
 struct VertexToPixel
@@ -22,7 +22,7 @@ VertexToPixel main( VertexShaderInput input )
 	VertexToPixel output;
 	matrix worldViewProj = mul(view, projection);
 
-	output.position = mul(float4(input.position, 1.0f), worldViewProj);
+	output.position = mul(input.position, worldViewProj);
 	output.color = float4(input.color.xyz, 1);
 
 	return output;

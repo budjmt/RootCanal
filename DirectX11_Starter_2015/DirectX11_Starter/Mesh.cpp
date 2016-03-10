@@ -59,6 +59,22 @@ vec3 Mesh::getDims() {
 	return h_dims;
 }
 
+vec3 Mesh::getCentroid() {
+	vec3 average;
+	for (auto v : _verts) average += v;
+	average /= (float)_verts.size();
+	
+	//rounding niceness, change sig to the place you want to round to, e.g. 100 is round to hundredths
+	float sig = 100.f;
+	for (int i = 0; i < 3; i++) average[i] = roundf(average[i] * sig) / sig;
+	
+	return average;
+}
+
+void Mesh::adjustLoc(vec3 d) {
+	for (int i = 0, numVerts = _verts.size(); i < numVerts; i++) _verts[i] += d;
+}
+
 MeshBuffer Mesh::genMeshArrays() {
 	MeshBuffer m;
 	for (uint32_t i = 0, numfaceVerts = _faces.verts.size(); i < numfaceVerts; i++) {

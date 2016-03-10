@@ -8,6 +8,8 @@ public:
 	ID3D11DeviceContext*		deviceContext;
 	ID3D11RasterizerState*		rasterState;
 	D3D11_RASTERIZER_DESC		rasterDesc;
+	ID3D11BlendState*			blendState;
+	D3D11_BLEND_DESC			blendDesc;
 	IDXGISwapChain*				swapChain;
 	ID3D11Texture2D*			depthStencilBuffer;
 	ID3D11RenderTargetView*		renderTargetView;

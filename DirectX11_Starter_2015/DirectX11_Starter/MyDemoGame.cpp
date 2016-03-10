@@ -111,9 +111,25 @@ bool MyDemoGame::Init()
 	DXInfo& d = DXInfo::getInstance();
 	d.device = device;
 	d.deviceContext = deviceContext;
-	deviceContext->RSGetState(&d.rasterState);
-	if (d.rasterState)
-		d.rasterState->GetDesc(&d.rasterDesc);
+	
+	d.rasterDesc.CullMode = D3D11_CULL_BACK;
+	d.rasterDesc.DepthClipEnable = true;
+	device->CreateRasterizerState(&d.rasterDesc, &d.rasterState);
+	deviceContext->RSSetState(d.rasterState);
+	
+	d.blendDesc.IndependentBlendEnable = false;
+	d.blendDesc.AlphaToCoverageEnable = false;
+	d.blendDesc.RenderTarget[0].BlendEnable = true;
+	d.blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	d.blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	d.blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d.blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	d.blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d.blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	d.blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	d.device->CreateBlendState(&d.blendDesc, &d.blendState);
+	//d.deviceContext->OMSetBlendState(d.blendState, , );
+
 	d.swapChain = swapChain;
 	d.depthStencilBuffer = depthStencilBuffer;
 	d.renderTargetView = renderTargetView;
@@ -346,9 +362,16 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		e->draw(deviceContext);
 	}
 	#if DEBUG
-		DrawDebug::getInstance().drawDebugSphere(vec3(0.5f,0.5f,0.5f),0.5f);
-		//DrawDebug::getInstance().drawDebugVector(vec3(0.6f,0.7f,0.f), vec3(1,0,0));
-		DrawDebug::getInstance().draw();
+	DrawDebug& d = DrawDebug::getInstance();
+		d.drawDebugSphere(vec3(0.5f,0.5f,0.5f),0.5f);
+		d.drawDebugVector(vec3(), vec3(1, 0, 0), vec3(1, 0, 0));
+		d.drawDebugVector(vec3(), vec3(0, 1, 0), vec3(0, 0, 1));
+		d.drawDebugVector(vec3(), vec3(0, .001f, 1), vec3(0, 1, 0));
+		float c = 2 * PI;
+		vec3 v(1, 0, 0);
+		int div = 12;
+		for (int i = 0; i < div; i++) for (int j = 0; j < 30; j++) d.drawDebugVector(vec3(),(vec3)(mat4::rotate(c * i / div, vec3(1,0,0)) * mat4::rotate(c * j / div, vec3(0,1,0)) * vec4(v)));
+		d.draw();
 	#endif
 
 	// Present the buffer

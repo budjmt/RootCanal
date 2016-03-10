@@ -31,6 +31,7 @@ VertexToPixel main( VertexInput v, InstanceInput i )
 	VertexToPixel output;
 	output.position = mul(float4(v.position, 1.0f), worldViewProj);
 	output.normal = normalize(mul(v.normal, (float3x3)i.world));
+	output.color = i.color;
 
 	return output;
 }

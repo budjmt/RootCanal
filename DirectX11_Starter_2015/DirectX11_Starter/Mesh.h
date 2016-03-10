@@ -32,6 +32,8 @@ public:
 
 	const MeshBuffer& meshBuffer() const;
 	vec3 getDims();
+	vec3 getCentroid();
+	void adjustLoc(vec3 d);
 
 	MeshBuffer genMeshArrays();
 

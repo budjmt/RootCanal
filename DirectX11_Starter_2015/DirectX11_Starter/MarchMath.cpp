@@ -111,7 +111,6 @@ mat4 mat4::lookAt(vec3 eye, vec3 target, vec3 up) {
 	vec3 f = target - eye; f /= vec3::length(f);
 	vec3 s = vec3::cross(up, f); s /= vec3::length(s);
 	vec3 u = vec3::cross(f, s);
-	//f *= -1;
 	float r[] = {
 		s.x,	s.y,	s.z,	-vec3::dot(eye, s),
 		u.x,	u.y,	u.z,	-vec3::dot(eye, u),

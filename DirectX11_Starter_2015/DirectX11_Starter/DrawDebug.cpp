@@ -5,11 +5,32 @@ DrawDebug::DrawDebug() {
 	DXInfo& d = DXInfo::getInstance();
 
 	D3D11_RASTERIZER_DESC rdesc = d.rasterDesc;
+	
+	//set up render modes
 	rdesc.FillMode = D3D11_FILL_WIREFRAME;
-	d.device->CreateRasterizerState(&d.rasterDesc, &wireframe);
+	d.device->CreateRasterizerState(&rdesc, &wireframe);
+	assert(wireframe != nullptr);
 	rdesc.FillMode = D3D11_FILL_SOLID;
-	d.device->CreateRasterizerState(&d.rasterDesc, &fill);
+	d.device->CreateRasterizerState(&rdesc, &fill);
+	assert(fill != nullptr);
 
+	shaderSetup(d);
+	bufferSetup(d);
+#endif
+}
+
+DrawDebug::~DrawDebug() {
+#if DEBUG
+	delete sphere; delete arrow;
+	sphere = arrow = nullptr;
+	svb->Release(); sib->Release(); sinstb->Release();
+	avb->Release(); aib->Release(); ainstb->Release();
+	vvb->Release();
+	svb = sib = sinstb = avb = aib = ainstb = vvb = nullptr;
+#endif
+}
+
+void DrawDebug::shaderSetup(DXInfo& d) {
 	vecVert = new SimpleVertexShader(d.device, d.deviceContext);
 	vecVert->LoadShaderFile(L"DebugVecVertex.cso");
 	vecPixel = new SimplePixelShader(d.device, d.deviceContext);
@@ -18,20 +39,22 @@ DrawDebug::DrawDebug() {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> meshDescs;
 	meshDescs.push_back(D3D11_INPUT_ELEMENT_DESC{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 });
 	meshDescs.push_back(D3D11_INPUT_ELEMENT_DESC{ "NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 });
-	auto mat =          D3D11_INPUT_ELEMENT_DESC{ "WORLD_MAT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
+	auto mat = D3D11_INPUT_ELEMENT_DESC{ "WORLD_MAT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
 	meshDescs.push_back(mat);
 	mat.SemanticIndex = 1; meshDescs.push_back(mat);
 	mat.SemanticIndex = 2; meshDescs.push_back(mat);
 	mat.SemanticIndex = 3; meshDescs.push_back(mat);
 	meshDescs.push_back(D3D11_INPUT_ELEMENT_DESC{ "COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 });
-	
+
 	meshVert = new SimpleVertexShader(d.device, d.deviceContext);
 	meshVert->LoadShaderFile(L"DebugMeshVertex.cso");
 	HRESULT hr = d.device->CreateInputLayout(&meshDescs[0], meshDescs.size(), meshVert->GetShaderBlob()->GetBufferPointer(), meshVert->GetShaderBlob()->GetBufferSize(), &(meshVert->inputLayout));
 
 	meshPixel = new SimplePixelShader(d.device, d.deviceContext);
 	meshPixel->LoadShaderFile(L"DebugMeshPixel.cso");
+}
 
+void DrawDebug::bufferSetup(DXInfo& d) {
 	D3D11_BUFFER_DESC vbd, ibd;
 	D3D11_SUBRESOURCE_DATA initialVertexData, initialIndexData;
 
@@ -46,6 +69,9 @@ DrawDebug::DrawDebug() {
 	//arrow setup
 	arrow = loadOBJ("Assets/_debug/arrow.obj");
 	assert(arrow != nullptr);
+	vec3 c = arrow->getCentroid();
+	if(vec3::length(c) > FLT_EPSILON)
+		arrow->adjustLoc(c * -1.f);
 	DebugMeshBuffer dm = genDebugMeshArrays(arrow);
 
 	//vertex buffer
@@ -75,6 +101,9 @@ DrawDebug::DrawDebug() {
 	//sphere setup
 	sphere = loadOBJ("Assets/_debug/sphere.obj");
 	assert(sphere != nullptr);
+	c = sphere->getCentroid();
+	if (vec3::length(c) > FLT_EPSILON)
+		sphere->adjustLoc(c * -1.f);
 	dm = genDebugMeshArrays(sphere);
 
 	//vertex buffer
@@ -89,22 +118,10 @@ DrawDebug::DrawDebug() {
 
 	//instance buffer
 	ibd.Usage = D3D11_USAGE_DYNAMIC;
-	ibd.ByteWidth = sizeof(DirectX::XMFLOAT4X4) * MAX_SPHERES;
+	ibd.ByteWidth = sizeof(DebugMesh) * MAX_SPHERES;
 	ibd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	ibd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	HR(d.device->CreateBuffer(&ibd, nullptr, &sinstb));
-#endif
-}
-
-DrawDebug::~DrawDebug() {
-#if DEBUG
-	delete sphere; delete arrow;
-	sphere = arrow = nullptr;
-	svb->Release(); sib->Release(); sinstb->Release();
-	avb->Release(); aib->Release(); ainstb->Release();
-	vvb->Release();
-	svb = sib = sinstb = avb = aib = ainstb = vvb = nullptr;
-#endif
 }
 
 DrawDebug& DrawDebug::getInstance() {
@@ -116,7 +133,7 @@ void DrawDebug::camera(Camera** c) { cam = c; }
 
 void DrawDebug::draw() {
 #if DEBUG
-	//drawVectors();
+	drawVectors();
 	drawSpheres();
 	DXInfo& d = DXInfo::getInstance();
 	d.deviceContext->RSSetState(d.rasterState);
@@ -141,7 +158,11 @@ void DrawDebug::drawVectors() {
 			EC
 		});
 
-		arrowBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&mat4::lookAt(e, e + e - s, vec3(0,0,-1))[0][0]), EC });
+		vec3 dir = e - s;
+		dir /= vec3::length(dir);
+		mat4 arrowMat = mat4::scale(vec3(0.05f, 0.05f, 0.05f)) * (mat4::lookAt(vec3(), dir, vec3(0, 0, 1)) * mat4::translate(e));
+		//mat4 arrowMat = mat4::scale(vec3(0.05f, 0.05f, 0.05f)) * mat4::translate(e);
+		arrowBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&arrowMat[0][0]), EC });
 	}
 
 	DXInfo& d = DXInfo::getInstance();
@@ -201,13 +222,14 @@ void DrawDebug::drawSpheres() {
 		mat4 translate, scale;
 		translate = mat4::translate(s.center);
 		scale = mat4::scale(vec3(1, 1, 1) * (s.rad * 2));
-		sphereBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&(scale * translate)[0][0]), DirectX::XMFLOAT4{ 0.f, 0.5f, 0.7f, 0.2f } });
+		sphereBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&(scale * translate)[0][0]), DirectX::XMFLOAT4{ 0.2f, 0.7f, 0.9f, 0.2f } });
 	}
 	UINT vstride = sizeof(DebugVertex), istride = sizeof(DebugMesh);
 	UINT voffset = 0, ioffset = 0;
 	ID3D11Buffer* buffs[] = { svb, sinstb };
 	UINT strides[] = { vstride, istride }, offsets[] = { voffset, ioffset };
 	d.deviceContext->IASetVertexBuffers(0, 2, buffs, strides, offsets);
+	d.deviceContext->IASetIndexBuffer(sib, DXGI_FORMAT_R32_UINT, 0);
 
 	//upload
 	D3D11_MAPPED_SUBRESOURCE mappedRes;

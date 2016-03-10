@@ -39,10 +39,13 @@ private:
 	DrawDebug(const DrawDebug&) = delete;
 	void operator=(const DrawDebug&) = delete;
 
+	void shaderSetup(DXInfo& d);
+	void bufferSetup(DXInfo& d);
+	DebugMeshBuffer genDebugMeshArrays(Mesh* m);
+
 	//these are to separate the individual processes
 	void drawVectors();
 	void drawSpheres();
-	DebugMeshBuffer genDebugMeshArrays(Mesh* m);
 
 	ID3D11RasterizerState *fill, *wireframe;
 
