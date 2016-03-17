@@ -39,7 +39,7 @@ void DrawDebug::shaderSetup(DXInfo& d) {
 	std::vector<D3D11_INPUT_ELEMENT_DESC> meshDescs;
 	meshDescs.push_back(D3D11_INPUT_ELEMENT_DESC{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 });
 	meshDescs.push_back(D3D11_INPUT_ELEMENT_DESC{ "NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 });
-	auto mat = D3D11_INPUT_ELEMENT_DESC{ "WORLD_MAT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
+	auto mat =			D3D11_INPUT_ELEMENT_DESC{ "WORLD_MAT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
 	meshDescs.push_back(mat);
 	mat.SemanticIndex = 1; meshDescs.push_back(mat);
 	mat.SemanticIndex = 2; meshDescs.push_back(mat);
@@ -148,21 +148,21 @@ void DrawDebug::drawVectors() {
 
 	for (int i = 0, numVecs = debugVectors.size(); i < numVecs; i += 4) {
 		vec3 s = debugVectors[i], sc = debugVectors[i + 1], e = debugVectors[i + 2], ec = debugVectors[i + 3];
-		DirectX::XMFLOAT4 EC = DirectX::XMFLOAT4{ ec.x, ec.y, ec.z, 1 };
+		DirectX::XMFLOAT4 xmec = DirectX::XMFLOAT4{ ec.x, ec.y, ec.z, 1 };
 		vecBufferData.push_back(DebugVector{
 			DirectX::XMFLOAT4{ s.x, s.y, s.z, 1 },
 			DirectX::XMFLOAT4{ sc.x, sc.y, sc.z, 1 }			
 		});
 		vecBufferData.push_back(DebugVector{
 			DirectX::XMFLOAT4{ e.x, e.y, e.z, 1 },
-			EC
+			xmec
 		});
 
 		vec3 dir = e - s;
 		dir /= vec3::length(dir);
 		mat4 arrowMat = mat4::scale(vec3(0.05f, 0.05f, 0.05f)) * (mat4::lookAt(vec3(), dir, vec3(0, 0, 1)) * mat4::translate(e));
 		//mat4 arrowMat = mat4::scale(vec3(0.05f, 0.05f, 0.05f)) * mat4::translate(e);
-		arrowBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&arrowMat[0][0]), EC });
+		arrowBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&arrowMat[0][0]), xmec });
 	}
 
 	DXInfo& d = DXInfo::getInstance();
@@ -222,7 +222,7 @@ void DrawDebug::drawSpheres() {
 		mat4 translate, scale;
 		translate = mat4::translate(s.center);
 		scale = mat4::scale(vec3(1, 1, 1) * (s.rad * 2));
-		sphereBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&(scale * translate)[0][0]), DirectX::XMFLOAT4{ 0.2f, 0.7f, 0.9f, 0.2f } });
+		sphereBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&(scale * translate)[0][0]), DirectX::XMFLOAT4{ 0.2f, 0.7f, 0.9f, 0.3f } });
 	}
 	UINT vstride = sizeof(DebugVertex), istride = sizeof(DebugMesh);
 	UINT voffset = 0, ioffset = 0;

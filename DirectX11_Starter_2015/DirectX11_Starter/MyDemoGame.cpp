@@ -128,7 +128,6 @@ bool MyDemoGame::Init()
 	d.blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	d.blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	d.device->CreateBlendState(&d.blendDesc, &d.blendState);
-	//d.deviceContext->OMSetBlendState(d.blendState, , );
 
 	d.swapChain = swapChain;
 	d.depthStencilBuffer = depthStencilBuffer;
@@ -358,11 +357,14 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	vertexShader->SetShader(true);
 	pixelShader->SetShader(true);
 	
+	//optimize for transparent/non-transparent stuff later
+	auto& dx = DXInfo::getInstance(); 
+	dx.deviceContext->OMSetBlendState(dx.blendState, NULL, 0xffff);
 	for (Entity* e : entities) {
 		e->draw(deviceContext);
 	}
 	#if DEBUG
-	DrawDebug& d = DrawDebug::getInstance();
+		DrawDebug& d = DrawDebug::getInstance();
 		d.drawDebugSphere(vec3(0.5f,0.5f,0.5f),0.5f);
 		d.drawDebugVector(vec3(), vec3(1, 0, 0), vec3(1, 0, 0));
 		d.drawDebugVector(vec3(), vec3(0, 1, 0), vec3(0, 0, 1));
@@ -370,7 +372,7 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		float c = 2 * PI;
 		vec3 v(1, 0, 0);
 		int div = 12;
-		for (int i = 0; i < div; i++) for (int j = 0; j < 30; j++) d.drawDebugVector(vec3(),(vec3)(mat4::rotate(c * i / div, vec3(1,0,0)) * mat4::rotate(c * j / div, vec3(0,1,0)) * vec4(v)));
+		for (int i = 0; i < div; i++) for (int j = 0; j < div; j++) d.drawDebugVector(vec3(),(vec3)(mat4::rotate(c * i / div, vec3(1,0,0)) * mat4::rotate(c * j / div, vec3(0,1,0)) * vec4(v)));
 		d.draw();
 	#endif
 
