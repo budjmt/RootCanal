@@ -1,0 +1,25 @@
+#pragma once
+
+#include <iostream>
+#include "MarchMath.h"
+#include "OctTreeNode.h"
+#include "GameObject.h"
+
+class OctTree
+{
+public:
+    OctTree( vec3 center, vec3 halfWidths );
+    ~OctTree();
+
+    void print();
+    void draw();
+    bool collidesWith( GameObject* otherColliderPtr );
+    void checkCollisions();
+    void checkCollisions( GameObject* other );
+    void add( GameObject* otherColliderPtr );
+
+    OctTreeNode* getRoot();
+
+private:
+    OctTreeNode* _root;
+};
