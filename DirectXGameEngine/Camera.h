@@ -1,29 +1,33 @@
 #pragma once
 
-#include <DirectXMath.h>
-#include "Keyboard.h"
+#include "DirectXGameCore.h"
 
-class Camera
-{
+#include "SimpleShader.h"
+
+#include "MarchMath.h"
+#include "Entity.h"
+#include "Mouse.h"
+
+const float CAM_FOV = 2 * PI / 5;
+
+class Camera : public Entity {
 public:
-    Camera();
-    ~Camera();
+	Camera();
+	~Camera();
+	void updateCamMat(ISimpleShader* shader);
+	void update(float dt, Mouse* mouse);
+	void draw(ID3D11DeviceContext* deviceContext);
 
-    void Update( float dt );
+	float zoom;
+	vec3 getForward();
+	vec3 getUp();
+	vec3 getRight();
+	void turn(float dx, float dy);
+	vec3 getLookAt();
+	void updateProjection(int width, int height, float aspect);
 
-    void Rotate( float dx, float dy );
-
-    DirectX::XMFLOAT4X4 GetViewMatrix();
-    DirectX::XMFLOAT4X4 GetProjectionMatrix();
-    void SetProjectionAspectRatio( float aspectRatio );
+	static void mayaCam(int width, int height, float dt, Mouse* mouse, Camera* camera);
 
 private:
-    DirectX::XMFLOAT4X4 _viewMatrix;
-    DirectX::XMFLOAT4X4 _projectionMatrix;
-
-    DirectX::XMFLOAT3 _position;
-    DirectX::XMFLOAT3 _forward;
-    float _xRotation;
-    float _yRotation;
+	mat4 projection, view;
 };
-

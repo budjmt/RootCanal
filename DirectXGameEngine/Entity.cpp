@@ -1,5 +1,7 @@
 #include "Entity.h"
 
+Entity::Entity() {}
+
 Entity::Entity( Mesh* meshPtr, Material* materialPtr )
 {
     _meshPtr = meshPtr;

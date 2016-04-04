@@ -7,10 +7,7 @@ OctTree::OctTree( vec3 center, vec3 halfWidths )
 
 OctTree::~OctTree()
 {
-    if( _root != nullptr )
-    {
-        delete _root;
-    }
+    if(_root) { delete _root; }
 }
 
 void OctTree::print()
@@ -21,37 +18,19 @@ void OctTree::print()
 
 void OctTree::draw()
 {
-    if( _root != nullptr )
-    {
-        _root->draw();
-    }
+#if DEBUG
+	_root->draw();
+#endif
 }
 
-bool OctTree::collidesWith( GameObject* other )
+bool OctTree::intersects( Collider* other )
 {
-    if( _root == nullptr )
-    {
-        return false;
-    }
-
-    return _root->collidesWith( other );
+    return _root->intersects( other );
 }
 
-void OctTree::add( GameObject* other )
-{
-    _root->add( other );
-}
+void OctTree::add(GameObject* other) { _root->add(other); }
 
-OctTreeNode* OctTree::getRoot()
-{
-    return _root;
-}
+OctTreeNode* OctTree::getRoot() { return _root; }
 
-void OctTree::checkCollisions()
-{
-    _root->checkCollisions();
-}
-void OctTree::checkCollisions( GameObject* other )
-{
-    _root->checkCollisions( other );
-}
+collisionPairList OctTree::checkCollisions() { return _root->checkCollisions(); }
+collisionPairList OctTree::checkCollisions( GameObject* other ) { return _root->checkCollisions( other ); }

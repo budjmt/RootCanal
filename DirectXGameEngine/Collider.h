@@ -21,6 +21,12 @@ enum class ColliderType {
     MESH
 };
 
+class AABB {
+public:
+	vec3 center = vec3(), halfDims = vec3();
+	bool intersects(const AABB& other);
+};
+
 struct Adj {
     int f1, f2;
     int edge[2];
@@ -65,6 +71,7 @@ public:
     Transform* transform() const;
     vec3 framePos() const;
     vec3 dims() const; void dims( vec3 v );
+	AABB& aabb();
     void updateDims( Transform* t );
     float radius() const;
 
@@ -105,7 +112,7 @@ public:
 private:
     Transform* _transform;
     vec3 _framePos;
-    vec3 _dims;
+	vec3 _dims; AABB _aabb;
     float _radius;
     ColliderType _type;
 

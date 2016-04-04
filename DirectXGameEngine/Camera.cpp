@@ -1,118 +1,103 @@
 #include "Camera.h"
 
-Camera::Camera()
-{
-    _position = DirectX::XMFLOAT3( 0, 0, -5 );
-    _forward = DirectX::XMFLOAT3( 0, 0, 1 );
-    _viewMatrix = DirectX::XMFLOAT4X4();
-    _projectionMatrix = DirectX::XMFLOAT4X4();
+Camera::Camera() {}
+Camera::~Camera() {}
 
-    _xRotation = 0;
-    _yRotation = 0;
+void Camera::updateCamMat(ISimpleShader* shader) {
+	//we pre-transpose projection because it doesn't change very often
+	shader->SetMatrix4x4("projection", &projection[0][0]);
+	shader->SetMatrix4x4("view", &view[0][0]);
+
+	/*vec3 l = getLookAt(), u = getUp();
+	DirectX::XMVECTOR eye = { transform.position.x, transform.position.y, transform.position.z };
+	DirectX::XMVECTOR target = { l.x, l.y, l.z };
+	DirectX::XMVECTOR up = { u.x, u.y, u.z };
+	DirectX::XMMATRIX x = DirectX::XMMatrixLookAtLH(eye, target, up);
+	DirectX::XMFLOAT4X4 v;
+	XMStoreFloat4x4(&v, XMMatrixTranspose(x));
+	shader->SetMatrix4x4("view", v);*/
 }
 
-Camera::~Camera()
-{
+void Camera::update(float dt, Mouse* mouse) {
+	view = mat4::lookAt(transform.position, getLookAt(), getUp());
 }
 
-void Camera::Update( float dt )
-{
-    // Load data for vectors to perform camera update calculations
-    DirectX::XMVECTOR rotationQuaternion = DirectX::XMQuaternionRotationRollPitchYaw( _xRotation, _yRotation, 0 );
-    DirectX::XMVECTOR forward = DirectX::XMLoadFloat3( &_forward );
-    DirectX::XMVECTOR position = DirectX::XMLoadFloat3( &_position );
-    DirectX::XMVECTOR up = DirectX::XMLoadFloat3( &DirectX::XMFLOAT3( 0, 1, 0 ) );
-    DirectX::XMVECTOR right = DirectX::XMVector3Cross( up, forward );
-    DirectX::XMVECTOR displacement = DirectX::XMLoadFloat3( &DirectX::XMFLOAT3( 0, 0, 0 ) );
-
-    // Calculate the new view direction and right direction
-    DirectX::XMVECTOR viewDirection = DirectX::XMVector3Rotate( forward, rotationQuaternion );
-    DirectX::XMVECTOR newRightDirection = DirectX::XMVector3Rotate( right, rotationQuaternion );
-
-    // Handle input
-    Keyboard& input = Keyboard::getInstance();
-    
-    if( input.isDown( 'W' ) )
-    {
-        displacement = DirectX::XMVectorAdd( displacement, viewDirection );
-    }
-
-    if( input.isDown( 'S' ) )
-    {
-        displacement = DirectX::XMVectorSubtract( displacement, viewDirection );
-    }
-
-    if( input.isDown( 'D' ) )
-    {
-        displacement = DirectX::XMVectorAdd( displacement, newRightDirection );
-    }
-
-    if( input.isDown( 'A' ) )
-    {
-        displacement = DirectX::XMVectorSubtract( displacement, newRightDirection );
-    }
-
-    if( input.isDown( ' ' ) )
-    {
-        displacement = DirectX::XMVectorAdd( displacement, up );
-    }
-
-    if( input.isDown( 'X' ) )
-    {
-        displacement = DirectX::XMVectorSubtract( displacement, up );
-    }
-
-    // Scale the displacement
-    displacement = DirectX::XMVectorScale( displacement, 5 * dt );
-
-    position = DirectX::XMVectorAdd( position, displacement );
-
-    // Calculate the new view matrix
-    DirectX::XMMATRIX newViewMatrix = DirectX::XMMatrixLookToLH( position, viewDirection, up );
-
-    // Store the newly transformed data
-    DirectX::XMStoreFloat4x4( &_viewMatrix, XMMatrixTranspose( newViewMatrix ) );
-    DirectX::XMStoreFloat3( &_position, position );
+void Camera::draw(ID3D11DeviceContext* deviceContext) {
+	//does NOTHING because it's a CAMERA
+	//or maybe there's debug here
+	//who knows
 }
 
-void Camera::Rotate( float dx, float dy )
-{
-    _xRotation += dx;
-    _yRotation += dy;
-
-    float pi = DirectX::XM_PI;
-
-    // Clamp the pitch value to be from -PI/2 to PI/2
-    _xRotation = max( -pi * 0.5f, min( pi * 0.5f, _xRotation ) );
-
-    // Wrap the yaw value to be from 0 to 2PI
-    while( _yRotation > 2.0f * pi )
-    {
-        _yRotation -= 2.0f * pi;
-    }
-    while( _yRotation < 0 )
-    {
-        _yRotation += 2.0f * pi;
-    }
+void Camera::turn(float dx, float dy) {
+	transform.rotate(dy, dx, 0);
 }
 
-DirectX::XMFLOAT4X4 Camera::GetViewMatrix()
-{
-    return _viewMatrix;
+vec3 Camera::getLookAt() {
+	return transform.position + getForward();
 }
 
-DirectX::XMFLOAT4X4 Camera::GetProjectionMatrix()
-{
-    return _projectionMatrix;
+void Camera::updateProjection(int width, int height, float aspect) {
+	float znear = 0.01f;
+	float zfar = 1000.f;
+	//transpose for direct x
+	//projection = mat4::perspective((float)width, (float)height, znear, zfar);
+	projection = mat4::perspectiveFOV(CAM_FOV, aspect, znear, zfar);
+	//projection = mat4::transpose(mat4::orthographic((float)width, (float)height, znear, zfar));
+	//DirectX::XMMATRIX x = DirectX::XMMatrixPerspectiveFovLH(CAM_FOV, aspect, znear, zfar);
 }
 
-void Camera::SetProjectionAspectRatio( float aspectRatio )
-{
-    // Update our projection matrix since the window size changed
-    DirectX::XMMATRIX P = DirectX::XMMatrixPerspectiveFovLH(
-        0.25f * 3.1415926535f,	// Field of View Angle
-        aspectRatio,		  	// Aspect ratio
-        0.1f,				  	// Near clip plane distance
-        100.0f );			  	// Far clip plane distance
-    DirectX::XMStoreFloat4x4( &_projectionMatrix, XMMatrixTranspose( P ) ); // Transpose for HLSL!
+vec3 Camera::getForward() { return transform.forward(); }
+vec3 Camera::getUp() { return transform.up(); }
+vec3 Camera::getRight() { return transform.right(); }
+
+void Camera::mayaCam(int width, int height, float dt, Mouse* mouse, Camera* camera) {
+	if (mouse->down) {
+		if (mouse->btnState & 0x0001) {
+			float rot = (float)(PI * 20 * dt);
+			float xDiff = (float)(mouse->curr.x - mouse->prev.x);
+			float dx = sign(xDiff) * xDiff * xDiff / width * rot;
+			dx = min(rot, dx);
+			float yDiff = (float)(mouse->curr.y - mouse->prev.y);
+			float dy = sign(yDiff) * yDiff * yDiff / height * rot;
+			dy = min(rot, dy);
+			vec3 look = camera->getLookAt();
+			camera->turn(dx, dy);
+			camera->transform.position = look - camera->getForward();
+		}
+		else if (mouse->btnState & 0x0002) {
+			float avg = (float)((mouse->curr.y - mouse->prev.y) + (mouse->curr.x - mouse->prev.x)) * 8 * dt;
+			camera->transform.position += camera->getForward() * avg;
+		}
+		else if (mouse->btnState & 0x0010) {
+			camera->transform.position += camera->getRight() * ((float)(mouse->curr.x - mouse->prev.x) * dt * 8);
+			camera->transform.position += camera->getUp() * ((float)(mouse->curr.y - mouse->prev.y) * dt * 8);
+		}
+		//std::cout << "Position: " << camera->transform.position.x << "," << camera->transform.position.y << "," << camera->transform.position.z << std::endl << "Pitch: " << camera->pitch << std::endl << "Yaw: " << camera->yaw << std::endl;
+	}
+
+	if (GetAsyncKeyState('W') & 0x8000) {
+		camera->transform.position += camera->getForward() * (5.f * (float)dt);
+	}
+	else if (GetAsyncKeyState('S') & 0x8000) {
+		camera->transform.position += camera->getForward() * (-5.f * (float)dt);
+	}
+	if (GetAsyncKeyState('D') & 0x8000) {
+		camera->transform.position += camera->getRight() * (-5.f * (float)dt);
+	}
+	else if (GetAsyncKeyState('A') & 0x8000) {
+		camera->transform.position += camera->getRight() * (5.f * (float)dt);
+	}
+
+	if (GetAsyncKeyState(VK_UP) & 0x8000 || GetAsyncKeyState(VK_SPACE) & 0x8000) {
+		camera->transform.position += vec3(0, 1, 0) * (5.f * (float)dt);
+	}
+	else if (GetAsyncKeyState(VK_DOWN) & 0x8000 || GetAsyncKeyState('X') & 0x8000) {
+		camera->transform.position += vec3(0, 1, 0) * (-5.f * (float)dt);
+	}
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+		camera->transform.position += vec3(1, 0, 0) * (-5.f * (float)dt);
+	}
+	else if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+		camera->transform.position += vec3(1, 0, 0) * (5.f * (float)dt);
+	}
 }

@@ -269,7 +269,6 @@ void DrawDebug::drawDebugSphere( vec3 pos, float rad ) {
 }
 
 DebugMeshBuffer DrawDebug::genDebugMeshArrays( Mesh* m ) {
-#if DEBUG
     DebugMeshBuffer dm;
     std::vector<vec3> combs;
     auto faces = m->faces();
@@ -296,5 +295,4 @@ DebugMeshBuffer DrawDebug::genDebugMeshArrays( Mesh* m ) {
         dm.meshElementArray.push_back( index );
     }
     return dm;
-#endif
 }

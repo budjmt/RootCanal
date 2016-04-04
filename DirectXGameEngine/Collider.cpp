@@ -4,15 +4,18 @@
 Collider::Collider( void )
     : type( _type )
 {
-    _dims = vec3( 0, 0, 0 );
+    _dims = vec3();
+	_aabb.center = _transform->position;//not computed, naughty
     _radius = 0;
 }
 
 Collider::Collider( Transform* t, vec3 d )
     : type( _type )
 {
-    dims( d );
     _transform = t;
+	dims(d);
+	updateDims(_transform);
+	_aabb.center = _transform->position;//not computed, naughty
     _type = ColliderType::BOX;
     //the order is important;
     //edges depend on the gauss map, which depends on the normals
@@ -28,6 +31,7 @@ Collider::Collider( Mesh* m, Transform* t )
     mesh = m;
     _transform = t;
     dims( m->getDims() );
+	_aabb.center = _transform->position;//not computed, naughty
     updateDims( _transform );
     _type = ColliderType::MESH;
     //the order is important;
@@ -43,6 +47,7 @@ Collider::Collider( const Collider& other )
 {
     _transform = new Transform( *other.transform() );
     dims( other.dims() );
+	_aabb = other._aabb;
     _radius = other.radius();
     _framePos = other.framePos();
     type = other.type;
@@ -57,7 +62,8 @@ Collider::~Collider( void )
 Transform* Collider::transform() const { return _transform; }
 vec3 Collider::framePos() const { return _framePos; }
 
-vec3 Collider::dims() const { return _dims; } void Collider::dims( vec3 v ) { _dims = v; _radius = max( max( _dims.x, _dims.y ), _dims.z ); }
+vec3 Collider::dims() const { return _dims; } void Collider::dims(vec3 v) { _dims = v; _radius = max(max(_dims.x, _dims.y), _dims.z); _aabb.halfDims = v; }
+AABB& Collider::aabb() { return _aabb; }
 float Collider::radius() const { return _radius; }
 
 //makes sure the radius is up to date
@@ -487,7 +493,7 @@ std::vector<vec3> Collider::clipPolyAgainstEdge( std::vector<vec3>& input, vec3 
             float e = vec3::dot( sidePlane, startpt - endpt );
             float t = ( e != 0 ) ? clipStart / e : 0;
             //float t = clipStart * 1.f / (clipStart - clipEnd);
-            vec3 intersect = mix( startpt, endpt, t );
+            vec3 intersect = vec3::lerp( startpt, endpt, t );
 
             if( vec3::dot( refNorm, intersect - refCenter ) < 0 )
                 output.push_back( intersect );
@@ -806,6 +812,7 @@ void Collider::updateEdges() {
 
 void Collider::update() {
     _framePos = _transform->computeTransform().position;
+	_aabb.center = _framePos;
     updateDims( _transform );
     updateNormals();
     updateEdges();
@@ -839,4 +846,11 @@ std::vector<Adj>& GaussMap::getAdjs( vec3 v ) {
 void GaussMap::addAdj( vec3 v, Adj a ) {
     std::string key = std::to_string( v.x ) + "," + std::to_string( v.y ) + "," + std::to_string( v.z );
     adjacencies[key].push_back( a );
+}
+
+bool AABB::intersects(const AABB& other) {
+	bool xSeparate = center.x - halfDims.x > other.center.x + other.halfDims.x || other.center.x - halfDims.x > center.x + halfDims.x;
+	bool ySeparate = center.y - halfDims.y > other.center.y + other.halfDims.y || other.center.y - halfDims.y > center.y + halfDims.y;
+	bool zSeparate = center.z - halfDims.z > other.center.z + other.halfDims.z || other.center.z - halfDims.z > center.z + halfDims.z;
+	return !(xSeparate || ySeparate || zSeparate);
 }

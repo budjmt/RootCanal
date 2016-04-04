@@ -3,13 +3,13 @@
 #include <DirectXMath.h>
 #include "DirectXGameCore.h"
 #include "SimpleShader.h"
-#include "Mesh.h"
-#include "Material.h"
+
+#include "DXInfo.h"
+#include "Mouse.h"
 #include "Entity.h"
 #include "Camera.h"
+#include "DrawMesh.h"
 #include "Light.h"
-#include <vector>
-#include "MeshImporter.h"
 
 // Include run-time memory checking in debug builds, so 
 // we can be notified of memory leaks
@@ -42,7 +42,7 @@ private:
 	// Initialization for our "game" demo - Feel free to
 	// expand, alter, rename or remove these once you
 	// start doing something more advanced!
-	void LoadShaders(); 
+	void LoadShaders();
 	void CreateGeometry();
 	void CreateMatrices();
 
@@ -55,20 +55,14 @@ private:
 	DirectX::XMFLOAT4X4 viewMatrix;
 	DirectX::XMFLOAT4X4 projectionMatrix;
 
+	Camera* camera = nullptr;
+	std::vector<Entity*> entities;
+	std::vector<Mesh*> meshes;
+	std::vector<Material*> materials;
+
+	DirectionalLight l1, l2;
+
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.
-	POINT prevMousePos;
-
-    Mesh* _mesh1;
-    Mesh* _mesh2;
-    Mesh* _mesh3;
-
-    Material* _material;
-
-    std::vector<Entity*> _entities;
-
-    Camera* _camera;
-
-    DirectionalLight _light1;
-    DirectionalLight _light2;
+	Mouse mouse;
 };

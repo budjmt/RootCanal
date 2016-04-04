@@ -9,13 +9,16 @@ class OctTree
 {
 public:
     OctTree( vec3 center, vec3 halfWidths );
+	OctTree() = default;
     ~OctTree();
+	OctTree(const OctTree& other) = default;
+	OctTree& operator=(const OctTree& other) = default;
 
     void print();
     void draw();
-    bool collidesWith( GameObject* otherColliderPtr );
-    void checkCollisions();
-    void checkCollisions( GameObject* other );
+    bool intersects( Collider* otherColliderPtr );
+    collisionPairList checkCollisions();
+	collisionPairList checkCollisions( GameObject* other );
     void add( GameObject* otherColliderPtr );
 
     OctTreeNode* getRoot();
