@@ -3,13 +3,11 @@
 #include <iostream>
 #include "DebugBenchmark.h"
 
-CollisionManager::CollisionManager() { octTree = OctTree(vec3(), vec3(1000,1000,1000)); }
-
-
-CollisionManager::~CollisionManager() { }
+CollisionManager::CollisionManager() { float d = 100.f; octTree = new OctTree(vec3(), vec3(d, d, d)); }
+CollisionManager::~CollisionManager() { delete octTree; }
 
 void CollisionManager::addObject(ColliderObject* o) {
-	octTree.add(o);
+	octTree->add(o);
 }
 
 void CollisionManager::update(float dt) {
@@ -20,9 +18,15 @@ void CollisionManager::update(float dt) {
 	} while (numCollisions > 0);
 }
 
+void CollisionManager::draw() {
+#if DEBUG
+	octTree->draw();
+#endif
+}
+
 //returns a list of all pairs of colliders requiring narrow phase checks
 collisionPairList CollisionManager::broadPhase() {
-	return octTree.checkCollisions();
+	return octTree->checkCollisions();
 }
 
 //returns the number of collisions found and handled

@@ -10,6 +10,7 @@ public:
 
 	void addObject(ColliderObject* o);
 	void update(float dt);
+	void draw();
 
 	collisionPairList broadPhase();
 	uint32_t narrowPhase(float dt);
@@ -18,7 +19,7 @@ private:
 	CollisionManager();
 	~CollisionManager();
 
-	OctTree octTree;
+	OctTree* octTree;
 	collisionPairList collisionPairs;
 
 };

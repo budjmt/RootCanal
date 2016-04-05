@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "DrawMesh.h"
 #include "Light.h"
+#include "CollisionManager.h"
 
 class RootCanal : public Game
 {

@@ -21,12 +21,13 @@ DrawDebug::DrawDebug() {
 
 DrawDebug::~DrawDebug() {
 #if DEBUG
-    delete sphere; delete arrow;
-    sphere = arrow = nullptr;
+	delete box; delete sphere; delete arrow;
+    box = sphere = arrow = nullptr;
+	bvb->Release(); bib->Release(); binstb->Release();
     svb->Release(); sib->Release(); sinstb->Release();
     avb->Release(); aib->Release(); ainstb->Release();
     vvb->Release();
-    svb = sib = sinstb = avb = aib = ainstb = vvb = nullptr;
+    bvb = sib = binstb = svb = sib = sinstb = avb = aib = ainstb = vvb = nullptr;
 #endif
 }
 
@@ -68,7 +69,7 @@ void DrawDebug::bufferSetup( DXInfo& d ) {
 
     //arrow setup
     MeshImporter importer;
-    arrow = importer.loadMesh( "Assets/_debug/arrow.obj" );
+    arrow = importer.loadMesh( "../Assets/_debug/arrow.obj" );
     assert( arrow != nullptr );
     vec3 c = arrow->getCentroid();
     if( vec3::length( c ) > FLT_EPSILON )
@@ -100,7 +101,7 @@ void DrawDebug::bufferSetup( DXInfo& d ) {
     HR( d.device->CreateBuffer( &ibd, &initialIndexData, &aib ) );
 
     //sphere setup
-    sphere = importer.loadMesh( "Assets/_debug/sphere.obj" );
+    sphere = importer.loadMesh( "../Assets/_debug/sphere.obj" );
     assert( sphere != nullptr );
     c = sphere->getCentroid();
     if( vec3::length( c ) > FLT_EPSILON )
@@ -123,6 +124,30 @@ void DrawDebug::bufferSetup( DXInfo& d ) {
     ibd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     ibd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     HR( d.device->CreateBuffer( &ibd, nullptr, &sinstb ) );
+
+	//box setup
+	box = importer.loadMesh("../Assets/_debug/cube.obj");
+	assert(box != nullptr);
+	c = box->getCentroid();
+	if (vec3::length(c) > FLT_EPSILON)
+		box->adjustLoc(c * -1.f);
+	dm = genDebugMeshArrays(box);
+
+	//vertex buffer
+	vbd.ByteWidth = sizeof(DebugVertex) * dm.meshArray.size();
+	initialVertexData.pSysMem = &dm.meshArray[0];
+	HR(d.device->CreateBuffer(&vbd, &initialVertexData, &bvb));
+
+	//instance buffer
+	ibd.ByteWidth = sizeof(DebugMesh) * MAX_BOXES;
+	HR(d.device->CreateBuffer(&ibd, nullptr, &binstb));
+
+	//index buffer
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER; ibd.CPUAccessFlags = 0;
+	ibd.ByteWidth = sizeof(uint32_t) * dm.meshElementArray.size();
+	initialIndexData.pSysMem = &dm.meshElementArray[0];
+	HR(d.device->CreateBuffer(&ibd, &initialIndexData, &bib));
 }
 
 DrawDebug& DrawDebug::getInstance() {
@@ -136,6 +161,7 @@ void DrawDebug::draw() {
 #if DEBUG
     drawVectors();
     drawSpheres();
+	drawBoxes();
     DXInfo& d = DXInfo::getInstance();
     d.deviceContext->RSSetState( d.rasterState );
     d.deviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
@@ -147,7 +173,7 @@ void DrawDebug::drawVectors() {
     vecBufferData.push_back( DebugVector{ DirectX::XMFLOAT4{ 0,0,0,0 }, DirectX::XMFLOAT4{ 0,0,0,0 } } );
     arrowBufferData.push_back( DebugMesh{ DirectX::XMFLOAT4X4( 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ), DirectX::XMFLOAT4{ 0,0,0,0 } } );
 
-    for( int i = 0, numVecs = debugVectors.size(); i < numVecs; i += 4 ) {
+    for( size_t i = 0, numVecs = debugVectors.size(); i < numVecs; i += 4 ) {
         vec3 s = debugVectors[i], sc = debugVectors[i + 1], e = debugVectors[i + 2], ec = debugVectors[i + 3];
         DirectX::XMFLOAT4 xmec = DirectX::XMFLOAT4{ ec.x, ec.y, ec.z, 1 };
         vecBufferData.push_back( DebugVector{
@@ -218,11 +244,11 @@ void DrawDebug::drawSpheres() {
     if( ( *cam ) != nullptr ) ( *cam )->updateCamMat( meshVert );
 
     sphereBufferData.push_back( DebugMesh{ DirectX::XMFLOAT4X4( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ), DirectX::XMFLOAT4{ 0,0,0,0 } } );
-    for( int i = 0, numSpheres = debugSpheres.size(); i < numSpheres; i++ ) {
+    for( size_t i = 0, numSpheres = debugSpheres.size(); i < numSpheres; i++ ) {
         Sphere s = debugSpheres[i];
         mat4 translate, scale;
         translate = mat4::translate( s.center );
-        scale = mat4::scale( vec3( 1, 1, 1 ) * ( s.rad * 2 ) );
+        scale = mat4::scale(s.rad * 2 * vec3( 1, 1, 1 ) );
         sphereBufferData.push_back( DebugMesh{ DirectX::XMFLOAT4X4( &( scale * translate )[0][0] ), DirectX::XMFLOAT4{ 0.2f, 0.7f, 0.9f, 0.3f } } );
     }
     UINT vstride = sizeof( DebugVertex ), istride = sizeof( DebugMesh );
@@ -250,6 +276,45 @@ void DrawDebug::drawSpheres() {
     sphereBufferData = std::vector<DebugMesh>();
 }
 
+void DrawDebug::drawBoxes() {
+#if DEBUG
+	DXInfo& d = DXInfo::getInstance();
+	if ((*cam) != nullptr) (*cam)->updateCamMat(meshVert);
+
+	boxBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), DirectX::XMFLOAT4{ 0,0,0,0 } });
+	for (size_t i = 0, numBoxes = debugBoxes.size(); i < numBoxes; i += 3) {
+		//buffer is arranged pos, dims, color...
+		mat4 translate, scale;
+		translate = mat4::translate(debugBoxes[i]);
+		scale = mat4::scale(debugBoxes[i + 1]);
+		boxBufferData.push_back(DebugMesh{ DirectX::XMFLOAT4X4(&(scale * translate)[0][0]), DirectX::XMFLOAT4(&vec4(debugBoxes[i + 2])[0]) });
+	}
+	UINT vstride = sizeof(DebugVertex), istride = sizeof(DebugMesh);
+	UINT voffset = 0, ioffset = 0;
+	ID3D11Buffer* buffs[] = { bvb, binstb };
+	UINT strides[] = { vstride, istride }, offsets[] = { voffset, ioffset };
+	d.deviceContext->IASetVertexBuffers(0, 2, buffs, strides, offsets);
+	d.deviceContext->IASetIndexBuffer(bib, DXGI_FORMAT_R32_UINT, 0);
+
+	//upload
+	D3D11_MAPPED_SUBRESOURCE mappedRes;
+	ZeroMemory(&mappedRes, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	d.deviceContext->Map(binstb, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedRes);
+	memcpy(mappedRes.pData, &boxBufferData[0], boxBufferData.size() * istride);
+	d.deviceContext->Unmap(binstb, 0);
+
+	//draw
+	meshVert->SetShader(true);
+	meshPixel->SetShader(true);
+	d.deviceContext->RSSetState(wireframe);
+	d.deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	d.deviceContext->DrawIndexedInstanced(box->meshBuffer().meshElementArray.size(), boxBufferData.size(), 0, 0, 0);
+
+	debugBoxes = std::vector<vec3>();
+	boxBufferData = std::vector<DebugMesh>();
+#endif
+}
+
 void DrawDebug::drawDebugVector( vec3 start, vec3 end, vec3 color ) {
 #if DEBUG
     debugVectors.push_back( start );
@@ -265,6 +330,15 @@ void DrawDebug::drawDebugSphere( vec3 pos, float rad ) {
     DrawDebug& d = DrawDebug::getInstance();
     debugSpheres.push_back( s );
     //drawDebugVector(pos, pos + vec3(rad, 0, 0));
+#endif
+}
+
+void DrawDebug::drawDebugBox(vec3 pos, vec3 dims, vec3 color, bool filled) {
+#if DEBUG
+	debugBoxes.push_back(pos);
+	debugBoxes.push_back(dims);
+	debugBoxes.push_back(color);
+	//for now, we'll assume that they're all wireframe for sanity
 #endif
 }
 

@@ -40,6 +40,6 @@ private:
     quat _rotation; vec3 _rotAxis; float _rotAngle;
     vec3 _forward, _up, _right;
 
-	Transform *computed, *_parent;
+	Transform *computed = nullptr, *_parent = nullptr;
 	Transform computeTransform();
 };

@@ -71,16 +71,16 @@ void OctTreeNode::print()
 void OctTreeNode::draw()
 {
 #if DEBUG
-	auto d = DrawDebug::getInstance();
+	DrawDebug& d = DrawDebug::getInstance();
 	AABB a = _collider->aabb();
-	d.drawBox(a.center, a.halfDims, vec4(0,0,0,1), false);
+	d.drawDebugBox(a.center, a.halfDims * 2, vec3(), false);
 
     for each( auto child in _containedChildren )
     {
         if( child )
         {
 			AABB aabb = child->collider()->aabb();
-			d.drawBox(aabb.center, aabb.halfDims, vec4(0,0,0,1), false);
+			d.drawDebugBox(aabb.center, aabb.halfDims * 2, vec3(1,0,0), false);
         }
     }
 

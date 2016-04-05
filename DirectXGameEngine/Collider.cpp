@@ -5,7 +5,8 @@ Collider::Collider( void )
     : type( _type )
 {
     _dims = vec3();
-	_aabb.center = _transform->getComputed().position();
+	true_aabb.center = _transform->getComputed().position();
+	_aabb = true_aabb;
     _radius = 0;
 }
 
@@ -14,8 +15,9 @@ Collider::Collider( Transform* t, vec3 d )
 {
     _transform = t;
 	dims(d);
+	true_aabb.center = _transform->getComputed().position();
+	_aabb = true_aabb;
 	updateDims(_transform);
-	_aabb.center = _transform->getComputed().position();
     _type = ColliderType::BOX;
     //the order is important;
     //edges depend on the gauss map, which depends on the normals
@@ -31,7 +33,8 @@ Collider::Collider( Mesh* m, Transform* t )
     mesh = m;
     _transform = t;
     dims( m->getDims() );
-	_aabb.center = _transform->getComputed().position();
+	true_aabb.center = _transform->getComputed().position();
+	_aabb = true_aabb;
     updateDims( _transform );
     _type = ColliderType::MESH;
     //the order is important;
@@ -47,6 +50,7 @@ Collider::Collider( const Collider& other )
 {
     _transform = new Transform( *other.transform() );
     dims( other.dims() );
+	true_aabb = other.true_aabb;
 	_aabb = other._aabb;
     _radius = other.radius();
     _framePos = other.framePos();
@@ -62,7 +66,7 @@ Collider::~Collider( void )
 Transform* Collider::transform() const { return _transform; }
 vec3 Collider::framePos() const { return _framePos; }
 
-vec3 Collider::dims() const { return _dims; } void Collider::dims(vec3 v) { _dims = v; _radius = max(max(_dims.x, _dims.y), _dims.z); _aabb.halfDims = v; }
+vec3 Collider::dims() const { return _dims; } void Collider::dims(vec3 v) { _dims = v; _radius = max(max(_dims.x, _dims.y), _dims.z); true_aabb.halfDims = v; }
 AABB& Collider::aabb() { return _aabb; }
 float Collider::radius() const { return _radius; }
 
@@ -70,6 +74,19 @@ float Collider::radius() const { return _radius; }
 void Collider::updateDims( Transform* t ) {
     vec3 scale = t->getComputed().scale();
     _radius = max( max( _dims.x * scale.x, _dims.y * scale.y ), _dims.z * scale.z );
+	_aabb.halfDims = true_aabb.halfDims;
+	for (int i = 0; i < 3; i++)
+		_aabb.halfDims[i] *= scale[i] * 1.5f;//they're big right now
+}
+
+void Collider::update() {
+	_framePos = _transform->getComputed().position();
+	true_aabb.center = _framePos;
+	_aabb.center = true_aabb.center;
+	updateDims(_transform);
+	updateNormals();
+	updateEdges();
+	DrawDebug::getInstance().drawDebugSphere(_framePos, _radius);
 }
 
 //gets the vertex of the collider furthest in the direction of dir
@@ -658,7 +675,7 @@ void Collider::genNormals() {
         break;
     case ColliderType::MESH:
         //generate the face normals from the mesh's vertices
-        std::vector<uint32_t> faceVerts = mesh->faces().verts;
+        std::vector<uint32_t>& faceVerts = mesh->faces().verts;
         std::vector<vec3> meshVerts = mesh->verts();
         int numFaces = faceVerts.size();
         for( int i = 0; i < numFaces; i += 3 ) {
@@ -805,15 +822,6 @@ void Collider::updateEdges() {
         }*/
         break;
     }
-}
-
-void Collider::update() {
-    _framePos = _transform->getComputed().position();
-	_aabb.center = _framePos;
-    updateDims( _transform );
-    updateNormals();
-    updateEdges();
-    DrawDebug::getInstance().drawDebugSphere( _framePos, _radius );
 }
 
 const std::vector<vec3>& Collider::getCurrNormals() const { return currNormals; }

@@ -11,8 +11,9 @@ public:
 	OctTree() = default;
     ~OctTree();
 	OctTree(const OctTree& other) = default;
-	OctTree& operator=(const OctTree& other) = default;
-
+	OctTree(OctTree&& other) = default;
+	OctTree& operator=(OctTree&& other) = default;
+	
     void print();
     void draw();
     bool intersects( Collider* other );

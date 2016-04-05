@@ -90,6 +90,7 @@ bool RootCanal::Init()
 	d.deviceContext = deviceContext;
 
 	d.rasterDesc.CullMode = D3D11_CULL_BACK;
+	//d.rasterDesc.CullMode = D3D11_CULL_NONE;
 	d.rasterDesc.DepthClipEnable = true;
 	device->CreateRasterizerState(&d.rasterDesc, &d.rasterState);
 	deviceContext->RSSetState(d.rasterState);
@@ -190,7 +191,7 @@ void RootCanal::CreateGeometry()
 		vecs[0] = vec3(8.f - (i + 1) * 4.f, 0.f, 0.f);
 		vecs[1] = vec3((i + 1) * 0.5f, (i + 1) * 0.5f, (i + 1) * 0.5f);
 		//vecs[2] = vec3(1,0,0);
-		GameObject* e = new GameObject(vecs[0], vecs[1], vecs[2], rot, d);
+		ColliderObject* e = new ColliderObject(vecs[0], loadedMesh->getDims(), vecs[1], vecs[2], rot, d);
 		meshes.push_back(loadedMesh);
 		gameObjects.push_back(e);
 		i++;
@@ -240,6 +241,7 @@ void RootCanal::UpdateScene(float deltaTime, float totalTime)
 	Camera::mayaCam(windowWidth, windowHeight, deltaTime, &mouse, camera);
 	for (auto g : gameObjects)
 		g->update(deltaTime, &mouse);
+	CollisionManager::getInstance().update(deltaTime);
 
 	mouse.prev.x = mouse.curr.x;
 	mouse.prev.y = mouse.curr.y;
@@ -285,6 +287,8 @@ void RootCanal::DrawScene(float deltaTime, float totalTime)
 	int div = 12;
 	for (int i = 0; i < div; i++) for (int j = 0; j < div; j++) d.drawDebugVector(vec3(), (vec3)(mat4::rotate(c * i / div, vec3(1, 0, 0)) * mat4::rotate(c * j / div, vec3(0, 1, 0)) * vec4(v)));
 	d.draw();
+
+	CollisionManager::getInstance().draw();
 #endif
 
 	// Present the buffer
