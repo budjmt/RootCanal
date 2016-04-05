@@ -28,9 +28,9 @@ bool OctTree::intersects( Collider* other )
     return _root->intersects( other );
 }
 
-void OctTree::add(GameObject* go) { _root->add(go); }
+void OctTree::add(ColliderObject* o) { _root->add(o); }
 
 OctTreeNode* OctTree::getRoot() { return _root; }
 
 collisionPairList OctTree::checkCollisions() { return _root->checkCollisions(); }
-collisionPairList OctTree::checkCollisions( GameObject* other ) { return _root->checkCollisions( other ); }
+collisionPairList OctTree::checkCollisions( ColliderObject* other ) { return _root->checkCollisions( other ); }

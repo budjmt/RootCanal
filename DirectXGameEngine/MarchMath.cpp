@@ -64,8 +64,8 @@ mat3::mat3(float* _m) { for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) 
 
 //accessor is [col][row]... which is weird, I know
 const float* mat3::operator[](int i) const { return &m[i * 3]; } float* mat3::operator[](int i) { return &m[i * 3]; }
-mat3 mat3::operator+(const mat3& other) { mat4 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] += other[i][j]; return r; }
-mat3 mat3::operator-(const mat3& other) { mat4 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] -= other[i][j]; return r; }
+mat3 mat3::operator+(const mat3& other) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] += other[i][j]; return r; }
+mat3 mat3::operator-(const mat3& other) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] -= other[i][j]; return r; }
 mat3 mat3::operator*(float f) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] *= f; return r; }
 mat3 mat3::operator/(float f) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] /= f; return r; }
 

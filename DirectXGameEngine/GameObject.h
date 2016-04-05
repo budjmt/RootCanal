@@ -23,8 +23,8 @@ public:
     virtual void removeChild( GameObject* child, bool free = false );
     virtual bool contains( GameObject* child );
 
-    virtual void addForce( vec3 force );
-    virtual void addImpulse( vec3 impulse );
+    //virtual void addForce( vec3 force );
+    //virtual void addImpulse( vec3 impulse );
 
     GameObject* getParent();
     void setParent( GameObject* value );

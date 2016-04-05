@@ -1,19 +1,22 @@
 #include "CollisionManager.h"
 
+#include <iostream>
+#include "DebugBenchmark.h"
+
 CollisionManager::CollisionManager() { octTree = OctTree(vec3(), vec3(1000,1000,1000)); }
 
 
 CollisionManager::~CollisionManager() { }
 
-void CollisionManager::addObject(GameObject* go) {
-	octTree.add(go);
+void CollisionManager::addObject(ColliderObject* o) {
+	octTree.add(o);
 }
 
-void CollisionManager::update() {
+void CollisionManager::update(float dt) {
 	size_t numCollisions;
 	do {
 		collisionPairs = broadPhase();
-		numCollisions = narrowPhase();
+		numCollisions = narrowPhase(dt);
 	} while (numCollisions > 0);
 }
 
@@ -23,10 +26,26 @@ collisionPairList CollisionManager::broadPhase() {
 }
 
 //returns the number of collisions found and handled
-size_t CollisionManager::narrowPhase() {
-	size_t numCollisions = 0;
+uint32_t CollisionManager::narrowPhase(float dt) {
+	uint32_t numCollisions = 0;
 	for (auto pair : collisionPairs) {
-		//check for and handle collision
+		//DebugBenchmark::start();
+		auto *a = pair.first, *b = pair.second;
+		if ( !( a->active && b->active ) || !( a->rigidBody().solid() && b->rigidBody().solid() ) )
+			continue;
+
+		Manifold m = a->collider()->intersects( b->collider() );
+		if (m.originator) {
+			if (m.originator == a->collider())
+				a->handleCollision(b, m, dt);
+			else 
+				b->handleCollision(a, m, dt);
+			a->collider()->update();
+			b->collider()->update();
+
+			std::cout << "collision! " << a->collider() << ", " << b->collider() << "; " << m.originator << ", " << m.pen << std::endl;
+		}
+		//std::cout << "Collision Check Time: " << DebugBenchmark::end() << std::endl;
 	}
 	return numCollisions;
 }

@@ -3,7 +3,6 @@
 #include <iostream>
 #include "MarchMath.h"
 #include "OctTreeNode.h"
-#include "GameObject.h"
 
 class OctTree
 {
@@ -16,10 +15,10 @@ public:
 
     void print();
     void draw();
-    bool intersects( Collider* otherColliderPtr );
+    bool intersects( Collider* other );
     collisionPairList checkCollisions();
-	collisionPairList checkCollisions( GameObject* other );
-    void add( GameObject* go );
+	collisionPairList checkCollisions( ColliderObject* other );
+    void add( ColliderObject* o );
 
     OctTreeNode* getRoot();
 

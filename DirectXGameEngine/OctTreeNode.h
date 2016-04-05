@@ -2,11 +2,11 @@
 
 #include <vector>
 #include <iostream>
-#include <iomanip>
-#include "GameObject.h"
-#include "Collider.h"
 
-typedef std::vector<std::pair<GameObject*, GameObject*>> collisionPairList;
+#include "Collider.h"
+#include "ColliderObject.h"
+
+typedef std::vector<std::pair<ColliderObject*, ColliderObject*>> collisionPairList;
 
 class OctTreeNode
 {
@@ -20,47 +20,23 @@ public:
     void print();
     void draw();
     bool intersects( Collider* other );
-    void add( GameObject* other );
+    void add( ColliderObject* other );
     void branch();
 
     Collider* getCollider();
     size_t getCount();
     bool isLeaf();
 
-    std::vector<GameObject*>& getContainedChildren();
-
-    OctTreeNode* getFrontTopLeftNode();
-    void setFrontTopLeftNode( OctTreeNode* value );
-
-    OctTreeNode* getFrontTopRightNode();
-    void setFrontTopRightNode( OctTreeNode* value );
-
-    OctTreeNode* getFrontBottomLeftNode();
-    void setFrontBottomLeftNode( OctTreeNode* value );
-
-    OctTreeNode* getFrontBottomRightNode();
-    void setFrontBottomRightNode( OctTreeNode* value );
-
-    OctTreeNode* getBackTopLeftNode();
-    void setBackTopLeftNode( OctTreeNode* value );
-
-    OctTreeNode* getBackTopRightNode();
-    void setBackTopRightNode( OctTreeNode* value );
-
-    OctTreeNode* getBackBottomLeftNode();
-    void setBackBottomLeftNode( OctTreeNode* value );
-
-    OctTreeNode* getBackBottomRightNode();
-    void setBackBottomRightNode( OctTreeNode* value );
+    std::vector<ColliderObject*>& getContainedChildren();
 
     collisionPairList checkCollisions();
-    collisionPairList checkCollisions( GameObject* other );
+    collisionPairList checkCollisions( ColliderObject* other );
 
 private:
 	Transform transform;
     Collider* _collider;
     size_t _count; // How many colliders?
-    std::vector<GameObject*> _containedChildren;
+    std::vector<ColliderObject*> _containedChildren;
     bool _isLeaf;
-    std::vector<OctTreeNode*> _nodes;
+    OctTreeNode* _nodes[8];
 };

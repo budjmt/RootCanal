@@ -1,5 +1,7 @@
 #include "ColliderObject.h"
 
+#include "CollisionManager.h"
+
 std::vector<ColliderObject*> ColliderObject::colliderEntities;
 
 ColliderObject::ColliderObject(Drawable* s)
@@ -7,7 +9,7 @@ ColliderObject::ColliderObject(Drawable* s)
 {
 	//_collider = new Collider(&transform,transform.scale);
 	_collider = new Collider(((DrawMesh*)s)->mesh(), &transform);
-	colliderEntities.push_back(this);
+	CollisionManager::getInstance().addObject(this);
 }
 
 ColliderObject::ColliderObject(vec3 p, vec3 dims, vec3 sc, vec3 rA, float r, Drawable* s)
@@ -15,7 +17,7 @@ ColliderObject::ColliderObject(vec3 p, vec3 dims, vec3 sc, vec3 rA, float r, Dra
 {
 	//_collider = new Collider(&transform,dims);
 	_collider = new Collider(((DrawMesh*)s)->mesh(), &transform);
-	colliderEntities.push_back(this);
+	CollisionManager::getInstance().addObject(this);
 }
 
 ColliderObject::~ColliderObject() {
@@ -40,40 +42,15 @@ Collider* ColliderObject::collider() const { return _collider; } void ColliderOb
 void ColliderObject::update(double dt) {
 	calcForces(dt);
 	body.update(dt);
-	transform.position += body.vel()  * (float)dt;
+	transform.position( transform.position() + body.vel() * (float)dt );
 	transform.rotate(body.angVel() * (float)dt);
+	_collider->update();
 }
-
-#include <iostream>
-#include "DebugBenchmark.h"
 
 void ColliderObject::calcForces(double dt) {
 	body.netForce += vec3(0, body.mass() * -9.8f * 0.5f * (1 - body.floating()), 0);//gravity
 	//collision resolution stuff here
 
-	//I need to fix this so that all the colliders are updated and THEN run collision checks
-	_collider->update();
-	//DebugBenchmark::getInstance().start();
-	for (ColliderObject* entity : colliderEntities) {
-		Collider* other = entity->collider();
-		if (other == _collider || !entity->active || !body.solid() || !entity->rigidBody().solid() )
-			continue;
-		Manifold m = _collider->intersects(other);
-		if (m.originator != nullptr) {
-			if (m.originator == _collider)
-				handleCollision(entity, m, dt);
-			else
-				entity->handleCollision(this, m, dt);
-			_collider->update();
-			entity->collider()->update();
-			std::cout << "collision! " << _collider << ", " << m.originator << "; " << m.pen << std::endl;
-		}
-	}
-	//std::cout << "Collision Check Time: " << DebugBenchmark::getInstance().end() << std::endl;
-
-	//the coefficient here is equivalent to 0.5 * density of fluid (here just air) * C_d (drag coeff)
-	//C_d is dependent on the object's shape and the Reynolds Number, R_e = internal forces / viscous forces = mag(v) * D / visc, 
-	//where D is some characteristic diameter or linear dimension and visc is the kinematic viscosity = viscosity / density
 	body.netForce += body.quadDrag(-0.15f, body.vel(), body.heading());//quadratic drag, no mass involved, it's all velocity dependent
 	body.netAngAccel += body.quadDrag(-0.15f, body.angVel(), body.angHeading());//for ang accel too
 
@@ -109,8 +86,8 @@ void ColliderObject::handleCollision(ColliderObject* other, Manifold& m, double 
 	vec3 F = j * m.axis;
 	body.netForce += F;
 	oRB.netForce += -F;
-	DrawDebug::getInstance().drawDebugVector(_transform.position, _transform.position + F);
-	DrawDebug::getInstance().drawDebugVector(other->transform.position, other->transform.position - F);
+	DrawDebug::getInstance().drawDebugVector(_transform.position(), _transform.position() + F);
+	DrawDebug::getInstance().drawDebugVector(other->transform.position(), other->transform.position() - F);
 
 	//they have the same collision points by definition, but vecs to those points change, meaning torque and covariance also change
 	body.netAngAccel += calcAngularAccel(m, F);
@@ -119,8 +96,8 @@ void ColliderObject::handleCollision(ColliderObject* other, Manifold& m, double 
 	//correct positions
 	float percent = 1.2f, slop = 0.05f;
 	vec3 correction = max(-m.pen - slop, 0.0f) * percent * (1 + body.fixed() + oRB.fixed()) / (body.invMass() + oRB.invMass()) * m.axis;
-	transform.position -= (body.invMass() + oRB.fixed() * oRB.invMass()) * (1 - body.fixed()) * correction;
-	other->transform.position += (oRB.invMass() + body.fixed() * body.invMass()) * (1 - oRB.fixed()) * correction;
+	transform.position( transform.position() - (body.invMass() + oRB.fixed() * oRB.invMass()) * (1 - body.fixed()) * correction );
+	other->transform.position( other->transform.position() + (oRB.invMass() + body.fixed() * body.invMass()) * (1 - oRB.fixed()) * correction );
 }
 
 //Given a collision force F, calculates the change in angular acceleration it causes

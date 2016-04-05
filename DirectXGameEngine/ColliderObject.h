@@ -1,9 +1,11 @@
 #pragma once
 #include <memory>
 
-#include "entity.h"
+#include "Entity.h"
+
 #include "RigidBody.h"
 #include "Collider.h"
+
 #include "DrawMesh.h"
 
 class ColliderObject :

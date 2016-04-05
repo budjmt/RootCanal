@@ -63,6 +63,9 @@ void RigidBody::updateAngVel( double dt ) {
     }
 }
 
+//the coefficient here is equivalent to 0.5 * density of fluid (here just air) * C_d (drag coeff), which we boil down to C_d
+//C_d is dependent on the object's shape and the Reynolds Number, R_e = internal forces / viscous forces = mag(v) * D / visc, 
+//where D is some characteristic diameter or linear dimension and visc is the kinematic viscosity = viscosity / density
 vec3 RigidBody::quadDrag( float c_d, vec3 v, vec3 h )
 {
     return c_d * vec3::dot( v, v ) * h;
