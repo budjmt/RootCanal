@@ -5,7 +5,7 @@
 std::vector<ColliderObject*> ColliderObject::colliderEntities;
 
 ColliderObject::ColliderObject(Drawable* s)
-	: Entity(s)
+	: GameObject(s)
 {
 	//_collider = new Collider(&transform,transform.scale);
 	_collider = new Collider(((DrawMesh*)s)->mesh(), &transform);
@@ -13,7 +13,7 @@ ColliderObject::ColliderObject(Drawable* s)
 }
 
 ColliderObject::ColliderObject(vec3 p, vec3 dims, vec3 sc, vec3 rA, float r, Drawable* s)
-	: Entity(p, sc, rA, r, s)
+	: GameObject(p, sc, rA, r, s)
 {
 	//_collider = new Collider(&transform,dims);
 	_collider = new Collider(((DrawMesh*)s)->mesh(), &transform);
@@ -117,11 +117,11 @@ vec3 ColliderObject::calcAngularAccel(Manifold& m, vec3 F) {
 	}
 	float trace_C = C[0][0] + C[1][1] + C[2][2];
 
-	mat3 iT = mat3(1) * trace_C - C;//inertia tensor = Identity_3x3 * trace(C) - C
+	mat3 iT = mat3(1) * trace_C - C;//inertia tensor = IdGameObject_3x3 * trace(C) - C
 
 	vec3 at_iT = vec3(m.axis.x * (iT[0][0] + iT[0][1] + iT[0][2])
-		, m.axis.y * (iT[1][0] + iT[1][1] + iT[1][2])
-		, m.axis.z * (iT[2][0] + iT[2][1] + iT[2][2]));//axis_transpose * inertia tensor (matrices are column major)
+					, m.axis.y * (iT[1][0] + iT[1][1] + iT[1][2])
+					, m.axis.z * (iT[2][0] + iT[2][1] + iT[2][2]));//axis_transpose * inertia tensor (matrices are column major)
 
 	float inertia = vec3::dot(at_iT, m.axis);//axis_transpose * iT * axis = (axis_transpose * inertia tensor) . axis
 

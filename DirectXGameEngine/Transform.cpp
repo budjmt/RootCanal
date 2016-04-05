@@ -54,16 +54,27 @@ vec3& Transform::scale() { return _scale; } void Transform::scale(vec3 v) { make
 quat& Transform::rotation() { return _rotation; } void Transform::rotation(quat q) { makeDirty(); _rotation = q; }
 vec3 Transform::rotAxis() const { return _rotAxis; } float Transform::rotAngle() const { return _rotAngle; }
 
-Transform* Transform::parent() { return _parent; } void Transform::parent(Transform* p) { _parent = p; p->children.push_back(this); }
+Transform* Transform::parent() { return _parent; } 
+void Transform::parent(Transform* p) {
+	if(p)
+		p->children.insert(this); 
+	if(_parent) 
+		_parent->children.erase(this); 
+	_parent = p; 
+}
 
 Transform Transform::getComputed() {
-	//if there is no previously computed transform
-	if (!computed)
+	//if there's no parent, this is already an accurate transform
+	if (!_parent)
+		return *this;
+	//if there is no previously computed transform, allocate one so we can compute it
+	else if (!computed)
 		computed = new Transform;
-	//if there is a previously computed transform, and there have been no changes since the last time it was computed
+	//if there is a previously computed transform and we haven't made any "dirtying" changes since computing it
 	else if (!dirty)
 		return *computed;
 	//[re]compute the transform
+	dirty = false;
 	return computeTransform();
 }
 
@@ -77,7 +88,7 @@ Transform Transform::computeTransform() {
     vec3 ps = _parent->scale();
     t.scale( vec3( ps.x * _scale.x, ps.y * _scale.y, ps.z * _scale.z ) );
     t.rotation( _rotation * _parent->rotation() );
-    t.parent(_parent->parent());
+    t.parent( _parent->parent() );
 	return *computed = t.computeTransform();
 }
 

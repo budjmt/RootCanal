@@ -8,6 +8,7 @@
 cbuffer externalData : register(b0)
 {
 	matrix world;
+	matrix inv_trans_world;
 	matrix view;
 	matrix projection;
 };
@@ -18,15 +19,16 @@ cbuffer externalData : register(b0)
 // - The name of the struct itself is unimportant, but should be descriptive
 // - Each variable must have a semantic, which defines its usage
 struct VertexShaderInput
-{ 
+{
 	// Data type
 	//  |
 	//  |   Name          Semantic
 	//  |    |                |
 	//  v    v                v
+	float4 color		: COLOR;        // RGBA color
 	float3 position		: POSITION;     // XYZ position
-    float3 normal       : NORMAL;
-    float2 uv           : TEXCOORD;
+	float3 normal		: NORMAL;
+	float2 uv			: TEXCOORD;
 };
 
 // Struct representing the data we're sending down the pipeline
@@ -41,8 +43,10 @@ struct VertexToPixel
 	//  |   Name          Semantic
 	//  |    |                |
 	//  v    v                v
+	float4 color		: COLOR;        // RGBA color
 	float4 position		: SV_POSITION;	// XYZW position (System Value Position)
-    float3 normal       : NORMAL;
+	float3 normal		: NORMAL;
+	float2 uv			: TEXCOORD;
 };
 
 // --------------------------------------------------------
@@ -52,11 +56,11 @@ struct VertexToPixel
 // - Output is a single struct of data to pass down the pipeline
 // - Named "main" because that's the default the shader compiler looks for
 // --------------------------------------------------------
-VertexToPixel main( VertexShaderInput input )
+VertexToPixel main(VertexShaderInput input)
 {
 	// Set up output struct
 	VertexToPixel output;
-	
+
 	// The vertex's position (input.position) must be converted to world space,
 	// then camera space (relative to our 3D camera), then to proper homogenous 
 	// screen-space coordinates.  This is taken care of by our world, view and
@@ -73,7 +77,14 @@ VertexToPixel main( VertexShaderInput input )
 	// screen and the distance (Z) from the camera (the "depth" of the pixel)
 	output.position = mul(float4(input.position, 1.0f), worldViewProj);
 
-    output.normal = mul( input.normal, ( float3x3 )world );
+	output.uv = input.uv;
+	//output.normal = normalize(mul(float4(input.normal,0.f), inv_trans_world).xyz);
+	output.normal = normalize(mul(input.normal, (float3x3)world));
+
+	// Pass the color through 
+	// - The values will be interpolated per-pixel by the rasterizer
+	// - We don't need to alter it here, but we do need to send it to the pixel shader
+	output.color = input.color;
 
 	// Whatever we return will make its way through the pipeline to the
 	// next programmable stage we're using (the pixel shader for now)

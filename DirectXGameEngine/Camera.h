@@ -5,15 +5,13 @@
 #include "SimpleShader.h"
 
 #include "MarchMath.h"
-#include "Entity.h"
+#include "GameObject.h"
 #include "Mouse.h"
 
 const float CAM_FOV = 2 * PI / 5;
 
-class Camera : public Entity {
+class Camera : public GameObject {
 public:
-	Camera();
-	~Camera();
 	void updateCamMat(ISimpleShader* shader);
 	void update(float dt, Mouse* mouse);
 	void draw(ID3D11DeviceContext* deviceContext);

@@ -473,7 +473,7 @@ std::vector<vec3> Collider::clipPolyAgainstEdge( std::vector<vec3>& input, vec3 
         float clipEnd = vec3::dot( sidePlane, endpt - sideVert );
 
         //the edge is "on the plane" (thick planes); keep end pt if it falls below reference face
-        if( fabs( clipStart ) < FLT_EPSILON || fabs( clipEnd ) < FLT_EPSILON ) {
+        if( EPS_CHECK( clipStart ) || EPS_CHECK( clipEnd ) ) {
             if( vec3::dot( refNorm, endpt - refCenter ) < 0 )
                 output.push_back( endpt );
             continue;
@@ -506,30 +506,33 @@ std::vector<vec3> Collider::clipPolyAgainstEdge( std::vector<vec3>& input, vec3 
 /*
 ------------------------------------------------------------------------------------------------------------------------------------
 - Finds the closest point between two line segments
+
 - For such a seemingly simple task, the solution is quite complex, and requires a bit of explanation
 - Too much for here, I wrote a long post on the topic on my blog: *insert link*
 - You can also find a pdf copy in the proofs folder in the root of the repository
 - As an alternative, my main source was http://geomalgorithms.com/a07-_distance.html
+
 - The general thought process is that you start with the problem of finding an intersection between two lines
 - The lines are defined by p = { p0, u = p1 - p0 } and q = { q0, v = q1 - q0 }
 - This uses the parametric equations for the lines and the vector between them, w.
 - The smallest w is defined as w(sc, tc) or wc
-- sc = (be - cd) / (ac - b^2)
-- tc = (ae - bd) / (ac - b^2)
+	- sc = (be - cd) / (ac - b^2)
+	- tc = (ae - bd) / (ac - b^2)
 - You can find the values for a,b,c,d,e in the code below
 - If ac - b^2 = 0, then the lines are parallel and sc = 0, tc = e / c
 - The closest point to q on p is p0 + sc * u
 - The closest point to p on q is q0 + tc * v
 - To get the closest point in space we just compute p0 - wc / 2 or q0 + wc / 2
+
 - The line problem isn't complex enough to account for the fact that these are segments
 - The closest point between the two lines may not occur within the 0 to 1 range dictated by their segments
 - We account for this ourselves by doing some range checks
 - When s or t goes outside the 0 to 1 range, we have to change how we're solving for the other value
-- if s < 0, t =  e / c. if s > 1, t = ( e + b) / c
-- if t < 0, s = -d / a. if t > 1, s = (-d + b) / a
+	- if s < 0, t =  e / c. if s > 1, t = ( e + b) / c
+	- if t < 0, s = -d / a. if t > 1, s = (-d + b) / a
 - After accounting for these, just do a basic clamp on these values to the 0 to 1 range
 - We can save computations by just storing the numerators and denominators and doing the range checks with them
-- That way there's only one division each at the end
+- That way there's only two divisions (sc and tc) at the end
 ------------------------------------------------------------------------------------------------------------------------------------
 */
 vec3 Collider::closestPointBtwnSegments( vec3 p0, vec3 p1, vec3 q0, vec3 q1 ) {
@@ -594,8 +597,8 @@ vec3 Collider::closestPointBtwnSegments( vec3 p0, vec3 p1, vec3 q0, vec3 q1 ) {
     }
 
     //prevents possible divide by zero
-    sc = ( fabs( sNumer ) < FLT_EPSILON ) ? 0 : sNumer / sDenom;
-    tc = ( fabs( tNumer ) < FLT_EPSILON ) ? 0 : tNumer / tDenom;
+    sc = ( EPS_CHECK( sNumer ) ) ? 0 : sNumer / sDenom;
+    tc = ( EPS_CHECK( tNumer ) ) ? 0 : tNumer / tDenom;
 
     vec3 wc = w0 + ( sc * u ) - ( tc * v );//the vec between the 2 closest pts on the 2 segments
     return q0 + tc * v + wc * 0.5f;//the closest point between the 2 segments in the world
@@ -655,7 +658,7 @@ void Collider::genNormals() {
         break;
     case ColliderType::MESH:
         //generate the face normals from the mesh's vertices
-        std::vector<uint32_t>& faceVerts = mesh->faces().verts;
+        std::vector<uint32_t> faceVerts = mesh->faces().verts;
         std::vector<vec3> meshVerts = mesh->verts();
         int numFaces = faceVerts.size();
         for( int i = 0; i < numFaces; i += 3 ) {
@@ -665,9 +668,10 @@ void Collider::genNormals() {
             e2 = meshVerts[faceVerts[i + 2]] - v;
             cross = vec3::cross( e1, e2 );
             normal = cross / vec3::length( cross );
-            faceNormals.push_back( normal );//so for each face (3 vertices), there is a normal in this vector. 
-                                            //To get the first vertex in the face, multiply the index in this vector by 3 when using it with meshVerts
-                                            //remember to first use it with faceVerts, then pass the result to meshVerts
+			//when iterating over normals, to retrieve the vertices of the face corresponding to the normal at index i,
+			//the nth (0, 1, or 2) vertex in the face is meshVerts[faceVerts[i * 3 + n]]
+			//alternatively, if you aren't getting meshVerts, use the function getVert(faceVerts[i * 3 + n])
+            faceNormals.push_back( normal );
         }
         break;
     }
@@ -748,10 +752,11 @@ void Collider::genGaussMap() {
 bool Collider::fuzzyParallel( vec3 v1, vec3 v2 ) {
     if( v1 == v2 )
         return true;
-    float propx = ( v1.x != 0 ) ? v2.x / v1.x : 0;
-    float propy = ( v1.y != 0 ) ? v2.y / v1.y : 0;
+    float propx = ( v1.x ) ? v2.x / v1.x : 0;
+    float propy = ( v1.y ) ? v2.y / v1.y : 0;
     float eps = FLT_EPSILON;
-    bool para = fabs( ( propy - propx ) / propx ) < eps && fabs( ( ( ( v1.z != 0 ) ? v2.z / v1.z : 0 ) - propx ) / propx ) < eps;
+    bool para = fabs( ( propy - propx ) / propx ) < eps 
+			 && fabs( ( ( ( v1.z ) ? v2.z / v1.z : 0 ) - propx ) / propx ) < eps;
     return para;
 }
 
@@ -759,14 +764,6 @@ void Collider::updateNormals() {
     switch( _type ) {
     case ColliderType::SPHERE:
         break;
-        /*case RECT:
-        for (unsigned int i = 0; i < corners.size(); i++) {
-        vec3 norm = corners[i] - corners[(i + 1) % corners.size()];
-        norm = vec3(-norm.y, norm.x, 0);
-        norm = normalize(norm);
-        normals.push_back(norm);
-        }
-        break;*/
     case ColliderType::BOX:
     case ColliderType::MESH:
         Transform t = _transform->getComputed();

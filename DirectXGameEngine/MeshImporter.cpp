@@ -63,11 +63,11 @@ Mesh* MeshImporter::loadMesh( char* filePath /*, char* textureFilePath*/ )
 {
     ImportData* importData = loadFromFile( filePath );
     MeshImportData* meshImportData = static_cast<MeshImportData*>( importData );
-
+	assert(meshImportData);
     Mesh* mesh = meshImportData->getMesh();
 
     delete meshImportData;
-    delete importData;
+  //  delete importData;
 
     return mesh;
 }

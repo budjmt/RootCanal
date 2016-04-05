@@ -1,8 +1,5 @@
 #include "Camera.h"
 
-Camera::Camera() {}
-Camera::~Camera() {}
-
 void Camera::updateCamMat(ISimpleShader* shader) {
 	//we pre-transpose projection because it doesn't change very often
 	shader->SetMatrix4x4("projection", &projection[0][0]);

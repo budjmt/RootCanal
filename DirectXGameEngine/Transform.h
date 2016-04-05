@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <unordered_set>
 
 #include "MarchMath.h"
 
@@ -22,7 +22,7 @@ public:
 	vec3 rotAxis() const; float rotAngle() const;
     
 	Transform* parent(); void parent(Transform* p);
-	std::vector<Transform*> children;
+	std::unordered_set<Transform*> children;
 	Transform getComputed();
 	
     void updateNormals();

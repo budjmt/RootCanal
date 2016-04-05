@@ -13,9 +13,6 @@
 class Collider;
 
 enum class ColliderType {
-    //CIRCLE,
-    //RECT,
-    //TRIANGLE
     SPHERE,
     BOX,
     MESH

@@ -43,6 +43,7 @@ uint32_t CollisionManager::narrowPhase(float dt) {
 			a->collider()->update();
 			b->collider()->update();
 
+			++numCollisions;
 			std::cout << "collision! " << a->collider() << ", " << b->collider() << "; " << m.originator << ", " << m.pen << std::endl;
 		}
 		//std::cout << "Collision Check Time: " << DebugBenchmark::end() << std::endl;

@@ -1,4 +1,17 @@
 
+struct DirectionalLight {
+	float4 ambientColor;
+	float4 diffuseColor;
+	float3 direction;
+};
+
+cbuffer externalData : register(b0) {
+	DirectionalLight light1, light2;
+};
+
+Texture2D diffuseTexture : register(t0);
+SamplerState basicSampler : register(s0);
+
 // Struct representing the data we expect to receive from earlier pipeline stages
 // - Should match the output of our corresponding vertex shader
 // - The name of the struct itself is unimportant
@@ -11,22 +24,12 @@ struct VertexToPixel
 	//  |   Name          Semantic
 	//  |    |                |
 	//  v    v                v
+	float4 color		: COLOR;
 	float4 position		: SV_POSITION;
-    float3 normal       : NORMAL;
-};
+	float3 normal		: NORMAL;
+	float2 uv			: TEXCOORD;
 
-struct DirectionalLight
-{
-    float4 AmbientColor;
-    float4 DiffuseColor;
-    float3 Direction;
 };
-
-cbuffer Light : register( b0 )
-{
-    DirectionalLight light1;
-    DirectionalLight light2;
-}
 
 // --------------------------------------------------------
 // The entry point (main method) for our pixel shader
@@ -39,15 +42,22 @@ cbuffer Light : register( b0 )
 // --------------------------------------------------------
 float4 main(VertexToPixel input) : SV_TARGET
 {
-    input.normal = normalize(input.normal);
+	// Just return the input color
+	// - This color (like most values passing through the rasterizer) is 
+	//   interpolated for each pixel between the corresponding vertices 
+	//   of the triangle we're rendering
+	float3 light1Dir = normalize(-light1.direction);
+	float lamb1 = saturate(dot(input.normal, light1Dir));
+	//lamb1 = ceil(lamb1 * 3) / 3;
 
-    float3 negatedDirection1 = -light1.Direction; // Negate light's direction
-    float lightAmount1 = saturate( dot( input.normal, negatedDirection1 ) );
-    float3 surfaceColor1 = lightAmount1 * light1.DiffuseColor + light1.AmbientColor;
+	float3 light2Dir = normalize(-light2.direction);
+	float lamb2 = saturate(dot(input.normal, light2Dir));
+	//lamb2 = ceil(lamb2 * 3) / 3;
 
-    float3 negatedDirection2 = -light2.Direction; // Negate light's direction
-    float lightAmount2 = saturate( dot( input.normal, negatedDirection2 ) );
-    float3 surfaceColor2 = lightAmount2 * light2.DiffuseColor + light2.AmbientColor;
+	float4 surfaceColor = diffuseTexture.Sample(basicSampler, input.uv);
 
-	return float4(surfaceColor1 + surfaceColor2, 1);
+	input.color = float4(1, 1, 1, 1);
+	return surfaceColor
+		* (light1.diffuseColor * lamb1 + light1.ambientColor
+			+ light2.diffuseColor * lamb2 + light2.ambientColor);
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-#include "Entity.h"
+#include "GameObject.h"
 
 #include "RigidBody.h"
 #include "Collider.h"
@@ -9,7 +9,7 @@
 #include "DrawMesh.h"
 
 class ColliderObject :
-	public Entity
+	public GameObject
 {
 public:
 	ColliderObject(Drawable* s);

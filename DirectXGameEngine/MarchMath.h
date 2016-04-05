@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstring>
 
+#define EPS_CHECK(x) x < FLT_EPSILON && x > -FLT_EPSILON
+
 const double PI_D = 3.14159265358979323846;
 const float PI = (float)PI_D;
 
