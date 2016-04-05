@@ -28,7 +28,7 @@ bool OctTree::intersects( Collider* other )
     return _root->intersects( other );
 }
 
-void OctTree::add(GameObject* other) { _root->add(other); }
+void OctTree::add(GameObject* go) { _root->add(go); }
 
 OctTreeNode* OctTree::getRoot() { return _root; }
 

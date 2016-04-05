@@ -1,51 +1,41 @@
 #pragma once
 
-#include <DirectXMath.h>
-#include "Mesh.h"
-//#include "Material.h"
-#include "Vertex.h"
+#include "DirectXGameCore.h"
+
+#include "Mouse.h"
 #include "Transform.h"
 
-class Material;
+enum EntityType {
+	NORMAL,
+	COLLIDER,
+	CAMERA
+};
+
+class Drawable;
 
 class Entity
 {
 public:
 	Entity();
-    Entity( Mesh* meshPtr, Material* materialPtr );
-    ~Entity();
+	Entity(Drawable* s);
+	Entity(vec3 p, vec3 sc, vec3 rA, float r, Drawable* s);
+	Entity(const Entity& other);
+	Entity(Entity&& other) = default;
+	Entity& operator=(const Entity& other) = default;
+	Entity& operator=(Entity&& other) = default;
+	virtual ~Entity(void);
 
-    Mesh* GetMeshPointer();
-    void SetMeshPointer( Mesh* value );
+	Transform& transform;
+	bool& active;
+	EntityType type();
 
-    DirectX::XMFLOAT4X4 GetWorldMatrix();
-    void SetWorldMatrix( DirectX::XMFLOAT4X4 value );
-
-    DirectX::XMFLOAT3 GetOffset();
-    void SetOffset( DirectX::XMFLOAT3 value );
-    void SetOffset( float x, float y, float z );
-
-    DirectX::XMFLOAT3 GetRotation();
-    void SetRotation( DirectX::XMFLOAT3 value );
-    void SetRotation( float x, float y, float z );
-
-    DirectX::XMFLOAT3 GetScale();
-    void SetScale( DirectX::XMFLOAT3 value );
-    void SetScale( float x, float y, float z );
-
-    void MoveAbsolute( float x, float y, float z );
-    void Rotate( float x, float y, float z );
-    void Scale( float x, float y, float z );
-
-    void Draw( ID3D11DeviceContext* deviceContextPtr, DirectX::XMFLOAT4X4 viewMatrix, DirectX::XMFLOAT4X4 projectionMatrix );
+	virtual void update(float dt, Mouse* mouse);
+	virtual void draw(ID3D11DeviceContext* deviceContext);
 
 protected:
-    Mesh* _meshPtr;
-    Material* _materialPtr;
-	Transform transform;
-
-    bool _dirtyWorldMatrix;
-
-    void _PrepareMaterial( DirectX::XMFLOAT4X4 viewMatrix, DirectX::XMFLOAT4X4 projectionMatrix );
+    Drawable* _shape;
+	Transform _transform;
+	bool _active = true;
+	EntityType _type;
 };
 

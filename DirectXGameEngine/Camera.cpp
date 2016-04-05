@@ -19,7 +19,7 @@ void Camera::updateCamMat(ISimpleShader* shader) {
 }
 
 void Camera::update(float dt, Mouse* mouse) {
-	view = mat4::lookAt(transform.position, getLookAt(), getUp());
+	view = mat4::lookAt(transform.position(), getLookAt(), getUp());
 }
 
 void Camera::draw(ID3D11DeviceContext* deviceContext) {
@@ -33,7 +33,7 @@ void Camera::turn(float dx, float dy) {
 }
 
 vec3 Camera::getLookAt() {
-	return transform.position + getForward();
+	return transform.position() + getForward();
 }
 
 void Camera::updateProjection(int width, int height, float aspect) {
@@ -62,42 +62,53 @@ void Camera::mayaCam(int width, int height, float dt, Mouse* mouse, Camera* came
 			dy = min(rot, dy);
 			vec3 look = camera->getLookAt();
 			camera->turn(dx, dy);
-			camera->transform.position = look - camera->getForward();
+			camera->transform.position( look - camera->getForward() );
 		}
 		else if (mouse->btnState & 0x0002) {
 			float avg = (float)((mouse->curr.y - mouse->prev.y) + (mouse->curr.x - mouse->prev.x)) * 8 * dt;
-			camera->transform.position += camera->getForward() * avg;
+			vec3 newPos = camera->transform.position() + camera->getForward() * avg;
+			camera->transform.position(newPos);
 		}
 		else if (mouse->btnState & 0x0010) {
-			camera->transform.position += camera->getRight() * ((float)(mouse->curr.x - mouse->prev.x) * dt * 8);
-			camera->transform.position += camera->getUp() * ((float)(mouse->curr.y - mouse->prev.y) * dt * 8);
+			vec3 newPos = camera->transform.position();
+			newPos += camera->getRight() * ((float)(mouse->curr.x - mouse->prev.x) * dt * 8);
+			newPos += camera->getUp() * ((float)(mouse->curr.y - mouse->prev.y) * dt * 8);
+			camera->transform.position(newPos);
 		}
 		//std::cout << "Position: " << camera->transform.position.x << "," << camera->transform.position.y << "," << camera->transform.position.z << std::endl << "Pitch: " << camera->pitch << std::endl << "Yaw: " << camera->yaw << std::endl;
 	}
 
 	if (GetAsyncKeyState('W') & 0x8000) {
-		camera->transform.position += camera->getForward() * (5.f * (float)dt);
+		vec3 newPos = camera->transform.position() + camera->getForward() * (5.f * (float)dt);
+		camera->transform.position(newPos);
 	}
 	else if (GetAsyncKeyState('S') & 0x8000) {
-		camera->transform.position += camera->getForward() * (-5.f * (float)dt);
+		vec3 newPos = camera->transform.position() + camera->getForward() * (-5.f * (float)dt);
+		camera->transform.position(newPos);
 	}
 	if (GetAsyncKeyState('D') & 0x8000) {
-		camera->transform.position += camera->getRight() * (-5.f * (float)dt);
+		vec3 newPos = camera->transform.position() + camera->getRight() * (-5.f * (float)dt);
+		camera->transform.position(newPos);
 	}
 	else if (GetAsyncKeyState('A') & 0x8000) {
-		camera->transform.position += camera->getRight() * (5.f * (float)dt);
+		vec3 newPos = camera->transform.position() + camera->getRight() * (5.f * (float)dt);
+		camera->transform.position(newPos);
 	}
 
 	if (GetAsyncKeyState(VK_UP) & 0x8000 || GetAsyncKeyState(VK_SPACE) & 0x8000) {
-		camera->transform.position += vec3(0, 1, 0) * (5.f * (float)dt);
+		vec3 newPos = camera->transform.position() + vec3(0, 1, 0) * (5.f * (float)dt);
+		camera->transform.position(newPos);
 	}
 	else if (GetAsyncKeyState(VK_DOWN) & 0x8000 || GetAsyncKeyState('X') & 0x8000) {
-		camera->transform.position += vec3(0, 1, 0) * (-5.f * (float)dt);
+		vec3 newPos = camera->transform.position() + vec3(0, 1, 0) * (-5.f * (float)dt);
+		camera->transform.position(newPos);
 	}
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-		camera->transform.position += vec3(1, 0, 0) * (-5.f * (float)dt);
+		vec3 newPos = camera->transform.position() + vec3(1, 0, 0) * (-5.f * (float)dt);
+		camera->transform.position(newPos);
 	}
 	else if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-		camera->transform.position += vec3(1, 0, 0) * (5.f * (float)dt);
+		vec3 newPos = camera->transform.position() + vec3(1, 0, 0) * (5.f * (float)dt);
+		camera->transform.position(newPos);
 	}
 }

@@ -1,59 +1,84 @@
 #include "Transform.h"
 
 Transform::Transform()
-    : position( _position ), scale( _scale ), rotation( _rotation ), rotAngle( _rotAngle ), rotAxis( _rotAxis )
 {
-    parent = nullptr;
-    _position = vec3( 0, 0, 0 );
+    _parent = nullptr;
+    _position = vec3();
     _scale = vec3( 1, 1, 1 );
     _rotation = quat();
     updateRot();
 }
 
 Transform::Transform( const Transform& other )
-    : position( _position ), scale( _scale ), rotation( _rotation ), rotAngle( _rotAngle ), rotAxis( _rotAxis )
 {
-    parent = other.parent;
-    _position = other.position;
-    _scale = other.scale;
-    _rotation = other.rotation;
-    _rotAxis = other.rotAxis;
-    _rotAngle = other.rotAngle;
-    _forward = other.forward();
-    _up = other.up();
-    _right = other.right();
+    _parent = other._parent;
+    _position = other._position;
+    _scale = other._scale;
+    _rotation = other._rotation;
+    _rotAxis = other._rotAxis;
+    _rotAngle = other._rotAngle;
+    _forward = other._forward;
+    _up = other._up;
+    _right = other._right;
+	if(other.computed) {
+		computed = new Transform;
+		*computed = *other.computed;
+	}
 }
 
 
-Transform::~Transform()
-{
+Transform::~Transform() {
+	if(computed) delete computed;
 }
 
 Transform& Transform::operator=( const Transform& other )
 {
-    _position = other.position;
-    _scale = other.scale;
-    _rotation = other.rotation;
-    _rotAxis = other.rotAxis;
-    _rotAngle = other.rotAngle;
-    _forward = other.forward();
-    _up = other.up();
-    _right = other.right();
+    _position = other._position;
+    _scale = other._scale;
+    _rotation = other._rotation;
+    _rotAxis = other._rotAxis;
+    _rotAngle = other._rotAngle;
+    _forward = other._forward;
+    _up = other._up;
+    _right = other._right;
+	if (other.computed) {
+		computed = new Transform;
+		*computed = *other.computed;
+	}
     return *this;
 }
 
+void Transform::makeDirty() { dirty = true; for (auto child : children) child->dirty = true; }
+vec3& Transform::position() { return _position; } void Transform::position(vec3 v) { makeDirty(); _position = v; }
+vec3& Transform::scale() { return _scale; } void Transform::scale(vec3 v) { makeDirty(); _scale = v; }
+quat& Transform::rotation() { return _rotation; } void Transform::rotation(quat q) { makeDirty(); _rotation = q; }
+vec3 Transform::rotAxis() const { return _rotAxis; } float Transform::rotAngle() const { return _rotAngle; }
+
+Transform* Transform::parent() { return _parent; } void Transform::parent(Transform* p) { _parent = p; p->children.push_back(this); }
+
+Transform Transform::getComputed() {
+	//if there is no previously computed transform
+	if (!computed)
+		computed = new Transform;
+	//if there is a previously computed transform, and there have been no changes since the last time it was computed
+	else if (!dirty)
+		return *computed;
+	//[re]compute the transform
+	return computeTransform();
+}
+
 Transform Transform::computeTransform() {
-    if( parent == nullptr ) {
+    if( !_parent ) {
         this->updateRot();
         return *this;
     }
     Transform t = Transform();
-    t.position = parent->position + _position;
-    vec3 ps = parent->scale;
-    t.scale = vec3( ps.x * _scale.x, ps.y * _scale.y, ps.z * _scale.z );
-    t.rotation = _rotation * parent->rotation;
-    t.parent = parent->parent;
-    return t.computeTransform();
+    t.position( _parent->position() + _position );
+    vec3 ps = _parent->scale();
+    t.scale( vec3( ps.x * _scale.x, ps.y * _scale.y, ps.z * _scale.z ) );
+    t.rotation( _rotation * _parent->rotation() );
+    t.parent(_parent->parent());
+	return *computed = t.computeTransform();
 }
 
 void Transform::updateNormals() {
@@ -89,9 +114,9 @@ void Transform::rotate( float theta, vec3 axis ) {
 
 vec3 Transform::getTransformed( vec3 v )
 {
-    Transform t = computeTransform();
-    mat4 translate = mat4::translate( t.position );
-    mat4 rot = mat4::rotate( t.rotAngle, t.rotAxis );
-    mat4 scale = mat4::scale( t.scale );
+    Transform t = getComputed();
+    mat4 translate = mat4::translate( t.position() );
+    mat4 rot = mat4::rotate( t.rotAngle(), t.rotAxis() );
+    mat4 scale = mat4::scale( t.scale() );
     return (vec3)( translate * scale * rot * vec4( v, 1 ) );
 }

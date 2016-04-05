@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "MarchMath.h"
 
 class Transform
@@ -7,12 +9,22 @@ class Transform
 public:
     Transform();
     Transform( const Transform& other );
+	Transform( Transform&& other) = default;
     ~Transform();
     Transform& operator=( const Transform& other );
-    vec3& position, &scale;
-    quat& rotation;	vec3& rotAxis; float& rotAngle;
-    Transform* parent;
-    Transform computeTransform();
+	Transform& operator=(Transform&& other) = default;
+
+	bool dirty;
+	void makeDirty();
+	vec3& position(); void position(vec3 v);
+	vec3& scale(); void scale(vec3 v);
+    quat& rotation(); void rotation(quat q);
+	vec3 rotAxis() const; float rotAngle() const;
+    
+	Transform* parent(); void parent(Transform* p);
+	std::vector<Transform*> children;
+	Transform getComputed();
+	
     void updateNormals();
     vec3 forward() const;
     vec3 up() const;
@@ -27,4 +39,7 @@ private:
     vec3 _position, _scale;
     quat _rotation; vec3 _rotAxis; float _rotAngle;
     vec3 _forward, _up, _right;
+
+	Transform *computed, *_parent;
+	Transform computeTransform();
 };

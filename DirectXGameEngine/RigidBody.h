@@ -9,8 +9,9 @@ class RigidBody {
 public:
     vec3 netForce = vec3( 0, 0, 0 ), netAngAccel = vec3( 0, 0, 0 );
 
-    short floatingObj() const; void floatingObj( short f );
-    short staticObj() const; void staticObj( short s );
+    float floating() const; void floating( float f );
+    float fixed() const; void fixed( float s );
+	short solid() const; void solid(short s);
 
     float mass() const; void mass( float m );
     float invMass() const;
@@ -29,8 +30,9 @@ public:
     vec3 quadDrag( float c_d, vec3 v, vec3 h );
 
 private:
-    short _floatingObj = 0
-        , _staticObj = 0;
+    float _floating = 0
+        , _fixed = 0;
+	short _solid = 1;
     float _mass = 1, _invMass = 1;
     float _speed = 0, _angSpeed = 0;
     float _restitution = 1;

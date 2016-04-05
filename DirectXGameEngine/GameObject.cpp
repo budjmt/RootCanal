@@ -5,23 +5,23 @@ GameObject::GameObject( ID3D11Device* device, ID3D11DeviceContext* deviceContext
 {
     _parent = nullptr;
     _children = new std::vector<GameObject*>();
-    _position = vec3( 0, 0, 0 );
-    _velocity = vec3( 0, 0, 0 );
-    _acceleration = vec3( 0, 0, 0 );
-    _scale = vec3( 1, 1, 1 );
-    _rotationAxis = vec3( 0, 0, 1 );
-    _forward = vec3( 0, 0, 1 );
-    _rotation = 0;
-    _rotationalVelocity = 0;
-    _rotationalAcceleration = 0;
-    _mass = 1.0f;
-    _brightness = 0.2f;
-    _fixed = false;
-    _drawMesh = nullptr;
-    _isSolid = false;
-    _isVisible = true;
-    _device = device;
-    _deviceContext = deviceContext;
+    //_position = vec3( 0, 0, 0 );
+    //_velocity = vec3( 0, 0, 0 );
+    //_acceleration = vec3( 0, 0, 0 );
+    //_scale = vec3( 1, 1, 1 );
+    //_rotationAxis = vec3( 0, 0, 1 );
+    //_forward = vec3( 0, 0, 1 );
+    //_rotation = 0;
+    //_rotationalVelocity = 0;
+    //_rotationalAcceleration = 0;
+    //_mass = 1.0f;
+    //_brightness = 0.2f;
+    //_fixed = false;
+    //_drawMesh = nullptr;
+    //_isSolid = false;
+    //_isVisible = true;
+    //_device = device;
+    //_deviceContext = deviceContext;
 }
 
 GameObject::~GameObject()
@@ -50,7 +50,7 @@ GameObject::~GameObject()
 
 void GameObject::update( float dt )
 {
-    if( !_fixed )
+    /*if( !_fixed )
     {
         // Apply "Euler Integration" for physics
         _velocity += _acceleration * dt / _mass;
@@ -58,7 +58,7 @@ void GameObject::update( float dt )
 
         _rotationalVelocity += _rotationalAcceleration * dt / _mass;
         setRotation( _rotation + _rotationalVelocity );
-    }
+    }*/
 
     // Update all nested children
     auto begin = _children->begin();
@@ -89,16 +89,16 @@ void GameObject::drawShape()
 {
     if( _drawMesh != nullptr )
     {
-        mat4 worldMatrix =
+       /* mat4 worldMatrix =
             mat4::translate( _position ) *
             mat4::rotate( _rotation, _rotationAxis ) *
-            mat4::scale( _scale );
+            mat4::scale( _scale );*/
 
         // TODO: Fix all uniform setting stuff
         //setShaderFloat( _programIndex, "brightness", _brightness );
         //setShaderMatrix( _programIndex, "worldMatrix", worldMatrix );
 
-        _drawMesh->draw(
+        /*_drawMesh->draw(
             _position.x,
             _position.y,
             _position.z,
@@ -106,7 +106,7 @@ void GameObject::drawShape()
             _scale.y,
             _scale.z,
             _deviceContext
-        );
+        );*/
 
         // Reset world matrix for any upcoming draw calls
         //setShaderMatrix( _programIndex, "worldMatrix", scale( vec3( 1, 1, 1 ) ) );
@@ -158,19 +158,18 @@ bool GameObject::contains( GameObject* child )
 {
     auto begin = _children->begin();
     auto end = _children->end();
-    for( std::vector<GameObject*>::iterator it = begin; it != end; ++it )
+    for( auto it = begin; it != end; ++it )
     {
         GameObject* curChild = *it;
 
         if( curChild == child )
-        {
             return true;
-        }
     }
 
     return false;
 }
 
+/*
 void GameObject::addForce( vec3 force )
 {
     _acceleration += force / _mass;
@@ -180,6 +179,7 @@ void GameObject::addImpulse( vec3 impulse )
 {
     _velocity += impulse;
 }
+*/
 
 GameObject* GameObject::getParent()
 {
@@ -189,7 +189,7 @@ void GameObject::setParent( GameObject* value )
 {
     _parent = value;
 }
-
+/*
 vec3 GameObject::getPosition()
 {
     return _position;
@@ -312,7 +312,7 @@ void GameObject::setSolid( bool value )
 {
     _isSolid = value;
 }
-
+*/
 Mesh* GameObject::getMesh()
 {
     if( _drawMesh )
@@ -329,7 +329,7 @@ void GameObject::setMesh( Mesh* value )
         delete _drawMesh;
     }
 
-    _drawMesh = new DrawMesh( value, nullptr, _device );
+    //_drawMesh = new DrawMesh( value, nullptr, _device );
 }
 
 bool GameObject::collidesWith( GameObject* other )
@@ -348,7 +348,7 @@ void GameObject::setGameObjType( std::string gameObjType )
     _gameObjType = gameObjType;
 }
 
-bool GameObject::getIsVisible()
+/*bool GameObject::getIsVisible()
 {
     return _isVisible;
 }
@@ -356,4 +356,4 @@ bool GameObject::getIsVisible()
 void GameObject::setIsVisible( bool isVisible )
 {
     _isVisible = isVisible;
-}
+}*/

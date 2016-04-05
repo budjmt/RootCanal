@@ -53,11 +53,34 @@ float vec4::length( vec4 v ) { return sqrtf( v.x * v.x + v.y * v.y + v.z * v.z +
 float vec4::dot( vec4 a, vec4 b ) { return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w; }
 vec4 vec4::lerp( vec4 a, vec4 b, float t ) { return vec4( lerpf( a.x, b.x, t ), lerpf( a.y, b.y, t ), lerpf( a.z, b.z, t ), lerpf( a.w, b.w, t ) ); }
 
+//mat3
+//the zero matrix
+mat3::mat3() { memset(m, 0, 9 * sizeof(float)); } mat3::~mat3() {}
+//sets the diagonal to f, everything else 0
+mat3::mat3(float f) { memset(m, 0, 9 * sizeof(float)); for (int i = 0; i < 3; i++) m[i * 4] = f; }
+mat3::mat3(float r1, float r2, float r3) { memset(m, 0, 9 * sizeof(float)); m[0] = r1; m[4] = r2; m[8] = r3; }
+mat3::mat3(vec3 c1, vec3 c2, vec3 c3) { for (int i = 0; i < 3; i++) { m[i] = c1[i]; m[i + 3] = c2[i]; m[i + 6] = c3[i]; } }
+mat3::mat3(float* _m) { for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) m[i * 3 + j] = _m[i * 3 + j]; }
+
+//accessor is [col][row]... which is weird, I know
+const float* mat3::operator[](int i) const { return &m[i * 3]; } float* mat3::operator[](int i) { return &m[i * 3]; }
+mat3 mat3::operator+(const mat3& other) { mat4 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] += other[i][j]; return r; }
+mat3 mat3::operator-(const mat3& other) { mat4 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] -= other[i][j]; return r; }
+mat3 mat3::operator*(float f) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] *= f; return r; }
+mat3 mat3::operator/(float f) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] /= f; return r; }
+
+mat3 mat3::operator*(const mat3& other) { mat3 r; for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) for (int k = 0; k < 3; k++) r[j][i] += m[k * 3 + i] * other[j][k]; return r; }
+vec3 mat3::operator*(const vec3& v) { vec3 result; for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) result[i] += m[j * 3 + i] * v[j]; return result; }
+
+mat3 mat3::transpose(mat3& m) { mat3 r; for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] = m[j][i]; return r; }
+
 //mat4
 //the zero matrix
-mat4::mat4() { for( int i = 0; i < 4; i++ ) for( int j = 0; j < 4; j++ ) m[( i << 2 ) + j] = 0; } mat4::~mat4() {}
+mat4::mat4() { memset(m, 0, sizeof(float) << 4); } mat4::~mat4() {}
 //sets the diagonal to f, everything else 0
-mat4::mat4( float f ) { for( int i = 0; i < 4; i++ ) for( int j = 0; j < 4; j++ ) m[( i << 2 ) + j] = 0; for( int i = 0; i < 4; i++ ) m[( i << 2 ) + i] = f; }
+mat4::mat4( float f ) { memset(m, 0, sizeof(float) << 4); for( int i = 0; i < 4; i++ ) m[( i << 2 ) + i] = f; }
+mat4::mat4(float r1, float r2, float r3, float r4) { memset(m, 0, sizeof(float) << 4); m[0] = r1; m[5] = r2; m[10] = r3; m[15] = r4; }
+mat4::mat4(vec4 c1, vec4 c2, vec4 c3, vec4 c4) { for (int i = 0; i < 4; i++) { m[i] = c1[i]; m[i + 4] = c2[i]; m[i + 8] = c3[i]; m[i + 12] = c4[i]; } }
 mat4::mat4( float* _m ) { for( int i = 0; i < 4; i++ ) for( int j = 0; j < 4; j++ ) m[( i << 2 ) + j] = _m[( i << 2 ) + j]; }
 
 //accessor is [col][row]... which is weird, I know
@@ -165,6 +188,8 @@ vec3 quat::axis() const { return _axis; } void quat::axis( vec3 a ) { _axis = a;
 quat quat::operator+( const quat& other ) { return quat( w + other.w, v + other.v ); } quat quat::operator-( const quat& other ) { return quat( w - other.w, v - other.v ); }
 quat quat::operator*( float f ) { return quat( w * f, v * f ); } quat quat::operator/( float f ) { return quat( w / f, v / f ); }
 quat quat::operator*( const quat& other ) const { return quat( w * other.w - vec3::dot( v, other.v ), other.v * w + v * other.w + vec3::cross( v, other.v ) ); }
+
+float quat::length(const quat& q) { return sqrtf(q.w * q.w + q.v[0] * q.v[0] + q.v[1] * q.v[1] + q.v[2] * q.v[2]); }
 
 quat quat::pow( const quat& q, float e ) { return quat::rotation( q.theta() * e, q.axis() ); }
 quat quat::inverse( const quat& q ) { return quat( q.w, q.v * -1 ); }

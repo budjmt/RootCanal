@@ -1,9 +1,11 @@
 #include "RigidBody.h"
 
-short RigidBody::floatingObj() const { return _floatingObj; };
-void RigidBody::floatingObj( short f ) { _floatingObj = f; };
-short RigidBody::staticObj() const { return _staticObj; };
-void RigidBody::staticObj( short s ) { _staticObj = s; _floatingObj = s; };
+float RigidBody::floating() const { return _floating; };
+void RigidBody::floating( float f ) { _floating = f; };
+float RigidBody::fixed() const { return _fixed; };
+void RigidBody::fixed( float s ) { _fixed = s; _floating = s; };
+short RigidBody::solid() const { return _solid; };
+void RigidBody::solid(short s) { _solid = s; };
 
 float RigidBody::mass() const { return _mass; };
 void RigidBody::mass( float m ) { _mass = m; _invMass = 1 / m; };
@@ -28,7 +30,7 @@ void RigidBody::update( double dt ) {
 }
 
 void RigidBody::updateVel( double dt ) {
-    _vel += ( 1 - _staticObj ) * _invMass * (float)dt * netForce;
+    _vel += ( 1 - _fixed ) * _invMass * (float)dt * netForce;
     _speed = vec3::length( _vel );
 
     if( _speed < MIN_VEL ) {
@@ -45,7 +47,7 @@ void RigidBody::updateVel( double dt ) {
 }
 
 void RigidBody::updateAngVel( double dt ) {
-    _angVel += ( 1 - _staticObj ) * (float)dt * netAngAccel;
+    _angVel += ( 1 - _fixed ) * (float)dt * netAngAccel;
     _angSpeed = vec3::length( _angVel );
 
     if( _angSpeed < MIN_VEL ) {

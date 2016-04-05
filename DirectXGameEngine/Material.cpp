@@ -30,7 +30,7 @@ Texture::~Texture() {
 #include "DebugBenchmark.h"
 Texture* Texture::getTexture( const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext ) {
     //check if the texture was already loaded
-    if( loadedTextures.find( texFile ) != loadedTextures.end() )
+    if( loadedTextures.count( texFile ) )
         return loadedTextures[texFile];
 
     Texture* texture = new Texture;

@@ -5,7 +5,7 @@ Collider::Collider( void )
     : type( _type )
 {
     _dims = vec3();
-	_aabb.center = _transform->position;//not computed, naughty
+	_aabb.center = _transform->getComputed().position();
     _radius = 0;
 }
 
@@ -15,7 +15,7 @@ Collider::Collider( Transform* t, vec3 d )
     _transform = t;
 	dims(d);
 	updateDims(_transform);
-	_aabb.center = _transform->position;//not computed, naughty
+	_aabb.center = _transform->getComputed().position();
     _type = ColliderType::BOX;
     //the order is important;
     //edges depend on the gauss map, which depends on the normals
@@ -31,7 +31,7 @@ Collider::Collider( Mesh* m, Transform* t )
     mesh = m;
     _transform = t;
     dims( m->getDims() );
-	_aabb.center = _transform->position;//not computed, naughty
+	_aabb.center = _transform->getComputed().position();
     updateDims( _transform );
     _type = ColliderType::MESH;
     //the order is important;
@@ -68,14 +68,14 @@ float Collider::radius() const { return _radius; }
 
 //makes sure the radius is up to date
 void Collider::updateDims( Transform* t ) {
-    vec3 scale = t->computeTransform().scale;
+    vec3 scale = t->getComputed().scale();
     _radius = max( max( _dims.x * scale.x, _dims.y * scale.y ), _dims.z * scale.z );
 }
 
 //gets the vertex of the collider furthest in the direction of dir
 SupportPoint Collider::getSupportPoint( vec3 dir ) {
     auto verts = mesh->verts();
-    Transform trans = _transform->computeTransform();
+    Transform trans = _transform->getComputed();
 
     SupportPoint support;
     support.point = trans.getTransformed( verts[0] );
@@ -111,7 +111,7 @@ FaceManifold Collider::getAxisMinPen( Collider* other ) {
     int numAxes = currNormals.size();
     auto meshVerts = mesh->verts();
     auto faceVerts = mesh->faces().verts;
-    Transform trans = _transform->computeTransform();
+    Transform trans = _transform->getComputed();
     for( int i = 0; axis.pen < 0 && i < numAxes; i++ ) {
         vec3 norm = currNormals[i];
         SupportPoint support = other->getSupportPoint( -norm );
@@ -177,8 +177,8 @@ EdgeManifold Collider::overlayGaussMaps( Collider* other ) {
     GaussMap othergauss = other->getGaussMap();
     std::vector<vec3> otherNormals = other->getCurrNormals();
 
-    Transform trans = _transform->computeTransform();
-    Transform otherTrans = other->transform()->computeTransform();
+    Transform trans = _transform->getComputed();
+    Transform otherTrans = other->transform()->getComputed();
 
     for( std::pair<std::string, std::vector<Adj>> pair : gauss.adjacencies ) {
         for( int i = 0, numAdj = pair.second.size(); i < numAdj; i++ ) {
@@ -228,7 +228,7 @@ EdgeManifold Collider::overlayGaussMaps( Collider* other ) {
                             v1 = trans.getTransformed( v1 );
                             v2 = otherTrans.getTransformed( v2 );
 
-                            edgeNormal *= sign( vec3::dot( edgeNormal, v1 - trans.position ) );//make sure the edge normal is facing outwards from the body
+                            edgeNormal *= sign( vec3::dot( edgeNormal, v1 - trans.position() ) );//make sure the edge normal is facing outwards from the body
                             float pen = vec3::dot( edgeNormal, v2 - v1 );//does this work regardless of the edges' points used?
                             if( pen > manifold.pen ) {
                                 manifold.edgePair[0] = curr;
@@ -281,7 +281,7 @@ Manifold Collider::intersects( Collider* other ) {
     EdgeManifold minEdge = overlayGaussMaps( other );
     if( minEdge.pen > 0 ) {
         //debug code
-        Transform t = _transform->computeTransform(), ot = other->transform()->computeTransform();
+        Transform t = _transform->getComputed(), ot = other->transform()->getComputed();
         vec3 v1 = t.getTransformed( getVert( minEdge.edgePair[0].edge[0] ) ), v2 = t.getTransformed( getVert( minEdge.edgePair[0].edge[1] ) )
             , ov1 = ot.getTransformed( other->getVert( minEdge.edgePair[1].edge[0] ) ), ov2 = ot.getTransformed( other->getVert( minEdge.edgePair[1].edge[1] ) );
         DrawDebug::getInstance().drawDebugVector( v1, v2, vec3( 1, 0, 0 ) );
@@ -297,8 +297,8 @@ Manifold Collider::intersects( Collider* other ) {
     if( minEdge.pen > minFace.pen ) {
         std::cout << "EDGE ";
         Adj e1 = minEdge.edgePair[0], e2 = minEdge.edgePair[1];
-        Transform t = _transform->computeTransform()
-            , ot = other->transform()->computeTransform();
+        Transform t = _transform->getComputed()
+            , ot = other->transform()->getComputed();
         //get the points defining both edges in the collision in world space
         vec3 p0 = t.getTransformed( getVert( e1.edge[0] ) )
             , p1 = t.getTransformed( getVert( e1.edge[1] ) )
@@ -363,8 +363,8 @@ std::vector<int> Collider::getIncidentFaces( vec3 refNormal ) {
 ------------------------------------------------------------------------------------------------------------------------------------
 */
 void Collider::clipPolygons( FaceManifold& reference, std::vector<int>& incidents ) {
-    Transform trans = _transform->computeTransform()
-        , otherTrans = reference.other->transform()->computeTransform();
+    Transform trans = _transform->getComputed()
+        , otherTrans = reference.other->transform()->getComputed();
 
     vec3 refCenter, refNorm = reference.axis;
 
@@ -769,8 +769,8 @@ void Collider::updateNormals() {
         break;*/
     case ColliderType::BOX:
     case ColliderType::MESH:
-        Transform t = _transform->computeTransform();
-        mat4 rot = mat4::rotate( t.rotAngle, t.rotAxis );
+        Transform t = _transform->getComputed();
+        mat4 rot = mat4::rotate( t.rotAngle(), t.rotAxis() );
         //auto faceVerts = mesh->faces().verts;
         for( int i = 0, numNormals = faceNormals.size(); i < numNormals; i++ ) {
             currNormals[i] = ( vec3 )( rot * vec4( faceNormals[i], 1 ) );
@@ -790,9 +790,9 @@ void Collider::updateEdges() {
         break;
     case ColliderType::BOX:
     case ColliderType::MESH:
-        Transform t = _transform->computeTransform();
-        mat4 rot = mat4::rotate( t.rotAngle, t.rotAxis );
-        mat4 scale = mat4::scale( t.scale );
+        Transform t = _transform->getComputed();
+        mat4 rot = mat4::rotate( t.rotAngle(), t.rotAxis() );
+        mat4 scale = mat4::scale( t.scale() );
         int numEdges = edges.size();
         for( int i = 0; i < numEdges; i++ ) {
             currEdges[i] = ( vec3 )( scale * rot * vec4( edges[i], 1 ) );//this is probably slow
@@ -811,7 +811,7 @@ void Collider::updateEdges() {
 }
 
 void Collider::update() {
-    _framePos = _transform->computeTransform().position;
+    _framePos = _transform->getComputed().position();
 	_aabb.center = _framePos;
     updateDims( _transform );
     updateNormals();

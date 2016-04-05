@@ -5,6 +5,10 @@ CollisionManager::CollisionManager() { octTree = OctTree(vec3(), vec3(1000,1000,
 
 CollisionManager::~CollisionManager() { }
 
+void CollisionManager::addObject(GameObject* go) {
+	octTree.add(go);
+}
+
 void CollisionManager::update() {
 	size_t numCollisions;
 	do {

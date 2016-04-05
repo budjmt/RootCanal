@@ -1,6 +1,7 @@
 #pragma once
 
-#include <math.h>
+#include <cmath>
+#include <cstring>
 
 const double PI_D = 3.14159265358979323846;
 const float PI = (float)PI_D;
@@ -49,9 +50,26 @@ private:
     float v[4];
 };
 
+class mat3 {
+public:
+	mat3(); ~mat3(); mat3(float f); mat3(float r1, float r2, float r3); 
+	mat3(vec3 c1, vec3 c2, vec3 c3); mat3(float* _m);
+	const float* operator[](int i) const; float* operator[](int i);
+	//column major
+	mat3 operator+(const mat3& other); mat3 operator-(const mat3& other);
+	mat3 operator*(float f); mat3 operator/(float f);
+	mat3 operator*(const mat3& other);	vec3 operator*(const vec3& v);
+
+	static mat3 transpose(mat3& m);
+
+private:
+	float m[9];
+};
+
 class mat4 {
 public:
-    mat4(); ~mat4(); mat4( float f ); mat4( float* _m );
+    mat4(); ~mat4(); mat4( float f ); mat4(float r1, float r2, float r3, float r4); 
+	mat4(vec4 c1, vec4 c2, vec4 c3, vec4 c4); mat4( float* _m );
     const float* operator[]( int i ) const; float* operator[]( int i );
     //column major
     mat4 operator+( const mat4& other ); mat4 operator-( const mat4& other );
@@ -92,6 +110,8 @@ public:
     quat operator+( const quat& other ); quat operator-( const quat& other );
     quat operator*( float f ); quat operator/( float f );
     quat operator*( const quat& other ) const;
+
+	static float length(const quat& q);
 
     static quat pow( const quat& q, float e );
     static quat inverse( const quat& q );

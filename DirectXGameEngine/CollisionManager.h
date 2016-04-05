@@ -8,6 +8,7 @@ public:
 	CollisionManager();
 	~CollisionManager();
 
+	void addObject(GameObject* go);
 	void update();
 
 	collisionPairList broadPhase();

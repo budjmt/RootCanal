@@ -2,7 +2,7 @@
 
 OctTreeNode::OctTreeNode( vec3 center, vec3 halfWidths )
 {
-	transform.position = center;
+	transform.position( center );
 	_collider = new Collider(&transform, halfWidths);
 
     //AABB& nodeBox = _collider->aabb();
@@ -24,13 +24,9 @@ OctTreeNode::OctTreeNode( vec3 center, vec3 halfWidths )
 
 OctTreeNode::~OctTreeNode()
 {
-    for( unsigned i = 0; i < _nodes.size(); i++ )
-    {
-        if( _nodes[i] != nullptr )
-        {
+    for( size_t i = 0, numNodes = _nodes.size(); i < numNodes; i++ )
+        if( _nodes[i] )
             delete _nodes[i];
-        }
-    }
 
     delete _collider;
 }
@@ -46,23 +42,19 @@ void OctTreeNode::print()
     std::cout << "Colliders: " << _count << std::endl;
 
 	for each(GameObject* child in _containedChildren)
-		if (child);
+		if (child)
+			std::cout << child->collider() << std::endl;
             //child->collider().aabb()->print();
 
     std::cout << std::endl;
 
     std::cout << "Nodes: " << std::endl;
-
-    std::vector<std::string> nodeNames =
+    std::string nodeNames[8] =
     {
-        "Front Top Left Node",
-        "Front Top Right Node",
-        "Front Bottom Left Node",
-        "Front Bottom Right Node",
-        "Back Top Left Node",
-        "Back Top Right Node",
-        "Back Bottom Left Node",
-        "Back Bottom Right Node"
+        "Front Top Left Node",		"Front Top Right Node",
+        "Front Bottom Left Node",	"Front Bottom Right Node",
+        "Back Top Left Node",		"Back Top Right Node",
+        "Back Bottom Left Node",	"Back Bottom Right Node"
     };
 
     for( size_t i = 0, numNodes = _nodes.size(); i < numNodes; i++ )

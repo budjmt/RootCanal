@@ -19,7 +19,7 @@ public:
     bool intersects( Collider* otherColliderPtr );
     collisionPairList checkCollisions();
 	collisionPairList checkCollisions( GameObject* other );
-    void add( GameObject* otherColliderPtr );
+    void add( GameObject* go );
 
     OctTreeNode* getRoot();
 
