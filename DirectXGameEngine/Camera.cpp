@@ -75,36 +75,38 @@ void Camera::mayaCam(int width, int height, float dt, Mouse* mouse, Camera* came
 		//std::cout << "Position: " << camera->transform.position.x << "," << camera->transform.position.y << "," << camera->transform.position.z << std::endl << "Pitch: " << camera->pitch << std::endl << "Yaw: " << camera->yaw << std::endl;
 	}
 
-	if (GetAsyncKeyState('W') & 0x8000) {
+    Keyboard& keys = Keyboard::getInstance();
+
+	if ( keys.isDown( 'W' ) ) {
 		vec3 newPos = camera->transform.position() + camera->getForward() * (5.f * (float)dt);
 		camera->transform.position(newPos);
 	}
-	else if (GetAsyncKeyState('S') & 0x8000) {
+	else if ( keys.isDown( 'S' ) ) {
 		vec3 newPos = camera->transform.position() + camera->getForward() * (-5.f * (float)dt);
 		camera->transform.position(newPos);
 	}
-	if (GetAsyncKeyState('D') & 0x8000) {
+	if ( keys.isDown( 'D' ) ) {
 		vec3 newPos = camera->transform.position() + camera->getRight() * (-5.f * (float)dt);
 		camera->transform.position(newPos);
 	}
-	else if (GetAsyncKeyState('A') & 0x8000) {
+	else if ( keys.isDown( 'A' ) ) {
 		vec3 newPos = camera->transform.position() + camera->getRight() * (5.f * (float)dt);
 		camera->transform.position(newPos);
 	}
 
-	if (GetAsyncKeyState(VK_UP) & 0x8000 || GetAsyncKeyState(VK_SPACE) & 0x8000) {
+	if ( keys.isDown( VK_UP ) || keys.isDown( VK_SPACE ) ) {
 		vec3 newPos = camera->transform.position() + vec3(0, 1, 0) * (5.f * (float)dt);
 		camera->transform.position(newPos);
 	}
-	else if (GetAsyncKeyState(VK_DOWN) & 0x8000 || GetAsyncKeyState('X') & 0x8000) {
+	else if ( keys.isDown( VK_DOWN ) || keys.isDown( 'X' ) ) {
 		vec3 newPos = camera->transform.position() + vec3(0, 1, 0) * (-5.f * (float)dt);
 		camera->transform.position(newPos);
 	}
-	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+	if ( keys.isDown( VK_RIGHT ) ) {
 		vec3 newPos = camera->transform.position() + vec3(1, 0, 0) * (-5.f * (float)dt);
 		camera->transform.position(newPos);
 	}
-	else if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+	else if ( keys.isDown( VK_LEFT ) ) {
 		vec3 newPos = camera->transform.position() + vec3(1, 0, 0) * (5.f * (float)dt);
 		camera->transform.position(newPos);
 	}

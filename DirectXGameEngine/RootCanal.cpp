@@ -171,9 +171,9 @@ void RootCanal::CreateGeometry()
 		XMFLOAT3(-1.f,1.f,-0.5f)
 	};
 
-	char* m_names[] = { "../Assets/cone.obj", "../Assets/cube.obj", "../Assets/cylinder.obj"/*, "Assets/helix.obj", "Assets/sphere.obj", "Assets/torus.obj"*/ };
+	char* m_names[] = { "../Assets/cone.obj", "../Assets/cube.obj", "../Assets/cylinder.obj" };
 	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader); mat->camera(&camera);
-	mat->texture(Texture::getTexture(L"../Assets/butt.png", device, deviceContext));
+	mat->texture(Texture::getTexture(L"../Assets/crate.png", device, deviceContext));
 	materials.push_back(mat);
 
 	int i = 0; MeshImporter meshImporter;

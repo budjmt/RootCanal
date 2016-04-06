@@ -271,3 +271,8 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+
+# Allow assets
+!Assets/
+!Assets/*

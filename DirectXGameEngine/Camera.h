@@ -7,6 +7,7 @@
 #include "MarchMath.h"
 #include "GameObject.h"
 #include "Mouse.h"
+#include "Keyboard.h"
 
 const float CAM_FOV = 2 * PI / 5;
 

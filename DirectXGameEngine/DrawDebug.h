@@ -12,7 +12,7 @@
 #include "MeshImporter.h"
 #include "Mesh.h"
 
-#define DEBUG true
+#define DEBUG false
 
 const int MAX_VECTORS = 1000000;
 const int MAX_SPHERES = 100000;
