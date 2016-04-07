@@ -196,6 +196,13 @@ void RootCanal::CreateGeometry()
 		gameObjects.push_back(e);
 		i++;
 	}
+
+	Mesh* loadedMesh = meshImporter.loadMesh("../Assets/cone.obj");
+	assert(loadedMesh != nullptr);
+	DrawMesh* d = new DrawMesh(loadedMesh, nullptr, device);
+	d->material(mat);
+	player = new Player(vec3(4.f, 0.f, 0.f),  d);
+	gameObjects.push_back(player);
 }
 
 

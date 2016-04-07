@@ -4,6 +4,7 @@
 
 #include "DXInfo.h"
 #include "GameObject.h"
+#include "Player.h"
 #include "Camera.h"
 #include "DrawMesh.h"
 #include "Light.h"
@@ -41,6 +42,8 @@ private:
 	std::vector<GameObject*> gameObjects;
 	std::vector<Mesh*> meshes;
 	std::vector<Material*> materials;
+
+	Player* player;
 
 	DirectionalLight l1, l2;
 };

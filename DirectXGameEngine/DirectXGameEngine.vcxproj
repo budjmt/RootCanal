@@ -96,6 +96,7 @@
     <ClCompile Include="MeshImportData.cpp" />
     <ClCompile Include="MeshImporter.cpp" />
     <ClCompile Include="MouseEvent.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="RootCanal.cpp" />
     <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DirectXGameCore.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="MeshImporter.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="MouseEvent.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="RootCanal.h" />
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DirectXGameCore.h" />
