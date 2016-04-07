@@ -51,15 +51,12 @@ void GameScene::update(float dt)
 		newPos += ship->transform.up() * (-30 * dt);
 
         RigidBody& rigidBody = ship->rigidBody();
-        rigidBody.netForce += ( newPos - oldPos ) * 200;
+        rigidBody.netForce += ( newPos - oldPos ) * 250;
 	}
-	//ship->transform.position(newPos);
 
     vec3 oldCamPos = ( *_camera )->transform.position();
-    vec3 newCamPos = oldCamPos;
-    newCamPos.x = newPos.x;
-    newCamPos.y = newPos.y;
-    newCamPos.z = newPos.z - 6;
+    vec3 newCamPos = ship->transform.position();
+    newCamPos.z = newCamPos.z - 6;
 
     ( *_camera )->transform.position( vec3::lerp(oldCamPos, newCamPos, 0.2f) );
 }
