@@ -42,4 +42,10 @@ private:
 
 	Transform *computed = nullptr, *_parent = nullptr;
 	Transform computeTransform();
+	
+	//typedef Transform(Transform::*ComputeTransformFunc)();
+	Transform noCompute();
+	Transform firstCompute();
+	Transform allocatedCompute();
+	//ComputeTransformFunc compute = &Transform::noCompute;
 };

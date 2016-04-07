@@ -32,20 +32,21 @@ GameScene::~GameScene()
     delete gameState;
 }
 
-void GameScene::update( float dt )
+void GameScene::update(float dt)
 {
-    Keyboard& keys = Keyboard::getInstance();
+	Keyboard& keys = Keyboard::getInstance();
 
-    if( keys.isDown( VK_LEFT ) ) {
-        ship->transform.rotate( vec3( 0, 0, -0.003f ) );
-    }
-    else if( keys.isDown( VK_RIGHT ) ) {
-        ship->transform.rotate( vec3( 0, 0, 0.003f ) );
-    }
-
-    vec3 newPos = ship->transform.position();
-    newPos += vec3::cross(ship->transform.forward(), ship->transform.right()) * 0.06f;
-    ship->transform.position( newPos );
+	if (keys.isDown(VK_LEFT)) {
+		ship->transform.rotate(vec3(0, 0, -PI * 2 * dt));
+	}
+	else if (keys.isDown(VK_RIGHT)) {
+		ship->transform.rotate(vec3(0, 0, PI * 2 * dt));
+	}
+	vec3 newPos = ship->transform.position();
+	if (keys.isDown(VK_UP)) {
+		newPos += ship->transform.up() * (-50 * dt);
+	}
+	ship->transform.position(newPos);
 
     vec3 oldCamPos = ( *_camera )->transform.position();
     vec3 newCamPos = oldCamPos;
@@ -53,7 +54,5 @@ void GameScene::update( float dt )
     newCamPos.y = newPos.y;
     newCamPos.z = newPos.z - 6;
 
-    vec3 displacement = newCamPos - oldCamPos;
-
-    ( *_camera )->transform.position( oldCamPos + displacement * 0.3f );
+    ( *_camera )->transform.position( vec3::lerp(oldCamPos, newCamPos, 0.3f) );
 }

@@ -11,7 +11,8 @@ Transform::Transform()
 
 Transform::Transform( const Transform& other )
 {
-    _parent = other._parent;
+	//compute = &Transform::noCompute;
+    parent(other._parent);
     _position = other._position;
     _scale = other._scale;
     _rotation = other._rotation;
@@ -23,6 +24,7 @@ Transform::Transform( const Transform& other )
 	if(other.computed) {
 		computed = new Transform;
 		*computed = *other.computed;
+		//compute = &Transform::allocatedCompute;
 	}
 }
 
@@ -33,6 +35,8 @@ Transform::~Transform() {
 
 Transform& Transform::operator=( const Transform& other )
 {
+	//compute = &Transform::noCompute;
+	parent(other._parent);
     _position = other._position;
     _scale = other._scale;
     _rotation = other._rotation;
@@ -43,10 +47,9 @@ Transform& Transform::operator=( const Transform& other )
     _right = other._right;
 	if (other.computed) {
         if( !computed )
-        {
             computed = new Transform;
-        }
 		*computed = *other.computed;
+		//compute = &Transform::allocatedCompute;
 	}
     return *this;
 }
@@ -63,10 +66,21 @@ vec3 Transform::rotAxis() const { return _rotAxis; } float Transform::rotAngle()
 
 Transform* Transform::parent() { return _parent; } 
 void Transform::parent(Transform* p) {
-	if(p)
-		p->children.insert(this); 
-	if(_parent) 
-		_parent->children.erase(this); 
+	if (p == _parent)
+		return;
+	if (p) {
+		p->children.insert(this);
+		//if (!_parent)
+			//compute = &Transform::firstCompute;
+	}
+	if (_parent) {
+		_parent->children.erase(this);
+		if (!p) {
+			if (computed) delete computed;
+			//compute = &Transform::noCompute;
+		}
+	}
+	makeDirty();
 	_parent = p; 
 }
 
@@ -83,6 +97,8 @@ Transform Transform::getComputed() {
 	//[re]compute the transform
 	dirty = false;
 	return computeTransform();
+	//this doessssn't worrkk righggght now wwwhaaaat the fuck
+	//return (this->*compute)();
 }
 
 Transform Transform::computeTransform() {
@@ -97,6 +113,28 @@ Transform Transform::computeTransform() {
     t.rotation( _rotation * _parent->rotation() );
     t.parent( _parent->parent() );
 	return *computed = t.computeTransform();
+}
+
+Transform Transform::noCompute() {
+	//if there's no parent, this is already an accurate transform
+	return *this;
+}
+
+Transform Transform::firstCompute() {
+	//if there is no previously computed transform, allocate one so we can compute it
+	computed = new Transform;
+	//compute = &Transform::allocatedCompute;
+	dirty = false;
+	return computeTransform();
+}
+
+Transform Transform::allocatedCompute() {
+	//if there is a previously computed transform and we haven't made any "dirtying" changes since computing it
+	if (!dirty)
+		return *computed;
+	//[re]compute the transform
+	dirty = false;
+	return *computed = computeTransform();
 }
 
 void Transform::updateNormals() {
