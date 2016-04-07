@@ -16,10 +16,12 @@ GameScene::GameScene( Camera** camera, SimplePixelShader* pixelShader, SimpleVer
     Mesh* mesh2 = Mesh::createMesh( "../Assets/cube.obj" );
 
     ship = new ColliderObject( mesh1, material );
+    ship->rigidBody().floating( true );
     ship->transform.rotate( vec3( PI, 0, 0 ) );
 
     ColliderObject* cube = new ColliderObject( mesh2, material );
-    cube->transform.position( vec3( 0, 0, 20 ) );
+    cube->rigidBody().floating( true );
+    cube->transform.position( vec3( 0, 0, 2 ) );
     cube->transform.scale( vec3( 100, 100, 1 ) );
 
     gameState->addGameObject( ship );
@@ -42,11 +44,16 @@ void GameScene::update(float dt)
 	else if (keys.isDown(VK_RIGHT)) {
 		ship->transform.rotate(vec3(0, 0, PI * 2 * dt));
 	}
+
+    vec3 oldPos = ship->transform.position();
 	vec3 newPos = ship->transform.position();
 	if (keys.isDown(VK_UP)) {
-		newPos += ship->transform.up() * (-50 * dt);
+		newPos += ship->transform.up() * (-30 * dt);
+
+        RigidBody& rigidBody = ship->rigidBody();
+        rigidBody.netForce += ( newPos - oldPos ) * 200;
 	}
-	ship->transform.position(newPos);
+	//ship->transform.position(newPos);
 
     vec3 oldCamPos = ( *_camera )->transform.position();
     vec3 newCamPos = oldCamPos;
@@ -54,5 +61,5 @@ void GameScene::update(float dt)
     newCamPos.y = newPos.y;
     newCamPos.z = newPos.z - 6;
 
-    ( *_camera )->transform.position( vec3::lerp(oldCamPos, newCamPos, 0.3f) );
+    ( *_camera )->transform.position( vec3::lerp(oldCamPos, newCamPos, 0.2f) );
 }

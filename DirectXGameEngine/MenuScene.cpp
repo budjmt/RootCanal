@@ -18,6 +18,7 @@ MenuScene::MenuScene( Camera** camera, SimplePixelShader* pixelShader, SimpleVer
     Mesh* mesh = Mesh::createMesh( "../Assets/cube.obj" );
 
     ColliderObject* obj1 = new ColliderObject( mesh, material );
+    obj1->rigidBody().floating( true );
     obj1->transform.rotate( vec3(0, 0, PI * 0.5f) );
     obj1->transform.scale( vec3( 6, 6, 1 ) );
 

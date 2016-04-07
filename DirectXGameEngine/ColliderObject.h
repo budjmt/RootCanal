@@ -21,7 +21,7 @@ public:
 
 	RigidBody& rigidBody();
 	Collider* collider() const; void collider(Collider* c);
-	virtual void update(double dt);
+	virtual void update( float dt, Mouse* mouse );
 	virtual void calcForces(double dt);
 	void handleCollision(ColliderObject* other, Manifold& m, double dt);
 	vec3 calcAngularAccel(Manifold& m, vec3 F);

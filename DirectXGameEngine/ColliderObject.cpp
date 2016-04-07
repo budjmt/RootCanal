@@ -45,7 +45,7 @@ ColliderObject& ColliderObject::operator=(ColliderObject& other) {
 RigidBody& ColliderObject::rigidBody() { return body; }
 Collider* ColliderObject::collider() const { return _collider; } void ColliderObject::collider(Collider* c) { _collider = c; }
 
-void ColliderObject::update(double dt) {
+void ColliderObject::update( float dt, Mouse* mouse ) {
 	calcForces(dt);
 	body.update(dt);
 	transform.position( transform.position() + body.vel() * (float)dt );
