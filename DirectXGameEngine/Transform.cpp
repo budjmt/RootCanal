@@ -56,26 +56,26 @@ vec3 Transform::rotAxis() const { return _rotAxis; } float Transform::rotAngle()
 
 Transform* Transform::parent() { return _parent; } 
 void Transform::parent(Transform* p) {
-	if(p)
-		p->children.insert(this); 
-	if(_parent) 
-		_parent->children.erase(this); 
+	if (p == _parent)
+		return;
+	if (p) {
+		p->children.insert(this);
+		if(!_parent)
+			compute = firstCompute;
+	}
+	if (_parent) {
+		_parent->children.erase(this);
+		if (!p) {
+			if(computed) delete computed;
+			compute = noCompute;
+		}
+	}
+	makeDirty();
 	_parent = p; 
 }
 
 Transform Transform::getComputed() {
-	//if there's no parent, this is already an accurate transform
-	if (!_parent)
-		return *this;
-	//if there is no previously computed transform, allocate one so we can compute it
-	else if (!computed)
-		computed = new Transform;
-	//if there is a previously computed transform and we haven't made any "dirtying" changes since computing it
-	else if (!dirty)
-		return *computed;
-	//[re]compute the transform
-	dirty = false;
-	return computeTransform();
+	return (this->*compute)();
 }
 
 Transform Transform::computeTransform() {
@@ -90,6 +90,28 @@ Transform Transform::computeTransform() {
     t.rotation( _rotation * _parent->rotation() );
     t.parent( _parent->parent() );
 	return *computed = t.computeTransform();
+}
+
+Transform Transform::noCompute() {
+	//if there's no parent, this is already an accurate transform
+	return *this;
+}
+
+Transform Transform::firstCompute() {
+	//if there is no previously computed transform, allocate one so we can compute it
+	computed = new Transform;
+	compute = allocatedCompute;
+	dirty = false;
+	return computeTransform();
+}
+
+Transform Transform::allocatedCompute() {
+	//if there is a previously computed transform and we haven't made any "dirtying" changes since computing it
+	if (!dirty)
+		return *computed;
+	//[re]compute the transform
+	dirty = false;
+	return *computed = computeTransform();
 }
 
 void Transform::updateNormals() {
