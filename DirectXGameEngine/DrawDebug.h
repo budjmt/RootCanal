@@ -18,7 +18,7 @@ const int MAX_VECTORS = 1000000;
 const int MAX_SPHERES = 100000;
 const int MAX_BOXES = 500000;
 
-struct DebugMeshBuffer { std::vector<DebugVertex> meshArray = std::vector<DebugVertex>(); std::vector<uint32_t> meshElementArray = std::vector<uint32_t>(); };
+struct DebugMeshBuffer { std::vector<DebugVertex> meshArray; std::vector<uint32_t> meshElementArray; };
 
 struct Sphere { vec3 center; float rad; };
 

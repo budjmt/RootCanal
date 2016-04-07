@@ -6,16 +6,14 @@
 
 Mesh::Mesh( std::vector<vec3> v, std::vector<vec3> n, std::vector<vec3> u, Face f )
 {
-    verts( v );
-    normals( n );
-    uvs( u );
-    faces( f );
+    _verts = v;
+    _normals = n;
+    _uvs = u ;
+    _faces = f;
 
     h_dims = vec3( -1, -1, -1 );
     _meshBuffer = genMeshArrays();
 }
-
-Mesh::~Mesh() { }
 
 std::map<std::string, Mesh*> Mesh::loadedMeshes;//all currently loaded meshes
 
@@ -96,12 +94,12 @@ MeshBuffer Mesh::genMeshArrays() {
         }
         if( !inArr ) {
             _faces.combinations.push_back( vec3( (float)_faces.verts[i], (float)_faces.uvs[i], (float)_faces.normals[i] ) );
-            m.meshArray.push_back( Vertex{
+            m.meshArray.push_back( Vertex(
                 DirectX::XMFLOAT4( rand() % 1000 / 1000.f, rand() % 1000 / 1000.f, rand() % 1000 / 1000.f, 1.f ),
                 DirectX::XMFLOAT3( _verts[_faces.verts[i]].x, _verts[_faces.verts[i]].y, _verts[_faces.verts[i]].z ),
                 DirectX::XMFLOAT3( _normals[_faces.normals[i]].x, _normals[_faces.normals[i]].y, _normals[_faces.normals[i]].z ),
                 DirectX::XMFLOAT2( _uvs[_faces.uvs[i]].x, _uvs[_faces.uvs[i]].y )
-            } );
+            ) );
         }
         m.meshElementArray.push_back( index );
     }

@@ -7,7 +7,7 @@ const float MAX_VEL = 40.f;
 
 class RigidBody {
 public:
-    vec3 netForce = vec3( 0, 0, 0 ), netAngAccel = vec3( 0, 0, 0 );
+    vec3 netForce = vec3(), netAngAccel = vec3();
 
     float floating() const; void floating( float f );
     float fixed() const; void fixed( float s );

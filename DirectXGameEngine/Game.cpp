@@ -10,7 +10,8 @@ Game::Game(HINSTANCE hInstance)
 }
 
 Game::~Game() {
-
+	delete defaultVertexShader;
+	delete defaultPixelShader;
 }
 
 bool Game::Init() {

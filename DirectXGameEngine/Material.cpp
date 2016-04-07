@@ -40,7 +40,7 @@ Material* Material::createMaterial( const wchar_t* key, Texture* texture, Simple
 
 std::map<const wchar_t*, Texture*> Texture::loadedTextures;
 
-Texture::~Texture() { resourceView->Release(); samplerState->Release(); }
+Texture::~Texture() { ReleaseMacro(resourceView); ReleaseMacro(samplerState); }
 
 #include "DebugBenchmark.h"
 Texture* Texture::getTexture( const wchar_t* key ) {
