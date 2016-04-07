@@ -20,9 +20,12 @@ public:
     collisionPairList checkCollisions();
 	collisionPairList checkCollisions( ColliderObject* other );
     void add( ColliderObject* o );
+    void clear();
 
     OctTreeNode* getRoot();
 
 private:
     OctTreeNode* _root;
+    vec3 _center;
+    vec3 _halfWidths;
 };

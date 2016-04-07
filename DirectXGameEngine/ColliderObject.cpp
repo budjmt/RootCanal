@@ -4,6 +4,12 @@
 
 std::vector<ColliderObject*> ColliderObject::colliderEntities;
 
+ColliderObject::ColliderObject( Mesh * mesh, Material * material )
+    : ColliderObject(new DrawMesh(mesh,nullptr,DXInfo::getInstance().device))
+{
+    _shape->material( material );
+}
+
 ColliderObject::ColliderObject(Drawable* s)
 	: GameObject(s)
 {

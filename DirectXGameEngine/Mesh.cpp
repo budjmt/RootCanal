@@ -1,5 +1,8 @@
 #include "Mesh.h"
+
 #include <iostream>
+
+#include "MeshImporter.h"
 
 Mesh::Mesh( std::vector<vec3> v, std::vector<vec3> n, std::vector<vec3> u, Face f )
 {
@@ -13,6 +16,8 @@ Mesh::Mesh( std::vector<vec3> v, std::vector<vec3> n, std::vector<vec3> u, Face 
 }
 
 Mesh::~Mesh() { }
+
+std::map<std::string, Mesh*> Mesh::loadedMeshes;//all currently loaded meshes
 
 const std::vector<vec3>& Mesh::verts() const { return _verts; } void Mesh::verts( std::vector<vec3>& v ) { _verts = v; }
 const std::vector<vec3>& Mesh::uvs() const { return _uvs; } void Mesh::uvs( std::vector<vec3>& u ) { _uvs = u; }
@@ -101,4 +106,20 @@ MeshBuffer Mesh::genMeshArrays() {
         m.meshElementArray.push_back( index );
     }
     return m;
+}
+
+Mesh* Mesh::getMesh( const char * key )
+{
+    return loadedMeshes.at( key );
+}
+
+Mesh* Mesh::createMesh( const char* meshFile )
+{
+    MeshImporter meshImporter;
+    Mesh* loadedMesh = meshImporter.loadMesh( meshFile );
+
+    assert( loadedMesh != nullptr );
+
+    loadedMeshes[meshFile] = loadedMesh;
+    return loadedMesh;
 }

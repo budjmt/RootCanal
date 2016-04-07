@@ -6,10 +6,12 @@
 #include "SimpleShader.h"
 #include "Mouse.h"
 
+#include "Scene.h"
+
 // --------------------------------------------------------
 // Game class which extends the base DirectXGameCore class
 // --------------------------------------------------------
-class Game : public DirectXGameCore {
+class Game : public DirectXGameCore , public EventDispatcher{
 public:
 	Game(HINSTANCE hInstance);
 	virtual ~Game();
@@ -28,6 +30,7 @@ protected:
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.
 	Mouse mouse;
+    Scene* currScene;
 
 private:
 	// Wrappers for DirectX shaders to provide simplified functionality
@@ -38,5 +41,5 @@ private:
 	DirectX::XMFLOAT4X4 worldMatrix, viewMatrix, projectionMatrix;
 
 	void CreateMatrices();
-	void LoadShaders();
+    void LoadShaders();
 };

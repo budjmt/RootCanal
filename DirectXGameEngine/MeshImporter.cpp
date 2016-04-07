@@ -8,7 +8,7 @@ MeshImporter::~MeshImporter()
 {
 }
 
-ImportData* MeshImporter::loadFromFile( char* filePath )
+ImportData* MeshImporter::loadFromFile( const char* filePath )
 {
     //cout << "Loading " << file << endl;
     FILE* infile = fopen( filePath, "r" );
@@ -59,7 +59,7 @@ ImportData* MeshImporter::loadFromFile( char* filePath )
     return importData;
 }
 
-Mesh* MeshImporter::loadMesh( char* filePath /*, char* textureFilePath*/ )
+Mesh* MeshImporter::loadMesh( const char* filePath /*, char* textureFilePath*/ )
 {
     ImportData* importData = loadFromFile( filePath );
     MeshImportData* meshImportData = static_cast<MeshImportData*>( importData );

@@ -12,6 +12,7 @@ class ColliderObject :
 	public GameObject
 {
 public:
+    ColliderObject( Mesh* mesh, Material* material );
 	ColliderObject(Drawable* s);
 	ColliderObject(vec3 p, vec3 dims, vec3 sc, vec3 rA, float r, Drawable* s);
 	~ColliderObject();

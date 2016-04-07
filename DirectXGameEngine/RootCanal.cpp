@@ -63,13 +63,17 @@ RootCanal::RootCanal(HINSTANCE hInstance)
 // --------------------------------------------------------
 RootCanal::~RootCanal()
 {
-	delete vertexShader; delete pixelShader;
-	for (auto m : meshes)
-		delete m;
-	for (auto m : materials)
-		delete m;
-	for (auto g : gameObjects)
-		delete g;
+	delete vertexShader;
+    delete pixelShader;
+
+	for (auto m : Mesh::loadedMeshes )
+		delete m.second;
+	for (auto m : Material::loadedMaterials )
+		delete m.second;
+    for( auto pair : Texture::loadedTextures )
+        delete pair.second;
+
+    delete currScene;
 }
 
 #pragma endregion
@@ -126,6 +130,10 @@ bool RootCanal::Init()
 	// geometric primitives we'll be using and how to interpret them
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+    menuScene = new MenuScene( &camera, pixelShader, vertexShader );
+
+    SetScene( menuScene );
+
 	// Successfully initialized
 	return true;
 }
@@ -151,9 +159,6 @@ void RootCanal::LoadShaders()
 // --------------------------------------------------------
 void RootCanal::CreateGeometry()
 {
-	camera = new Camera();
-	OnResize();
-	gameObjects.push_back(camera);
 
 #if DEBUG
 	DrawDebug::getInstance().camera(&camera);
@@ -170,32 +175,6 @@ void RootCanal::CreateGeometry()
 		XMFLOAT4(0.6f,0.f,0.25f,1.f),
 		XMFLOAT3(-1.f,1.f,-0.5f)
 	};
-
-	char* m_names[] = { "../Assets/cone.obj", "../Assets/cube.obj", "../Assets/cylinder.obj" };
-	Material* mat = new Material(); mat->vertexShader(vertexShader); mat->pixelShader(pixelShader); mat->camera(&camera);
-	mat->texture(Texture::getTexture(L"../Assets/crate.png", device, deviceContext));
-	materials.push_back(mat);
-
-	int i = 0; MeshImporter meshImporter;
-	for (char* file : m_names) {
-		Mesh* loadedMesh = meshImporter.loadMesh(file);
-		assert(loadedMesh != nullptr);
-		DrawMesh* d = new DrawMesh(loadedMesh, nullptr, device);
-		d->material(mat);
-		vec3 vecs[3];
-		float rot = rand() % 360 / 180.f * PI;
-		//vecs[0] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 500.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 500.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 500.f));
-		//vecs[1] = vec3((rand() % 1000 / 500.f), (rand() % 1000 / 500.f), (rand() % 1000 / 500.f));
-		vecs[2] = vec3((rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f), (rand() % 2 * 2 - 1) * (rand() % 1000 / 1000.f));
-		vecs[2] /= vec3::length(vecs[2]);
-		vecs[0] = vec3(8.f - (i + 1) * 4.f, 0.f, 0.f);
-		vecs[1] = vec3((i + 1) * 0.5f, (i + 1) * 0.5f, (i + 1) * 0.5f);
-		//vecs[2] = vec3(1,0,0);
-		ColliderObject* e = new ColliderObject(vecs[0], loadedMesh->getDims(), vecs[1], vecs[2], rot, d);
-		meshes.push_back(loadedMesh);
-		gameObjects.push_back(e);
-		i++;
-	}
 }
 
 
@@ -205,6 +184,9 @@ void RootCanal::CreateGeometry()
 // --------------------------------------------------------
 void RootCanal::CreateMatrices()
 {
+    // TODO: Clean this up and everything involving cameras and transforms
+    camera = new Camera();
+    OnResize();
 	camera->transform.position( vec3(0.f, 0.f, -5.f) );
 	//camera->transform.rotate(0, PI, 0);
 	camera->update(0.f, &mouse);
@@ -231,20 +213,30 @@ void RootCanal::OnResize()
 // --------------------------------------------------------
 // Update your game here - take input, move objects, etc.
 // --------------------------------------------------------
-float x = 0;
 void RootCanal::UpdateScene(float deltaTime, float totalTime)
 {
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
 
-	Camera::mayaCam(windowWidth, windowHeight, deltaTime, &mouse, camera);
-	for (auto g : gameObjects)
-		g->update(deltaTime, &mouse);
-	CollisionManager::getInstance().update(deltaTime);
+    currScene->update( deltaTime );
 
-	mouse.prev.x = mouse.curr.x;
-	mouse.prev.y = mouse.curr.y;
+    if( StateManager::getInstance().nextScene() )
+    {
+        CreateMatrices();
+        gameScene = new GameScene( &camera, pixelShader, vertexShader );
+        SetScene( gameScene );
+        StateManager::getInstance().nextScene( false );
+        OnResize();
+    }
+    else
+    {
+        StateManager::getInstance().update( deltaTime, &mouse );
+        CollisionManager::getInstance().update( deltaTime );
+    }
+
+    mouse.prev.x = mouse.curr.x;
+    mouse.prev.y = mouse.curr.y;
 }
 
 // --------------------------------------------------------
@@ -273,9 +265,7 @@ void RootCanal::DrawScene(float deltaTime, float totalTime)
 	//optimize for transparent/non-transparent stuff later
 	auto& dx = DXInfo::getInstance();
 	dx.deviceContext->OMSetBlendState(dx.blendState, NULL, 0xffff);
-	for (auto g : gameObjects) {
-		g->draw(deviceContext);
-	}
+    StateManager::getInstance().draw( deviceContext );
 #if DEBUG
 	DrawDebug& d = DrawDebug::getInstance();
 	d.drawDebugSphere(vec3(0.5f, 0.5f, 0.5f), 0.5f);
@@ -296,6 +286,31 @@ void RootCanal::DrawScene(float deltaTime, float totalTime)
 	//  - Do this exactly ONCE PER FRAME
 	//  - Always at the very end of the frame
 	HR(swapChain->Present(0, 0));
+}
+
+void RootCanal::OnSceneChange( Event e )
+{
+    SceneTransitionState* transition = static_cast<SceneTransitionState*>( StateManager::getInstance().gameState() );
+    SetScene( transition->getNewScene() );
+
+    camera = *(currScene->getCamera());
+    StateManager::getInstance().gameState( transition->getState() );
+
+    RootCanal::OnResize();
+}
+
+void RootCanal::SetScene( Scene* scene )
+{
+    if( currScene )
+    {
+        delete currScene;
+    }
+
+    currScene = scene;
+
+    // Add event listener on the scene for when it needs to switch to another
+    /*Callback c = std::bind( &RootCanal::OnSceneChange, this, std::placeholders::_1 );
+    currScene->addEventListener( SceneEvent::CHANGE, c  );*/
 }
 
 #pragma endregion

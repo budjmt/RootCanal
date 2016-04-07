@@ -2,6 +2,9 @@
 
 OctTree::OctTree( vec3 center, vec3 halfWidths )
 {
+    _center = center;
+    _halfWidths = halfWidths;
+
     _root = new OctTreeNode( center, halfWidths );
 }
 
@@ -29,6 +32,12 @@ bool OctTree::intersects( Collider* other )
 }
 
 void OctTree::add(ColliderObject* o) { _root->add(o); }
+
+void OctTree::clear()
+{
+    if( _root ) { delete _root; }
+    _root = new OctTreeNode( _center, _halfWidths );
+}
 
 OctTreeNode* OctTree::getRoot() { return _root; }
 

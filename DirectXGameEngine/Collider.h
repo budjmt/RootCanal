@@ -60,7 +60,7 @@ class Collider
 {
 public:
     Collider( void );
-    Collider( Transform* t, vec3 b );
+    Collider( Transform* t, vec3 d );
     Collider( Mesh* m, Transform* t );
     Collider( const Collider& other );
     ~Collider( void );

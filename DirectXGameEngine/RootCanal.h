@@ -8,6 +8,11 @@
 #include "DrawMesh.h"
 #include "Light.h"
 #include "CollisionManager.h"
+#include "StateManager.h"
+#include "SceneEvent.h"
+#include "Callback.h"
+
+#include "MenuScene.h"
 
 class RootCanal : public Game
 {
@@ -20,6 +25,9 @@ public:
 	void OnResize() override;
 	void UpdateScene(float deltaTime, float totalTime) override;
 	void DrawScene(float deltaTime, float totalTime) override;
+
+    void OnSceneChange( Event e );
+    void SetScene( Scene* scene );
 
 	// For handing mouse input
 	//void OnMouseDown(WPARAM btnState, int x, int y);
@@ -38,9 +46,9 @@ private:
 	SimplePixelShader* pixelShader;
 
 	Camera* camera = nullptr;
-	std::vector<GameObject*> gameObjects;
-	std::vector<Mesh*> meshes;
-	std::vector<Material*> materials;
 
 	DirectionalLight l1, l2;
+
+    MenuScene* menuScene;
+    GameScene* gameScene;
 };

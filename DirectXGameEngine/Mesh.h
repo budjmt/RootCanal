@@ -3,6 +3,7 @@
 #include "Game.h"
 
 #include <vector>
+#include <map>
 
 #include "Vertex.h"
 
@@ -36,6 +37,10 @@ public:
     void adjustLoc( vec3 d );
 
     MeshBuffer genMeshArrays();
+
+    static std::map<std::string, Mesh*> loadedMeshes;//all currently loaded meshes
+    static Mesh* getMesh( const char* key );
+    static Mesh* createMesh( const char* meshFile );
 
 protected:
     std::vector<vec3> _verts, _normals, _uvs;

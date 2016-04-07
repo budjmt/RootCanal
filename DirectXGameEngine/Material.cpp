@@ -1,13 +1,15 @@
 #include "Material.h"
 
 Material::Material() {}
-Material::Material( const wchar_t* tex, ID3D11Device* device, ID3D11DeviceContext* deviceContext ) { _texture = Texture::getTexture( tex, device, deviceContext ); }
+Material::Material( Texture* tex ) { _texture = tex; }
 Material::~Material() {}
 
 void Material::vertexShader( SimpleVertexShader* v ) { vertex = v; }
 void Material::pixelShader( SimplePixelShader* p ) { pixel = p; }
 void Material::camera( Camera** c ) { _camera = c; }
 void Material::texture( Texture* t ) { _texture = t; }
+
+std::map<const wchar_t*, Material*> Material::loadedMaterials;
 
 void Material::updateMaterial( mat4& world ) {
     vertex->SetMatrix4x4( "world", &world[0][0] );
@@ -21,18 +23,31 @@ void Material::setActive( bool b ) {
     pixel->SetShader( b );
 }
 
-std::map<const wchar_t*, Texture*> Texture::loadedTextures;
-
-Texture::~Texture() {
-
+Material* Material::getMaterial( const wchar_t* key ) {
+    return loadedMaterials.at( key );
 }
 
-#include "DebugBenchmark.h"
-Texture* Texture::getTexture( const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext ) {
-    //check if the texture was already loaded
-    if( loadedTextures.count( texFile ) )
-        return loadedTextures[texFile];
+Material* Material::createMaterial( const wchar_t* key, Texture* texture, SimpleVertexShader* vertexShader, SimplePixelShader* pixelShader, Camera** camera )
+{
+    Material* mat = new Material();
+    mat->vertexShader( vertexShader );
+    mat->pixelShader( pixelShader );
+    mat->camera( camera );
+    mat->texture( texture );
+    loadedMaterials[key] = mat;
+    return mat;
+}
 
+std::map<const wchar_t*, Texture*> Texture::loadedTextures;
+
+Texture::~Texture() { resourceView->Release(); samplerState->Release(); }
+
+#include "DebugBenchmark.h"
+Texture* Texture::getTexture( const wchar_t* key ) {
+    return loadedTextures.at(key);
+}
+
+Texture* Texture::createTexture( const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext ) {
     Texture* texture = new Texture;
     HR( DirectX::CreateWICTextureFromFile( device, deviceContext, texFile, nullptr, &texture->resourceView ) );
 

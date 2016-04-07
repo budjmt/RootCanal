@@ -6,6 +6,7 @@
 
 #include "MarchMath.h"
 #include "Camera.h"
+#include "DXInfo.h"
 
 #include <map>
 
@@ -17,7 +18,8 @@ public:
     ID3D11SamplerState* samplerState = nullptr;
 
     static std::map<const wchar_t*, Texture*> loadedTextures;//all currently loaded textures
-    static Texture* getTexture( const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext );
+    static Texture* getTexture( const wchar_t* key );
+    static Texture* createTexture( const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext );
 
     void updateTex( ISimpleShader* shader );
 };
@@ -26,7 +28,7 @@ class Material
 {
 public:
     Material();
-    Material( const wchar_t* tex, ID3D11Device* device, ID3D11DeviceContext* deviceContext );
+    Material( Texture* tex );
     ~Material();
     void vertexShader( SimpleVertexShader* v );
     void pixelShader( SimplePixelShader* p );
@@ -35,6 +37,10 @@ public:
 
     void updateMaterial( mat4& world );
     void setActive( bool b );
+
+    static std::map<const wchar_t*, Material*> loadedMaterials;//all currently loaded materials
+    static Material* getMaterial( const wchar_t* key );
+    static Material* createMaterial( const wchar_t* key, Texture* texture, SimpleVertexShader* vertexShader, SimplePixelShader* pixelShader, Camera** camera );
 
 private:
     SimpleVertexShader* vertex;

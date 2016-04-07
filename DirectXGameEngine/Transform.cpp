@@ -42,13 +42,20 @@ Transform& Transform::operator=( const Transform& other )
     _up = other._up;
     _right = other._right;
 	if (other.computed) {
-		computed = new Transform;
+        if( !computed )
+        {
+            computed = new Transform;
+        }
 		*computed = *other.computed;
 	}
     return *this;
 }
 
-void Transform::makeDirty() { dirty = true; for (auto child : children) child->dirty = true; }
+void Transform::makeDirty() {
+    dirty = true;
+    for (auto child : children)
+        child->dirty = true;
+}
 vec3& Transform::position() { return _position; } void Transform::position(vec3 v) { makeDirty(); _position = v; }
 vec3& Transform::scale() { return _scale; } void Transform::scale(vec3 v) { makeDirty(); _scale = v; }
 quat& Transform::rotation() { return _rotation; } void Transform::rotation(quat q) { makeDirty(); _rotation = q; }

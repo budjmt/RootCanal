@@ -27,6 +27,11 @@ void EventDispatcher::dispatchEvent( Event e )
         for( Callback callback : *foundCallbackVector )
         {
             callback( e );
+
+            // TODO: Shouldn't actually break after the first found callback,
+            // but since things are getting deleted after a callback, other callbacks
+            // get lost after one causes memory clearing
+            break;
         }
     }
 }

@@ -24,6 +24,11 @@ void CollisionManager::draw() {
 #endif
 }
 
+void CollisionManager::clear()
+{
+    octTree->clear();
+}
+
 //returns a list of all pairs of colliders requiring narrow phase checks
 collisionPairList CollisionManager::broadPhase() {
 	return octTree->checkCollisions();

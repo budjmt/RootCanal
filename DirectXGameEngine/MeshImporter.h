@@ -16,8 +16,8 @@ public:
     MeshImporter();
     virtual ~MeshImporter();
 
-    virtual ImportData* loadFromFile( char* filePath );
-    virtual Mesh* loadMesh( char* filePath /*, char* textureFilePath*/ );
+    virtual ImportData* loadFromFile( const char* filePath );
+    virtual Mesh* loadMesh( const char* filePath /*, char* textureFilePath*/ );
 
 private:
     std::vector<std::string> tokenize( std::string str, std::string delimiter );

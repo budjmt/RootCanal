@@ -70,6 +70,12 @@
     <Filter Include="Header Files\Spatial">
       <UniqueIdentifier>{b6d1f4a1-2b74-48bb-b997-ead1c3afebca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Misc">
+      <UniqueIdentifier>{23939804-d898-40c1-8e97-eae073e57d99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Misc">
+      <UniqueIdentifier>{1c660b21-8b11-4ed8-8ca3-8af5a28a5dd9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -159,9 +165,6 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>Source Files\Spatial</Filter>
     </ClCompile>
-    <ClCompile Include="ColliderObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -176,6 +179,30 @@
     </ClCompile>
     <ClCompile Include="GameEntryPoint.hpp">
       <Filter>Header Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuState.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderObject.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScene.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneEvent.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTransitionState.cpp">
+      <Filter>Source Files\Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -257,9 +284,6 @@
     <ClInclude Include="Material.h">
       <Filter>Header Files\Display</Filter>
     </ClInclude>
-    <ClInclude Include="DXInfo.h">
-      <Filter>Header Files\Debug</Filter>
-    </ClInclude>
     <ClInclude Include="DrawDebug.h">
       <Filter>Header Files\Debug</Filter>
     </ClInclude>
@@ -287,9 +311,6 @@
     <ClInclude Include="CollisionManager.h">
       <Filter>Header Files\Spatial</Filter>
     </ClInclude>
-    <ClInclude Include="ColliderObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
@@ -301,6 +322,42 @@
     </ClInclude>
     <ClInclude Include="RootCanal.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateManager.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuState.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="DXInfo.h">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScene.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderObject.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneEvent.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTransitionState.h">
+      <Filter>Header Files\Misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

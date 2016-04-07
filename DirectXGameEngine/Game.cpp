@@ -92,11 +92,15 @@ void Game::OnMouseDown(WPARAM btnState, int x, int y) {
 	// events even if the mouse leaves the window.  we'll be
 	// releasing the capture once a mouse button is released
 	SetCapture(hMainWnd);
+
+    currScene->OnMouseDown( btnState, x, y );
 }
 
 void Game::OnMouseUp(WPARAM btnState, int x, int y) { 
 	mouse.btnState = btnState;
 	mouse.down = false;
+
+    currScene->OnMouseUp( btnState, x, y );
 
 	// We don't care about the tracking the cursor outside
 	// the window anymore (we're not dragging if the mouse is up)
@@ -110,4 +114,6 @@ void Game::OnMouseMove(WPARAM btnState, int x, int y) {
 	//mouse.prev.y = mouse.curr.y;
 	mouse.curr.x = x;
 	mouse.curr.y = y;
+
+    currScene->OnMouseMove( btnState, x, y );
 }

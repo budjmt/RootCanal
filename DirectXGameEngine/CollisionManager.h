@@ -11,6 +11,7 @@ public:
 	void addObject(ColliderObject* o);
 	void update(float dt);
 	void draw();
+    void clear();
 
 	collisionPairList broadPhase();
 	uint32_t narrowPhase(float dt);
