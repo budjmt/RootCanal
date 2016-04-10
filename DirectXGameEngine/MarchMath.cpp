@@ -178,8 +178,8 @@ mat4 mat4::orthographic( float width, float height, float zNear, float zFar ) {
 quat::quat() : _v( vec3() ), v( _v ), w( v0 ) { v0 = 1; v = vec3(); _theta = 0; _axis = vec3( 1, 0, 0 ); } quat::~quat() {}
 quat::quat( const quat& other ) : _v( vec3() ), v( _v ), w( v0 ) { w = other.w; v = other.v; _theta = other.theta(); _axis = other.axis(); }
 quat& quat::operator=( const quat& other ) { w = other.w; v = other.v; _theta = other.theta(); _axis = other.axis(); return *this; }
-quat::quat( float _x, float _y, float _z, float _w ) : _v( vec3() ), v( _v ), w( v0 ) { w = _w; v = vec3( _x, _y, _z ); _theta = acosf( v0 ); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? v / sin_t_half : vec3( 1, 0, 0 ); _axis /= vec3::length( _axis ); _theta *= 2; }
-quat::quat( float _v0, vec3 v1 ) : _v( vec3() ), v( _v ), w( v0 ) { v0 = _v0; v = v1; _theta = acosf( v0 ); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? v / sin_t_half : vec3( 1, 0, 0 ); _axis /= vec3::length( _axis ); _theta *= 2; }
+quat::quat( float _x, float _y, float _z, float _w ) : _v( vec3() ), v( _v ), w( v0 ) { w = _w; v = vec3( _x, _y, _z ); _theta = acosf( v0 ); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? v / sin_t_half : vec3( 0, 0, 1 ); _axis /= vec3::length( _axis ); _theta *= 2; }
+quat::quat( float _v0, vec3 v1 ) : _v( vec3() ), v( _v ), w( v0 ) { v0 = _v0; v = v1; _theta = acosf( v0 ); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? v / sin_t_half : vec3( 0, 0, 1 ); _axis /= vec3::length( _axis ); _theta *= 2; }
 quat::quat( vec3 a, float t ) : _v( vec3() ), v( _v ), w( v0 ) { _theta = t; t *= 0.5f; _axis = a; sin_t_half = sinf( t ); v0 = cosf( t ); v = a * sin_t_half; }
 
 float quat::theta() const { return _theta; } void quat::theta( float t ) { _theta = t; t *= 0.5f; sin_t_half = sinf( t ); v0 = cosf( t ); v = _axis * sin_t_half; }

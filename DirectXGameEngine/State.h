@@ -34,7 +34,7 @@ public:
             g->draw( deviceContext );
     };
 
-private:
+protected:
     Scene* _scene;
     std::vector<GameObject*> _gameObjects;
 };

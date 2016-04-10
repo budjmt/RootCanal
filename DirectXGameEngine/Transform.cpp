@@ -139,8 +139,8 @@ Transform Transform::allocatedCompute() {
 
 void Transform::updateNormals() {
     mat4 m = mat4::rotate( _rotAngle, _rotAxis );
-    _forward = (vec3)( m * vec4( 0, 0, 1, 1 ) );
-    _up = (vec3)( m * vec4( 0, 1, 0, 1 ) );
+    _forward = (vec3)( m * vec4( 0, 0, 1, 0 ) );
+    _up = (vec3)( m * vec4( 0, 1, 0, 0 ) );
     _right = vec3::cross( _forward, _up );
 }
 
@@ -174,5 +174,5 @@ vec3 Transform::getTransformed( vec3 v )
     mat4 translate = mat4::translate( t.position() );
     mat4 rot = mat4::rotate( t.rotAngle(), t.rotAxis() );
     mat4 scale = mat4::scale( t.scale() );
-    return (vec3)( translate * scale * rot * vec4( v, 1 ) );
+    return (vec3)( translate * rot * scale * vec4( v, 1 ) );
 }

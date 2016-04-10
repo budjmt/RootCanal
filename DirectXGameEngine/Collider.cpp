@@ -5,8 +5,8 @@ Collider::Collider( void )
     : type( _type )
 {
     _dims = vec3();
-	true_aabb.center = _transform->getComputed().position();
-	_aabb = true_aabb;
+	base_aabb.center = _transform->getComputed().position();
+	transformed_aabb = base_aabb;
     _radius = 0;
 }
 
@@ -15,8 +15,8 @@ Collider::Collider( Transform* t, vec3 d )
 {
     _transform = t;
 	dims(d);
-	true_aabb.center = _transform->getComputed().position();
-	_aabb = true_aabb;
+	base_aabb.center = _transform->getComputed().position();
+	transformed_aabb = base_aabb;
 	updateDims(_transform);
     _type = ColliderType::BOX;
     //the order is important;
@@ -33,8 +33,8 @@ Collider::Collider( Mesh* m, Transform* t )
     mesh = m;
     _transform = t;
     dims( m->getDims() );
-	true_aabb.center = _transform->getComputed().position();
-	_aabb = true_aabb;
+	base_aabb.center = _transform->getComputed().position();
+	transformed_aabb = base_aabb;
     updateDims( _transform );
     _type = ColliderType::MESH;
     //the order is important;
@@ -50,8 +50,8 @@ Collider::Collider( const Collider& other )
 {
     _transform = new Transform( *other.transform() );
     dims( other.dims() );
-	true_aabb = other.true_aabb;
-	_aabb = other._aabb;
+	base_aabb = other.base_aabb;
+	transformed_aabb = other.transformed_aabb;
     _radius = other.radius();
     _framePos = other.framePos();
     type = other.type;
@@ -66,23 +66,28 @@ Collider::~Collider( void )
 Transform* Collider::transform() const { return _transform; }
 vec3 Collider::framePos() const { return _framePos; }
 
-vec3 Collider::dims() const { return _dims; } void Collider::dims(vec3 v) { _dims = v; _radius = max(max(_dims.x, _dims.y), _dims.z); true_aabb.halfDims = v; }
-AABB& Collider::aabb() { return _aabb; }
+vec3 Collider::dims() const { return _dims; } 
+void Collider::dims(vec3 v) { 
+	_dims = v; 
+	_radius = max(max(_dims.x, _dims.y), _dims.z); 
+	base_aabb.halfDims = v; 
+}
+AABB& Collider::aabb() { return transformed_aabb; }
 float Collider::radius() const { return _radius; }
 
 //makes sure the radius is up to date
 void Collider::updateDims( Transform* t ) {
     vec3 scale = t->getComputed().scale();
     _radius = max( max( _dims.x * scale.x, _dims.y * scale.y ), _dims.z * scale.z );
-	_aabb.halfDims = true_aabb.halfDims;
+	transformed_aabb.halfDims = base_aabb.halfDims;
 	for (int i = 0; i < 3; i++)
-		_aabb.halfDims[i] *= scale[i] * 1.5f;//they're big right now
+		transformed_aabb.halfDims[i] *= scale[i] * 1.5f;//they're big right now
 }
 
 void Collider::update() {
 	_framePos = _transform->getComputed().position();
-	true_aabb.center = _framePos;
-	_aabb.center = true_aabb.center;
+	base_aabb.center = _framePos;
+	transformed_aabb.center = base_aabb.center;
 	updateDims(_transform);
 	updateNormals();
 	updateEdges();

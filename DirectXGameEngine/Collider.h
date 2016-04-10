@@ -109,7 +109,7 @@ public:
 private:
     Transform* _transform;
     vec3 _framePos;
-	vec3 _dims; AABB _aabb, true_aabb;
+	vec3 _dims; AABB base_aabb, transformed_aabb;
     float _radius;
     ColliderType _type;
 

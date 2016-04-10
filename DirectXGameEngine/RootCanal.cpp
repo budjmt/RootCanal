@@ -130,7 +130,7 @@ bool RootCanal::Init()
 	// geometric primitives we'll be using and how to interpret them
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    menuScene = new MenuScene( &camera, pixelShader, vertexShader );
+    menuScene = new MenuScene( &camera, vertexShader, pixelShader );
 
     SetScene( menuScene );
 
@@ -147,10 +147,10 @@ bool RootCanal::Init()
 void RootCanal::LoadShaders()
 {
 	vertexShader = new SimpleVertexShader(device, deviceContext);
-	vertexShader->LoadShaderFile(L"VertexShader.cso");
+	assert(vertexShader->LoadShaderFile(L"VertexShader.cso"));
 
 	pixelShader = new SimplePixelShader(device, deviceContext);
-	pixelShader->LoadShaderFile(L"PixelShader.cso");
+	assert(pixelShader->LoadShaderFile(L"PixelShader.cso"));
 }
 
 
@@ -224,7 +224,7 @@ void RootCanal::UpdateScene(float deltaTime, float totalTime)
     if( StateManager::getInstance().nextScene() )
     {
         CreateMatrices();
-        gameScene = new GameScene( &camera, pixelShader, vertexShader );
+        gameScene = new GameScene( &camera, vertexShader, pixelShader );
         SetScene( gameScene );
         StateManager::getInstance().nextScene( false );
         OnResize();
@@ -268,14 +268,14 @@ void RootCanal::DrawScene(float deltaTime, float totalTime)
     StateManager::getInstance().draw( deviceContext );
 #if DEBUG
 	DrawDebug& d = DrawDebug::getInstance();
-	d.drawDebugSphere(vec3(0.5f, 0.5f, 0.5f), 0.5f);
+	//d.drawDebugSphere(vec3(0.5f, 0.5f, 0.5f), 0.5f);
 	d.drawDebugVector(vec3(), vec3(1, 0, 0), vec3(1, 0, 0));
 	d.drawDebugVector(vec3(), vec3(0, 1, 0), vec3(0, 0, 1));
 	d.drawDebugVector(vec3(), vec3(0, .001f, 1), vec3(0, 1, 0));
 	float c = 2 * PI;
-	vec3 v(1, 0, 0);
-	int div = 12;
-	for (int i = 0; i < div; i++) for (int j = 0; j < div; j++) d.drawDebugVector(vec3(), (vec3)(mat4::rotate(c * i / div, vec3(1, 0, 0)) * mat4::rotate(c * j / div, vec3(0, 1, 0)) * vec4(v)));
+	//vec3 v(1, 0, 0);
+	//int div = 12;
+	//for (int i = 0; i < div; i++) for (int j = 0; j < div; j++) d.drawDebugVector(vec3(), (vec3)(mat4::rotate(c * i / div, vec3(1, 0, 0)) * mat4::rotate(c * j / div, vec3(0, 1, 0)) * vec4(v)));
 	d.draw();
 
 	CollisionManager::getInstance().draw();
@@ -293,7 +293,7 @@ void RootCanal::OnSceneChange( Event e )
     SceneTransitionState* transition = static_cast<SceneTransitionState*>( StateManager::getInstance().gameState() );
     SetScene( transition->getNewScene() );
 
-    camera = *(currScene->getCamera());
+    camera = *(currScene->camera());
     StateManager::getInstance().gameState( transition->getState() );
 
     RootCanal::OnResize();
@@ -301,10 +301,7 @@ void RootCanal::OnSceneChange( Event e )
 
 void RootCanal::SetScene( Scene* scene )
 {
-    if( currScene )
-    {
-        delete currScene;
-    }
+    if( currScene ) delete currScene;
 
     currScene = scene;
 

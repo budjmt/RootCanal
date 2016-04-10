@@ -42,7 +42,6 @@ std::map<const wchar_t*, Texture*> Texture::loadedTextures;
 
 Texture::~Texture() { ReleaseMacro(resourceView); ReleaseMacro(samplerState); }
 
-#include "DebugBenchmark.h"
 Texture* Texture::getTexture( const wchar_t* key ) {
     return loadedTextures.at(key);
 }
@@ -50,6 +49,7 @@ Texture* Texture::getTexture( const wchar_t* key ) {
 Texture* Texture::createTexture( const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext ) {
     Texture* texture = new Texture;
     HR( DirectX::CreateWICTextureFromFile( device, deviceContext, texFile, nullptr, &texture->resourceView ) );
+	assert(texture->resourceView);
 
     D3D11_SAMPLER_DESC desc;
     ZeroMemory( &desc, sizeof( desc ) );

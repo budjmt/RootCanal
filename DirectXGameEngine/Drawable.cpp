@@ -31,8 +31,13 @@ void Drawable::draw( vec3 pos, vec3 scale, vec3 rotAxis, float rot, ID3D11Device
 }
 
 mat4 Drawable::genWorldMatrix( vec3 pos, vec3 scaleV, vec3 rotAxis, float rot ) {
+	//OKAY HERE IS A NOTE
+	//For traditional post-multiplication, the order is translate * rotate * scale
+	//HOWEVER for stuff that's going to the shader, pre-multiplication is used
+	//meaning the order is scale * rotate * translate
+	//keep that in mind when considering transform order; it's TRS for stuff that stays here, but SRT for stuff that goes to the GPU
     mat4 translate = mat4::translate( pos );
     mat4 scale = mat4::scale( scaleV );
     mat4 rotate = mat4::rotate( rot, rotAxis );
-    return scale * ( rotate * translate );
+    return scale * rotate * translate;
 }

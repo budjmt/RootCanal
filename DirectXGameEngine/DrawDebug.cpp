@@ -187,8 +187,8 @@ void DrawDebug::drawVectors() {
 
         vec3 dir = e - s;
         dir /= vec3::length( dir );
-        mat4 arrowMat = mat4::scale( vec3( 0.05f, 0.05f, 0.05f ) ) * ( mat4::lookAt( vec3(), dir, vec3( 0, 0, 1 ) ) * mat4::translate( e ) );
-        //mat4 arrowMat = mat4::scale(vec3(0.05f, 0.05f, 0.05f)) * mat4::translate(e);
+        mat4 arrowMat = mat4::scale(vec3(0.05f, 0.05f, 0.05f)) * mat4::lookAt( vec3(), dir, vec3( 0, 0, 1 ) ) * mat4::translate(e);
+        //mat4 arrowMat = mat4::translate(e) * mat4::scale(vec3(0.05f, 0.05f, 0.05f));
         arrowBufferData.push_back( DebugMesh{ DirectX::XMFLOAT4X4( &arrowMat[0][0] ), xmec } );
     }
 

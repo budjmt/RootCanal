@@ -49,10 +49,10 @@ void Game::CreateMatrices() {
 
 void Game::LoadShaders() {
 	defaultVertexShader = new SimpleVertexShader(device, deviceContext);
-	defaultVertexShader->LoadShaderFile(L"VertexShader.cso");
+	assert(defaultVertexShader->LoadShaderFile(L"VertexShader.cso"));
 
 	defaultPixelShader = new SimplePixelShader(device, deviceContext);
-	defaultPixelShader->LoadShaderFile(L"PixelShader.cso");
+	assert(defaultPixelShader->LoadShaderFile(L"PixelShader.cso"));
 }
 
 void Game::UpdateScene(float deltaTime, float totalTime) { }

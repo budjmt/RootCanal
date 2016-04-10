@@ -15,7 +15,7 @@ public:
     virtual void OnMouseUp( WPARAM btnState, int x, int y ) {};
     virtual void OnMouseMove( WPARAM btnState, int x, int y ) {};
 
-    Camera** getCamera() {
+    Camera** camera() {
         return _camera;
     }
 
