@@ -9,12 +9,12 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 
 	Texture* texture = Texture::createTexture(L"../Assets/texture.png", dx.device, dx.deviceContext);
 	Material* material = Material::createMaterial(L"material", texture, vertexShader, pixelShader, _scene->camera());
-	Mesh* mesh1 = Mesh::createMesh("../Assets/cone_up.obj");
+	Mesh* mesh1 = Mesh::createMesh("../Assets/cone_Z.obj");
 	Mesh* mesh2 = Mesh::createMesh("../Assets/cube.obj");
 
 	ship = new ColliderObject(mesh1, material);
 	ship->rigidBody().floating(true);
-	//ship->transform.rotate( vec3( -PI * 0.5f, 0, 0 ) );
+	ship->transform.setBaseDirections(vec3(0, 1, 0), vec3(0, 0, -1));
 
 	ColliderObject* cube = new ColliderObject(mesh2, material);
 	cube->rigidBody().floating(true);
@@ -41,7 +41,7 @@ void GameState::update(float dt, Mouse* mouse) {
 
 	if (keys.isDown(VK_UP)) {
 		RigidBody& rigidBody = ship->rigidBody();
-		rigidBody.netForce += dt * 1000 * ship->transform.up();
+		rigidBody.netForce += dt * 1000 * ship->transform.forward();
 	}
 
 	vec3 oldCamPos = (*_scene->camera())->transform.position();

@@ -3,6 +3,7 @@
 Transform::Transform()
 {
     _parent = nullptr;
+	computed = nullptr;
     _position = vec3();
     _scale = vec3( 1, 1, 1 );
     _rotation = quat();
@@ -18,9 +19,14 @@ Transform::Transform( const Transform& other )
     _rotation = other._rotation;
     _rotAxis = other._rotAxis;
     _rotAngle = other._rotAngle;
-    _forward = other._forward;
-    _up = other._up;
-    _right = other._right;
+	
+	base_forward = other.base_forward;
+	base_up = other.base_up;
+	
+	_forward = other._forward;
+	_up = other._up;
+	_right = other._right;
+
 	if(other.computed) {
 		computed = new Transform;
 		*computed = *other.computed;
@@ -42,9 +48,14 @@ Transform& Transform::operator=( const Transform& other )
     _rotation = other._rotation;
     _rotAxis = other._rotAxis;
     _rotAngle = other._rotAngle;
-    _forward = other._forward;
-    _up = other._up;
-    _right = other._right;
+	
+	base_forward = other.base_forward;
+	base_up = other.base_up;
+	
+	_forward = other._forward;
+	_up = other._up;
+	_right = other._right;
+
 	if (other.computed) {
         if( !computed )
             computed = new Transform;
@@ -137,11 +148,17 @@ Transform Transform::allocatedCompute() {
 	return *computed = computeTransform();
 }
 
-void Transform::updateNormals() {
+void Transform::setBaseDirections(vec3 t_forward, vec3 t_up) {
+	base_forward = t_forward;
+	base_up = t_up;
+	updateDirections();
+}
+
+void Transform::updateDirections() {
     mat4 m = mat4::rotate( _rotAngle, _rotAxis );
-    _forward = (vec3)( m * vec4( 0, 0, 1, 0 ) );
-    _up = (vec3)( m * vec4( 0, 1, 0, 0 ) );
-    _right = vec3::cross( _forward, _up );
+    _forward = (vec3)( m * vec4( base_forward ) );
+    _up = (vec3)( m * vec4( base_up ) );
+    _right = vec3::cross( _up, _forward );
 }
 
 vec3 Transform::forward() const { return _forward; }
@@ -151,11 +168,11 @@ vec3 Transform::right() const { return _right; }
 void Transform::updateRot() {
     _rotAngle = _rotation.theta();
     _rotAxis = _rotation.axis();
-    updateNormals();
+    updateDirections();
 }
 
 //quats are rotated through the rotate function here
-void Transform::rotate( vec3 v ) { rotate( v.x, v.y, v.z ); }
+void Transform::rotate( vec3 v ) { rotate( v[0], v[1], v[2] ); }
 void Transform::rotate( float x, float y, float z ) {
     if( x ) _rotation = quat::rotate( _rotation, x, vec3( 1, 0, 0 ) );
     if( y ) _rotation = quat::rotate( _rotation, y, vec3( 0, 1, 0 ) );

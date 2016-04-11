@@ -9,39 +9,39 @@ float lerpf( float a, float b, float t ) { return a * ( 1 - t ) + b * t; }
 
 //vec3
 vec3::vec3() : x( v[0] ), y( v[1] ), z( v[2] ) { for( int i = 0; i < 3; i++ ) v[i] = 0; } vec3::~vec3() {}
-vec3::vec3( const vec3& other ) : x( v[0] ), y( v[1] ), z( v[2] ) { x = other.x; y = other.y; z = other.z; }
-vec3& vec3::operator=( const vec3& other ) { x = other.x; y = other.y; z = other.z; return *this; }
-vec3& vec3::operator+=( const vec3& other ) { x += other.x; y += other.y; z += other.z; return *this; }
-vec3& vec3::operator-=( const vec3& other ) { x -= other.x; y -= other.y; z -= other.z; return *this; }
-vec3& vec3::operator*=( float f ) { x *= f; y *= f; z *= f; return *this; }
-vec3& vec3::operator/=( float f ) { x /= f; y /= f; z /= f; return *this; }
-vec3::vec3( float _x, float _y, float _z ) : x( v[0] ), y( v[1] ), z( v[2] ) { x = _x; y = _y; z = _z; }
-vec3::vec3( float* _v ) : x( v[0] ), y( v[1] ), z( v[2] ) { x = _v[0]; y = _v[1]; z = _v[2]; }
-vec3::vec3( vec4 _v ) : x( v[0] ), y( v[1] ), z( v[2] ) { x = _v.x; y = _v.y; z = _v.z; }
+vec3::vec3( const vec3& other ) : x( v[0] ), y( v[1] ), z( v[2] ) { for (int i = 0; i < 3; i++) v[i] = other.v[i]; }
+vec3& vec3::operator=( const vec3& other ) { for (int i = 0; i < 3; i++) v[i] = other.v[i]; return *this; }
+vec3& vec3::operator+=( const vec3& other ) { for (int i = 0; i < 3; i++) v[i] += other.v[i]; return *this; }
+vec3& vec3::operator-=( const vec3& other ) { for (int i = 0; i < 3; i++) v[i] -= other.v[i]; return *this; }
+vec3& vec3::operator*=( float f ) { for (int i = 0; i < 3; i++) v[i] *= f; return *this; }
+vec3& vec3::operator/=( float f ) { for (int i = 0; i < 3; i++) v[i] /= f; return *this; }
+vec3::vec3( float _x, float _y, float _z ) : x( v[0] ), y( v[1] ), z( v[2] ) { v[0] = _x; v[1] = _y; v[2] = _z; }
+vec3::vec3( float* _v ) : x( v[0] ), y( v[1] ), z( v[2] ) { for (int i = 0; i < 3; i++) v[i] = _v[i]; }
+vec3::vec3( vec4 _v ) : x( v[0] ), y( v[1] ), z( v[2] ) { for (int i = 0; i < 3; i++) v[i] = _v[i]; }
 
-bool vec3::operator==( const vec3& other ) { return x == other.x && y == other.y && z == other.z; }
-bool vec3::operator<( const vec3& other ) { return x < other.x && y < other.y && z < other.z; }
+bool vec3::operator==( const vec3& other ) { return v[0] == other.v[0] && v[1] == other.v[1] && v[2] == other.v[2]; }
+bool vec3::operator<( const vec3& other ) { return v[0] < other.v[0] && v[1] < other.v[1] && v[2] < other.v[2]; }
 float vec3::operator[]( int i ) const { return v[i]; } float& vec3::operator[]( int i ) { return v[i]; }
-vec3 vec3::operator+( const vec3& other ) const { return vec3( x + other.x, y + other.y, z + other.z ); }
-vec3 vec3::operator-( const vec3& other ) const { return vec3( x - other.x, y - other.y, z - other.z ); }
-vec3 vec3::operator-() const { return vec3( -x, -y, -z ); }
-vec3 vec3::operator*( float f ) const { return vec3( x * f, y * f, z * f ); }
-vec3 vec3::operator/( float f ) const { return vec3( x / f, y / f, z / f ); }
-vec3 operator*( float f, const vec3& v ) { return vec3( v.x * f, v.y * f, v.z * f ); }
-vec3 operator/( float f, const vec3& v ) { return vec3( v.x / f, v.y / f, v.z / f ); }
+vec3 vec3::operator+( const vec3& other ) const { return vec3( v[0] + other.v[0], v[1] + other.v[1], v[2] + other.v[2] ); }
+vec3 vec3::operator-( const vec3& other ) const { return vec3( v[0] - other.v[0], v[1] - other.v[1], v[2] - other.v[2] ); }
+vec3 vec3::operator-() const { return vec3( -v[0], -v[1], -v[2] ); }
+vec3 vec3::operator*( float f ) const { return vec3( v[0] * f, v[1] * f, v[2] * f ); }
+vec3 vec3::operator/( float f ) const { return vec3( v[0] / f, v[1] / f, v[2] / f ); }
+vec3 operator*( float f, const vec3& v ) { return vec3( v[0] * f, v[1] * f, v[2] * f ); }
+vec3 operator/( float f, const vec3& v ) { return vec3( v[0] / f, v[1] / f, v[2] / f ); }
 
-float vec3::length( vec3 v ) { return sqrtf( v.x * v.x + v.y * v.y + v.z * v.z ); }
-float vec3::dot( vec3 a, vec3 b ) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-vec3 vec3::cross( vec3 a, vec3 b ) { return vec3( a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x ); }
-vec3 vec3::lerp( vec3 a, vec3 b, float t ) { return vec3( lerpf( a.x, b.x, t ), lerpf( a.y, b.y, t ), lerpf( a.z, b.z, t ) ); }
+float vec3::length( const vec3 v ) { return sqrtf( v.v[0] * v.v[0] + v.v[1] * v.v[1] + v.v[2] * v.v[2] ); }
+float vec3::dot( const vec3 a, const vec3 b ) { return a.v[0] * b.v[0] + a.v[1] * b.v[1] + a.v[2] * b.v[2]; }
+vec3 vec3::cross( const vec3 a, const vec3 b ) { return vec3( a.v[1] * b.v[2] - a.v[2] * b.v[1], a.v[2] * b.v[0] - a.v[0] * b.v[2], a.v[0] * b.v[1] - a.v[1] * b.v[0] ); }
+vec3 vec3::lerp( const vec3 a, const vec3 b, float t ) { return vec3( lerpf( a.v[0], b.v[0], t ), lerpf( a.v[1], b.v[1], t ), lerpf( a.v[2], b.v[2], t ) ); }
 
 //vec4
 vec4::vec4() : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { for( int i = 0; i < 4; i++ ) v[i] = 0; } vec4::~vec4() {}
-vec4::vec4( const vec4& other ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { x = other.x; y = other.y; z = other.z; w = other.w; }
-vec4& vec4::operator=( const vec4& other ) { x = other.x; y = other.y; z = other.z; w = other.w; return *this; }
-vec4::vec4( float _x, float _y, float _z, float _w ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { x = _x; y = _y; z = _z; w = _w; }
-vec4::vec4( float* _v ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { x = _v[0]; y = _v[1]; z = _v[2]; w = _v[3]; }
-vec4::vec4( vec3 _v, float _w ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { x = _v.x; y = _v.y; z = _v.z; w = _w; }
+vec4::vec4( const vec4& other ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { for (int i = 0; i < 4; i++) v[i] = other.v[i]; }
+vec4& vec4::operator=( const vec4& other ) { for (int i = 0; i < 4; i++) v[i] = other.v[i]; return *this; }
+vec4::vec4( float _x, float _y, float _z, float _w ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { v[0] = _x; v[1] = _y; v[2] = _z; v[3] = _w; }
+vec4::vec4( float* _v ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { for (int i = 0; i < 3; i++) v[i] = _v[i]; }
+vec4::vec4( vec3 _v, float _w ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { for (int i = 0; i < 3; i++) v[i] = _v[i]; v[3] = _w; }
 
 float vec4::operator[]( int i ) const { return v[i]; } float& vec4::operator[]( int i ) { return v[i]; }
 vec4 vec4::operator+( const vec4& other ) { return vec4( x + other.x, y + other.y, z + other.z, w + other.w ); }
@@ -175,24 +175,24 @@ mat4 mat4::orthographic( float width, float height, float zNear, float zFar ) {
 }
 
 //quat
-quat::quat() : _v( vec3() ), v( _v ), w( v0 ) { v0 = 1; v = vec3(); _theta = 0; _axis = vec3( 1, 0, 0 ); } quat::~quat() {}
-quat::quat( const quat& other ) : _v( vec3() ), v( _v ), w( v0 ) { w = other.w; v = other.v; _theta = other.theta(); _axis = other.axis(); }
-quat& quat::operator=( const quat& other ) { w = other.w; v = other.v; _theta = other.theta(); _axis = other.axis(); return *this; }
-quat::quat( float _x, float _y, float _z, float _w ) : _v( vec3() ), v( _v ), w( v0 ) { w = _w; v = vec3( _x, _y, _z ); _theta = acosf( v0 ); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? v / sin_t_half : vec3( 0, 0, 1 ); _axis /= vec3::length( _axis ); _theta *= 2; }
-quat::quat( float _v0, vec3 v1 ) : _v( vec3() ), v( _v ), w( v0 ) { v0 = _v0; v = v1; _theta = acosf( v0 ); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? v / sin_t_half : vec3( 0, 0, 1 ); _axis /= vec3::length( _axis ); _theta *= 2; }
-quat::quat( vec3 a, float t ) : _v( vec3() ), v( _v ), w( v0 ) { _theta = t; t *= 0.5f; _axis = a; sin_t_half = sinf( t ); v0 = cosf( t ); v = a * sin_t_half; }
+quat::quat() : _v( vec3() ), v( _v ), w( v0 ) { v0 = 1; _theta = 0; _axis = vec3( 0, 0, 1 ); } quat::~quat() {}
+quat::quat( const quat& other ) : _v( other._v ), v( _v ), w( v0 ) { v0 = other.v0; _theta = other._theta; _axis = other._axis; }
+quat& quat::operator=( const quat& other ) { v0 = other.v0; _v = other._v; _theta = other._theta; _axis = other._axis; return *this; }
+quat::quat( float _x, float _y, float _z, float _w ) : _v( vec3(_x, _y, _z) ), v( _v ), w( v0 ) { v0 = _w; _theta = acosf( v0 ); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? _v / sin_t_half : vec3( 0, 0, 1 ); _axis /= vec3::length( _axis ); _theta *= 2; }
+quat::quat( float _v0, vec3 v1 ) : _v( v1 ), v( _v ), w( v0 ) { v0 = _v0; _theta = acosf( v0 ); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? _v / sin_t_half : vec3( 0, 0, 1 ); _axis /= vec3::length( _axis ); _theta *= 2; }
+quat::quat( vec3 a, float t ) : _v( vec3() ), v( _v ), w( v0 ) { _theta = t; t *= 0.5f; _axis = a; sin_t_half = sinf( t ); v0 = cosf( t ); _v = a * sin_t_half; }
 
-float quat::theta() const { return _theta; } void quat::theta( float t ) { _theta = t; t *= 0.5f; sin_t_half = sinf( t ); v0 = cosf( t ); v = _axis * sin_t_half; }
+float quat::theta() const { return _theta; } void quat::theta( float t ) { _theta = t; t *= 0.5f; sin_t_half = sinf( t ); v0 = cosf( t ); _v = _axis * sin_t_half; }
 vec3 quat::axis() const { return _axis; } void quat::axis( vec3 a ) { _axis = a; v = a * sin_t_half; }
 
-quat quat::operator+( const quat& other ) { return quat( w + other.w, v + other.v ); } quat quat::operator-( const quat& other ) { return quat( w - other.w, v - other.v ); }
-quat quat::operator*( float f ) { return quat( w * f, v * f ); } quat quat::operator/( float f ) { return quat( w / f, v / f ); }
-quat quat::operator*( const quat& other ) const { return quat( w * other.w - vec3::dot( v, other.v ), other.v * w + v * other.w + vec3::cross( v, other.v ) ); }
+quat quat::operator+( const quat& other ) { return quat( v0 + other.v0, _v + other._v ); } quat quat::operator-( const quat& other ) { return quat( v0 - other.v0, _v - other._v ); }
+quat quat::operator*( float f ) { return quat( v0 * f, _v * f ); } quat quat::operator/( float f ) { return quat( v0 / f, _v / f ); }
+quat quat::operator*( const quat& other ) const { return quat( v0 * other.v0 - vec3::dot( _v, other._v ), other._v * v0 + _v * other.v0 + vec3::cross( _v, other._v ) ); }
 
-float quat::length(const quat& q) { return sqrtf(q.w * q.w + q.v[0] * q.v[0] + q.v[1] * q.v[1] + q.v[2] * q.v[2]); }
+float quat::length(const quat& q) { return sqrtf(q.v0 * q.v0 + q._v[0] * q._v[0] + q._v[1] * q._v[1] + q._v[2] * q._v[2]); }
 
-quat quat::pow( const quat& q, float e ) { return quat::rotation( q.theta() * e, q.axis() ); }
-quat quat::inverse( const quat& q ) { return quat( q.w, q.v * -1 ); }
+quat quat::pow( const quat& q, float e ) { return quat::rotation( q._theta * e, q._axis ); }
+quat quat::inverse( const quat& q ) { return quat( q.v0, -q._v ); }
 quat quat::rotate( const quat& q, float theta, vec3 axis ) { return q * quat( axis, theta ); }
 
 quat quat::slerp( const quat& a, const quat& b, float t ) { return quat::pow( b * quat::inverse( a ), t ) * a; }

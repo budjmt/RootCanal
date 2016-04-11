@@ -26,9 +26,10 @@ public:
     vec3 operator+( const vec3& other ) const; vec3 operator-( const vec3& other ) const; vec3 operator-() const;
     vec3 operator*( float f ) const; vec3 operator/( float f ) const;
 
-    static float length( vec3 v );
-    static float dot( vec3 a, vec3 b ); static vec3 cross( vec3 a, vec3 b );
-    static vec3 lerp( vec3 a, vec3 b, float t );
+    static float length( const vec3 v );
+    static float dot( const vec3 a, const vec3 b ); 
+	static vec3 cross( const vec3 a, const vec3 b );
+    static vec3 lerp( const vec3 a, const vec3 b, float t );
 
 private:
     float v[3];

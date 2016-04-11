@@ -25,7 +25,8 @@ public:
 	std::unordered_set<Transform*> children;
 	Transform getComputed();
 	
-    void updateNormals();
+	void setBaseDirections(vec3 t_forward, vec3 t_up);
+    void updateDirections();
     vec3 forward() const;
     vec3 up() const;
     vec3 right() const;
@@ -38,7 +39,7 @@ public:
 private:
     vec3 _position, _scale;
     quat _rotation; vec3 _rotAxis; float _rotAngle;
-    vec3 _forward, _up, _right;
+    vec3 base_forward = vec3(0,0,1), _forward, base_up = vec3(0,1,0), _up, _right;
 
 	Transform *computed = nullptr, *_parent = nullptr;
 	Transform computeTransform();
