@@ -167,7 +167,7 @@ vec3 Transform::right() const { return _right; }
 
 void Transform::updateRot() {
     _rotAngle = _rotation.theta();
-    _rotAxis = _rotation.axis();
+	_rotAxis = _rotation.axis();
     updateDirections();
 }
 

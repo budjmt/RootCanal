@@ -33,14 +33,12 @@ GameState::~GameState()
 
 void GameState::update(float dt, Mouse* mouse) {
 	Keyboard& keys = Keyboard::getInstance();
-
+	
 	if (keys.isDown(VK_LEFT)) {
 		ship->transform.rotate(vec3(0, 0, -PI * 2 * dt));
-		assert(!NaN_CHECK(ship->transform.rotAngle()));
 	}
 	else if (keys.isDown(VK_RIGHT)) {
 		ship->transform.rotate(vec3(0, 0, PI * 2 * dt));
-		assert(!NaN_CHECK(ship->transform.rotAngle()));
 	}
 
 	if (keys.isDown(VK_UP)) {
@@ -57,7 +55,7 @@ void GameState::update(float dt, Mouse* mouse) {
 
 	newCamPos.z = newCamPos.z - 6;
 
-	(*_scene->camera())->transform.position(vec3::lerp(oldCamPos, newCamPos, clampf(1.5f * dt, 1.f)));
+	(*_scene->camera())->transform.position(vec3::lerp(oldCamPos, newCamPos, minf(2.5f * dt, 1.f)));
 
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);

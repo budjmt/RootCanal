@@ -75,7 +75,7 @@ void ColliderObject::handleCollision(ColliderObject* other, Manifold& m, double 
 	//when e = 0, it is a perfect inelastic/plastic collision, and the objects stick together
 	//when 0 < e < 1, it is a regular inelastic collision, with some energy dissipated
 	//when e = 1, it is an elastic collision, where all energy is put into the response
-	float e = min(body.restitution(), oRB.restitution());
+	float e = minf(body.restitution(), oRB.restitution());
 
 	//j = magnitude of impulse
 	float j = velAlongAxis;
@@ -102,7 +102,7 @@ void ColliderObject::handleCollision(ColliderObject* other, Manifold& m, double 
 
 	//correct positions
 	float percent = 1.2f, slop = 0.05f;
-	vec3 correction = max(-m.pen - slop, 0.0f) * percent * (1 + body.fixed() + oRB.fixed()) / (body.invMass() + oRB.invMass()) * m.axis;
+	vec3 correction = maxf(-m.pen - slop, 0.0f) * percent * (1 + body.fixed() + oRB.fixed()) / (body.invMass() + oRB.invMass()) * m.axis;
 	transform.position( transform.position() - (body.invMass() + oRB.fixed() * oRB.invMass()) * (1 - body.fixed()) * correction );
 	other->transform.position( other->transform.position() + (oRB.invMass() + body.fixed() * body.invMass()) * (1 - oRB.fixed()) * correction );
 

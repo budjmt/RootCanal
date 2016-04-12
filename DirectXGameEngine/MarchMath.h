@@ -13,9 +13,8 @@ const double PI_D = 3.14159265358979323846;
 const float PI = (float)PI_D;
 
 int sign( int i ); float signf( float f );
-//float maxf(float a, float b);
-//float minf(float a, float b);
-float clampf(float val, float max);
+float maxf(float a, float b);
+float minf(float a, float b);
 float clampf(float val, float min, float max);
 float lerpf( float a, float b, float t );
 

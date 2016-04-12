@@ -69,7 +69,7 @@ vec3 Collider::framePos() const { return _framePos; }
 vec3 Collider::dims() const { return _dims; } 
 void Collider::dims(vec3 v) { 
 	_dims = v; 
-	_radius = max(max(_dims.x, _dims.y), _dims.z); 
+	_radius = maxf(maxf(_dims.x, _dims.y), _dims.z); 
 	base_aabb.halfDims = v; 
 }
 AABB& Collider::aabb() { return transformed_aabb; }
@@ -78,7 +78,7 @@ float Collider::radius() const { return _radius; }
 //makes sure the radius is up to date
 void Collider::updateDims( Transform* t ) {
     vec3 scale = t->getComputed().scale();
-    _radius = max( max( _dims.x * scale.x, _dims.y * scale.y ), _dims.z * scale.z );
+    _radius = maxf( maxf( _dims.x * scale.x, _dims.y * scale.y ), _dims.z * scale.z );
 	transformed_aabb.halfDims = base_aabb.halfDims;
 	for (int i = 0; i < 3; i++)
 		transformed_aabb.halfDims[i] *= scale[i] * 1.5f;//they're big right now
