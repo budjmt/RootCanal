@@ -59,7 +59,7 @@ void ColliderObject::calcForces(double dt) {
 	//collision resolution stuff here
 
 	body.netForce += body.quadDrag(-0.15f, body.vel(), body.heading());//quadratic drag, no mass involved, it's all velocity dependent
-	body.netAngAccel += body.quadDrag(-0.15f, body.angVel(), body.angHeading());//for ang accel too
+	body.netAngAccel += body.quadDrag(-1.75f, body.angVel(), body.angHeading());//for ang accel too
 
 	//body.netForce *= body.invMass();
 }

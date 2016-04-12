@@ -6,7 +6,7 @@
 int sign( int i ) { return ( i > 0 ) ? 1 : -1; } float signf( float f ) { return ( f > 0 ) ? 1.f : -1.f; }
 float maxf(float a, float b) { _mm_store_ss(&a, _mm_max_ss(_mm_set_ss(a), _mm_set_ss(b))); return a; }
 float minf(float a, float b) { _mm_store_ss(&a, _mm_min_ss(_mm_set_ss(a), _mm_set_ss(b))); return a; }
-float clampf(float val, float min, float max) { _mm_store_ss(&val, _mm_min_ss(_mm_max_ss(_mm_set_ss(val),_mm_set_ss(max)), _mm_set_ss(min))); return val; }
+float clampf(float val, float min, float max) { _mm_store_ss(&val, _mm_min_ss(_mm_max_ss(_mm_set_ss(val),_mm_set_ss(min)), _mm_set_ss(max))); return val; }
 float lerpf( float a, float b, float t ) { return a * ( 1 - t ) + b * t; }
 
 //vec3
@@ -183,8 +183,8 @@ mat4 mat4::orthographic( float width, float height, float zNear, float zFar ) {
 quat::quat() : _v( vec3() ), v( _v ), w( v0 ) { v0 = 1; _theta = 0; _axis = vec3( 0, 0, 1 ); } quat::~quat() {}
 quat::quat( const quat& other ) : _v( other._v ), v( _v ), w( v0 ) { v0 = other.v0; _theta = other._theta; _axis = other._axis; }
 quat& quat::operator=( const quat& other ) { v0 = other.v0; _v = other._v; _theta = other._theta; _axis = other._axis; return *this; }
-quat::quat( float _x, float _y, float _z, float _w ) : _v( vec3(_x, _y, _z) ), v( _v ), w( v0 ) { clampf(_w, -1.f, 1.f); v0 = _w; _theta = acosf( v0 ); assert(!NaN_CHECK(_theta)); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? _v / sin_t_half : vec3( 0, 0, 1 ); _axis /= vec3::length( _axis ); _theta *= 2; }
-quat::quat(float _v0, vec3 v1) : _v(v1), v(_v), w(v0) { clampf(_v0, -1.f, 1.f); v0 = _v0; _theta = acosf(v0); assert(!NaN_CHECK(_theta)); sin_t_half = sinf(_theta); _axis = (sin_t_half) ? _v / sin_t_half : vec3(0, 0, 1); _axis /= vec3::length(_axis); _theta *= 2; }
+quat::quat( float _x, float _y, float _z, float _w ) : _v( vec3(_x, _y, _z) ), v( _v ), w( v0 ) { v0 = _w; _theta = acosf( v0 ); assert(!NaN_CHECK(_theta)); sin_t_half = sinf( _theta ); _axis = ( sin_t_half ) ? _v / sin_t_half : vec3( 0, 0, 1 ); _axis /= vec3::length( _axis ); _theta *= 2; }
+quat::quat(float _v0, vec3 v1) : _v(v1), v(_v), w(v0) { v0 = _v0; _theta = acosf(v0); assert(!NaN_CHECK(_theta)); sin_t_half = sinf(_theta); _axis = (sin_t_half) ? _v / sin_t_half : vec3(0, 0, 1); _axis /= vec3::length(_axis); _theta *= 2; }
 quat::quat( vec3 a, float t ) : _v( vec3() ), v( _v ), w( v0 ) { _theta = t; t *= 0.5f; _axis = a; sin_t_half = sinf( t ); v0 = cosf( t ); _v = a * sin_t_half; }
 
 float quat::theta() const { return _theta; } void quat::theta( float t ) { _theta = t; t *= 0.5f; sin_t_half = sinf( t ); v0 = cosf( t ); _v = _axis * sin_t_half; }
@@ -192,7 +192,7 @@ vec3 quat::axis() const { return _axis; } void quat::axis( vec3 a ) { _axis = a;
 
 quat quat::operator+( const quat& other ) { return quat( v0 + other.v0, _v + other._v ); } quat quat::operator-( const quat& other ) { return quat( v0 - other.v0, _v - other._v ); }
 quat quat::operator*( float f ) { return quat( v0 * f, _v * f ); } quat quat::operator/( float f ) { return quat( v0 / f, _v / f ); }
-quat quat::operator*( const quat& other ) const { return quat( v0 * other.v0 - vec3::dot( _v, other._v ), other._v * v0 + _v * other.v0 + vec3::cross( _v, other._v ) ); }
+quat quat::operator*(const quat& other) const { float val = v0 * other.v0 - vec3::dot(_v, other._v); return quat(clampf(val, -1.f, 1.f), other._v * v0 + _v * other.v0 + vec3::cross(_v, other._v)); }
 
 float quat::length(const quat& q) { return sqrtf(q.v0 * q.v0 + q._v[0] * q._v[0] + q._v[1] * q._v[1] + q._v[2] * q._v[2]); }
 

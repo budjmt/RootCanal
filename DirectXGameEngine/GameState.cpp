@@ -34,15 +34,15 @@ GameState::~GameState()
 void GameState::update(float dt, Mouse* mouse) {
 	Keyboard& keys = Keyboard::getInstance();
 	
+	RigidBody& rigidBody = ship->rigidBody();
 	if (keys.isDown(VK_LEFT)) {
-		ship->transform.rotate(vec3(0, 0, -PI * 2 * dt));
+		rigidBody.netAngAccel += vec3(0, 0, -PI * 2 * 15);
 	}
 	else if (keys.isDown(VK_RIGHT)) {
-		ship->transform.rotate(vec3(0, 0, PI * 2 * dt));
+		rigidBody.netAngAccel += vec3(0, 0, PI * 2 * 15);
 	}
 
 	if (keys.isDown(VK_UP)) {
-		RigidBody& rigidBody = ship->rigidBody();
 		rigidBody.netForce += rigidBody.mass() * 100 * ship->transform.forward();
 	}
 
@@ -50,12 +50,12 @@ void GameState::update(float dt, Mouse* mouse) {
 	vec3 newCamPos = ship->transform.position();
 
 	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.forward(), vec3(0, 1, 1));
-	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.up() + vec3(0,0.001f,0)	 , vec3(1, 1, 0));
+	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.up() + vec3(0,0.001f,0), vec3(1, 1, 0));
 	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.right()	 , vec3(1, 0, 1));
 
 	newCamPos.z = newCamPos.z - 6;
 
-	(*_scene->camera())->transform.position(vec3::lerp(oldCamPos, newCamPos, minf(2.5f * dt, 1.f)));
+	(*_scene->camera())->transform.position(vec3::lerp(oldCamPos, newCamPos, minf(10.f * dt, 1.f)));
 
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);
