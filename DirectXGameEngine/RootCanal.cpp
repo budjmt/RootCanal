@@ -232,7 +232,6 @@ void RootCanal::UpdateScene(float deltaTime, float totalTime)
     else
     {
         StateManager::getInstance().update( deltaTime, &mouse );
-        CollisionManager::getInstance().update( deltaTime );
     }
 
     mouse.prev.x = mouse.curr.x;
@@ -266,19 +265,9 @@ void RootCanal::DrawScene(float deltaTime, float totalTime)
 	auto& dx = DXInfo::getInstance();
 	dx.deviceContext->OMSetBlendState(dx.blendState, NULL, 0xffff);
     StateManager::getInstance().draw( deviceContext );
-#if DEBUG
-	DrawDebug& d = DrawDebug::getInstance();
-	//d.drawDebugSphere(vec3(0.5f, 0.5f, 0.5f), 0.5f);
-	d.drawDebugVector(vec3(), vec3(1, 0, 0), vec3(1, 0, 0));
-	d.drawDebugVector(vec3(), vec3(0, 1, 0), vec3(0, 0, 1));
-	d.drawDebugVector(vec3(), vec3(0, .001f, 1), vec3(0, 1, 0));
-	float c = 2 * PI;
-	//vec3 v(1, 0, 0);
-	//int div = 12;
-	//for (int i = 0; i < div; i++) for (int j = 0; j < div; j++) d.drawDebugVector(vec3(), (vec3)(mat4::rotate(c * i / div, vec3(1, 0, 0)) * mat4::rotate(c * j / div, vec3(0, 1, 0)) * vec4(v)));
-	d.draw();
 
-	CollisionManager::getInstance().draw();
+#if DEBUG
+	DrawDebug::getInstance().draw();
 #endif
 
 	// Present the buffer

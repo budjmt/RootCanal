@@ -250,7 +250,7 @@ EdgeManifold Collider::overlayGaussMaps( Collider* other ) {
                             v1 = trans.getTransformed( v1 );
                             v2 = otherTrans.getTransformed( v2 );
 
-                            edgeNormal *= sign( vec3::dot( edgeNormal, v1 - trans.position() ) );//make sure the edge normal is facing outwards from the body
+                            edgeNormal *= signf( vec3::dot( edgeNormal, v1 - trans.position() ) );//make sure the edge normal is facing outwards from the body
                             float pen = vec3::dot( edgeNormal, v2 - v1 );//does this work regardless of the edges' points used?
                             if( pen > manifold.pen ) {
                                 manifold.edgePair[0] = curr;
@@ -336,9 +336,11 @@ Manifold Collider::intersects( Collider* other ) {
     }
     //face-* collision
     else {
-        vec3 refNormal = minFace.axis;
+		assert(minFace.axis.x || minFace.axis.y || minFace.axis.z);// Axis has not been set, collision probably got through with NaN errors
         //find the possible incident faces
-        auto incidents = minFace.other->getIncidentFaces( refNormal );
+		//the axis is the reference normal
+        auto incidents = minFace.other->getIncidentFaces(minFace.axis);
+		assert(incidents.size());// There were no incident faces! Somehow!
         //clip the incident face(s) against the reference face
         minFace.originator->clipPolygons( minFace, incidents );
 
@@ -360,7 +362,7 @@ std::vector<int> Collider::getIncidentFaces( vec3 refNormal ) {
         float diff = antiProj - proj;
 
         //if the face has close to 0 difference with the last anti-normal projection, then it's another incident face
-        if( diff > -FLT_EPSILON && diff < FLT_EPSILON )
+        if( EPS_CHECK(diff) )
             faces.push_back( i );
 
         //if the face is more antiparallel than the previous, we replace our previous incident faces with this one
@@ -414,7 +416,7 @@ void Collider::clipPolygons( FaceManifold& reference, std::vector<int>& incident
             , edge = getEdge( e );
 
         vec3 norm = vec3::cross( refNorm, edge );
-        norm *= sign( vec3::dot( norm, vert - refCenter ) );
+        norm *= signf( vec3::dot( norm, vert - refCenter ) );
 
         sidePlanes.push_back( norm );
         sideVerts.push_back( vert );
@@ -437,7 +439,6 @@ void Collider::clipPolygons( FaceManifold& reference, std::vector<int>& incident
             clipped = clipPolyAgainstEdge( input, sidePlanes[s], sideVerts[s], refNorm, refCenter );
         }
 
-        reference.colPoints.reserve( reference.colPoints.size() + clipped.size() );
         reference.colPoints.insert( reference.colPoints.end(), clipped.begin(), clipped.end() );
     }
 }
@@ -482,7 +483,7 @@ std::vector<vec3> Collider::clipPolyAgainstEdge( std::vector<vec3>& input, vec3 
     std::vector<vec3> output;
 
     //regular conditions protect against this, but just to be safe
-    if( input.size() < 1 )
+    if( !input.size() )
         return output;
 
     vec3 startpt = input[input.size() - 1];
@@ -792,7 +793,7 @@ void Collider::updateNormals() {
         mat4 rot = mat4::rotate( t.rotAngle(), t.rotAxis() );
         //auto faceVerts = mesh->faces().verts;
         for( int i = 0, numNormals = faceNormals.size(); i < numNormals; i++ ) {
-            currNormals[i] = ( vec3 )( rot * vec4( faceNormals[i], 1 ) );
+            currNormals[i] = ( vec3 )( vec4( faceNormals[i], 1 ) * rot );
 
             /*vec3 a = t.getTransformed(getVert(faceVerts[i * 3])), b = t.getTransformed(getVert(faceVerts[i * 3 + 1])), c = t.getTransformed(getVert(faceVerts[i * 3 + 2]));
             vec3 center = a + b + c;
@@ -814,7 +815,7 @@ void Collider::updateEdges() {
         mat4 scale = mat4::scale( t.scale() );
         int numEdges = edges.size();
         for( int i = 0; i < numEdges; i++ ) {
-            currEdges[i] = ( vec3 )( scale * rot * vec4( edges[i], 1 ) );//this is probably slow
+            currEdges[i] = ( vec3 )( vec4( edges[i], 1 ) * scale * rot );//this is probably slow
         }
         /*
         for (std::pair<std::string, std::vector<Adj>> pair : gauss.adjacencies) {

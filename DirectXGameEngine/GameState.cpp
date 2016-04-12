@@ -1,5 +1,7 @@
 #include "GameState.h"
 
+#include "CollisionManager.h"
+
 GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixelShader* pixelShader )
     : State( scene )
 {
@@ -34,28 +36,42 @@ void GameState::update(float dt, Mouse* mouse) {
 
 	if (keys.isDown(VK_LEFT)) {
 		ship->transform.rotate(vec3(0, 0, -PI * 2 * dt));
+		assert(!NaN_CHECK(ship->transform.rotAngle()));
 	}
 	else if (keys.isDown(VK_RIGHT)) {
 		ship->transform.rotate(vec3(0, 0, PI * 2 * dt));
+		assert(!NaN_CHECK(ship->transform.rotAngle()));
 	}
 
 	if (keys.isDown(VK_UP)) {
 		RigidBody& rigidBody = ship->rigidBody();
-		rigidBody.netForce += dt * 1000 * ship->transform.forward();
+		rigidBody.netForce += rigidBody.mass() * 100 * ship->transform.forward();
 	}
 
 	vec3 oldCamPos = (*_scene->camera())->transform.position();
 	vec3 newCamPos = ship->transform.position();
 
 	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.forward(), vec3(0, 1, 1));
-	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.up()	 , vec3(1, 1, 0));
+	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.up() + vec3(0,0.001f,0)	 , vec3(1, 1, 0));
 	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.right()	 , vec3(1, 0, 1));
 
 	newCamPos.z = newCamPos.z - 6;
 
-	(*_scene->camera())->transform.position(vec3::lerp(oldCamPos, newCamPos, 0.2f));
-
-
+	(*_scene->camera())->transform.position(vec3::lerp(oldCamPos, newCamPos, clampf(1.5f * dt, 1.f)));
 
 	State::update(dt, mouse);
+	CollisionManager::getInstance().update(dt);
+
+#if DEBUG
+	DrawDebug& d = DrawDebug::getInstance();
+	//d.drawDebugSphere(vec3(0.5f, 0.5f, 0.5f), 0.5f);
+	d.drawDebugVector(vec3(), vec3(1, 0, 0), vec3(1, 0, 0));
+	d.drawDebugVector(vec3(), vec3(0, 1, 0), vec3(0, 0, 1));
+	d.drawDebugVector(vec3(), vec3(0, .001f, 1), vec3(0, 1, 0));
+	//float c = 2 * PI;
+	//vec3 v(1, 0, 0);
+	//int div = 12;
+	//for (int i = 0; i < div; i++) for (int j = 0; j < div; j++) d.drawDebugVector(vec3(), (vec3)(mat4::rotate(c * i / div, vec3(1, 0, 0)) * mat4::rotate(c * j / div, vec3(0, 1, 0)) * vec4(v)));
+	CollisionManager::getInstance().draw();
+#endif
 }

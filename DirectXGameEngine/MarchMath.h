@@ -3,17 +3,25 @@
 #include <cmath>
 #include <cstring>
 
+//use for floating point error correction
 #define EPS_CHECK(x) x < FLT_EPSILON && x > -FLT_EPSILON
+//all NaN related comparisons evaluate to false, this could be implemented as x != x
+//but that could be optimized out; std::isnan(x) is part of the standard library
+#define NaN_CHECK(x) std::isnan(x)
 
 const double PI_D = 3.14159265358979323846;
 const float PI = (float)PI_D;
 
-int sign( int i ); float sign( float f );
+int sign( int i ); float signf( float f );
 //float maxf(float a, float b);
 //float minf(float a, float b);
+float clampf(float val, float max);
+float clampf(float val, float min, float max);
 float lerpf( float a, float b, float t );
 
 class vec4;
+class mat3;
+class mat4;
 class vec3 {
 public:
     vec3(); ~vec3(); vec3( const vec3& other ); vec3& operator=( const vec3& other );
@@ -25,6 +33,7 @@ public:
     float operator[]( int i ) const;  float& operator[]( int i );
     vec3 operator+( const vec3& other ) const; vec3 operator-( const vec3& other ) const; vec3 operator-() const;
     vec3 operator*( float f ) const; vec3 operator/( float f ) const;
+	vec3 operator*(const mat3& );
 
     static float length( const vec3 v );
     static float dot( const vec3 a, const vec3 b ); 
@@ -44,6 +53,7 @@ public:
     float operator[]( int i ) const;  float& operator[]( int i );
     vec4 operator+( const vec4& other ); vec4 operator-( const vec4& other );
     vec4 operator*( float f ); vec4 operator/( float f );
+	vec4 operator*(const mat4& m);
 
     static float length( vec4 v );
     static float dot( vec4 a, vec4 b );
@@ -55,13 +65,13 @@ private:
 
 class mat3 {
 public:
-	mat3(); ~mat3(); mat3(float f); mat3(float r1, float r2, float r3); 
+	mat3(); ~mat3(); explicit mat3(float f); mat3(float r1, float r2, float r3); 
 	mat3(vec3 c1, vec3 c2, vec3 c3); mat3(float* _m);
 	const float* operator[](int i) const; float* operator[](int i);
 	//column major
 	mat3 operator+(const mat3& other); mat3 operator-(const mat3& other);
 	mat3 operator*(float f); mat3 operator/(float f);
-	mat3 operator*(const mat3& other);	vec3 operator*(const vec3& v);
+	mat3 operator*(const mat3& other);
 
 	static mat3 transpose(mat3& m);
 
@@ -71,13 +81,13 @@ private:
 
 class mat4 {
 public:
-    mat4(); ~mat4(); mat4( float f ); mat4(float r1, float r2, float r3, float r4); 
+    mat4(); ~mat4(); explicit mat4( float f ); mat4(float r1, float r2, float r3, float r4); 
 	mat4(vec4 c1, vec4 c2, vec4 c3, vec4 c4); mat4( float* _m );
     const float* operator[]( int i ) const; float* operator[]( int i );
     //column major
     mat4 operator+( const mat4& other ); mat4 operator-( const mat4& other );
     mat4 operator*( float f ); mat4 operator/( float f );
-    mat4 operator*( const mat4& other );	vec4 operator*( const vec4& v );
+    mat4 operator*( const mat4& other );
 
     static mat4 transpose( mat4& m );
     //inverse transpose of a transformation matrix

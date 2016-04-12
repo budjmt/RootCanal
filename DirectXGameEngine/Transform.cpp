@@ -156,8 +156,8 @@ void Transform::setBaseDirections(vec3 t_forward, vec3 t_up) {
 
 void Transform::updateDirections() {
     mat4 m = mat4::rotate( _rotAngle, _rotAxis );
-    _forward = (vec3)( m * vec4( base_forward ) );
-    _up = (vec3)( m * vec4( base_up ) );
+    _forward = (vec3)( vec4( base_forward ) * m );
+    _up = (vec3)( vec4( base_up ) * m );
     _right = vec3::cross( _up, _forward );
 }
 
@@ -191,5 +191,5 @@ vec3 Transform::getTransformed( vec3 v )
     mat4 translate = mat4::translate( t.position() );
     mat4 rot = mat4::rotate( t.rotAngle(), t.rotAxis() );
     mat4 scale = mat4::scale( t.scale() );
-    return (vec3)( translate * rot * scale * vec4( v, 1 ) );
+	return (vec3)(vec4(v, 1) * scale * rot * translate);
 }

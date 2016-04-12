@@ -29,6 +29,7 @@ void RigidBody::update( double dt ) {
     netAngAccel = vec3( 0, 0, 0 );
 }
 
+#include <assert.h>
 void RigidBody::updateVel( double dt ) {
     _vel += ( 1 - _fixed ) * _invMass * (float)dt * netForce;
     _speed = vec3::length( _vel );
@@ -44,6 +45,8 @@ void RigidBody::updateVel( double dt ) {
         }
         _heading = _vel / _speed;
     }
+	//this is enough to determine if there's an issue
+	assert(!NaN_CHECK(_speed));
 }
 
 void RigidBody::updateAngVel( double dt ) {

@@ -52,10 +52,10 @@ void Camera::mayaCam(int width, int height, float dt, Mouse* mouse, Camera* came
 		if (mouse->btnState & 0x0001) {
 			float rot = (float)(PI * 20 * dt);
 			float xDiff = (float)(mouse->curr.x - mouse->prev.x);
-			float dx = sign(xDiff) * xDiff * xDiff / width * rot;
+			float dx = signf(xDiff) * xDiff * xDiff / width * rot;
 			dx = min(rot, dx);
 			float yDiff = (float)(mouse->curr.y - mouse->prev.y);
-			float dy = sign(yDiff) * yDiff * yDiff / height * rot;
+			float dy = signf(yDiff) * yDiff * yDiff / height * rot;
 			dy = min(rot, dy);
 			vec3 look = camera->getLookAt();
 			camera->turn(dx, dy);

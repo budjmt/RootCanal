@@ -11,9 +11,6 @@ struct Vertex
     DirectX::XMFLOAT3 Position;	    // The position of the vertex
     DirectX::XMFLOAT3 Normal;
     DirectX::XMFLOAT2 UV;
-
-	Vertex() {};
-	Vertex(DirectX::XMFLOAT4 c, DirectX::XMFLOAT3 p, DirectX::XMFLOAT3 n, DirectX::XMFLOAT2 u) : Color(c), Position(p), Normal(n), UV(u) {};
 };
 
 struct DebugVector {

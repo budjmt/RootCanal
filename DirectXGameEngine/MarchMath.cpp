@@ -2,19 +2,21 @@
 #include <cstdio>
 
 //misc math functions
-int sign( int i ) { return ( i > 0 ) ? 1 : -1; } float sign( float f ) { return ( f > 0 ) ? 1.f : -1.f; }
+int sign( int i ) { return ( i > 0 ) ? 1 : -1; } float signf( float f ) { return ( f > 0 ) ? 1.f : -1.f; }
 //float maxf(float a, float b) { return (a > b) ? a : b; }
 //float minf(float a, float b) { return (a < b) ? a : b; }
+float clampf(float val, float max) { return fmax(val, max); }
+float clampf(float val, float min, float max) { return fmax(fmin(val, min), max); }
 float lerpf( float a, float b, float t ) { return a * ( 1 - t ) + b * t; }
 
 //vec3
-vec3::vec3() : x( v[0] ), y( v[1] ), z( v[2] ) { for( int i = 0; i < 3; i++ ) v[i] = 0; } vec3::~vec3() {}
+vec3::vec3() : x(v[0]), y(v[1]), z(v[2]) { memset(v, 0, 3 * sizeof(float)); } vec3::~vec3() {}
 vec3::vec3( const vec3& other ) : x( v[0] ), y( v[1] ), z( v[2] ) { for (int i = 0; i < 3; i++) v[i] = other.v[i]; }
 vec3& vec3::operator=( const vec3& other ) { for (int i = 0; i < 3; i++) v[i] = other.v[i]; return *this; }
 vec3& vec3::operator+=( const vec3& other ) { for (int i = 0; i < 3; i++) v[i] += other.v[i]; return *this; }
 vec3& vec3::operator-=( const vec3& other ) { for (int i = 0; i < 3; i++) v[i] -= other.v[i]; return *this; }
 vec3& vec3::operator*=( float f ) { for (int i = 0; i < 3; i++) v[i] *= f; return *this; }
-vec3& vec3::operator/=( float f ) { for (int i = 0; i < 3; i++) v[i] /= f; return *this; }
+vec3& vec3::operator/=(float f) { float _f = 1.f / f; for (int i = 0; i < 3; i++) v[i] *= _f; return *this; }
 vec3::vec3( float _x, float _y, float _z ) : x( v[0] ), y( v[1] ), z( v[2] ) { v[0] = _x; v[1] = _y; v[2] = _z; }
 vec3::vec3( float* _v ) : x( v[0] ), y( v[1] ), z( v[2] ) { for (int i = 0; i < 3; i++) v[i] = _v[i]; }
 vec3::vec3( vec4 _v ) : x( v[0] ), y( v[1] ), z( v[2] ) { for (int i = 0; i < 3; i++) v[i] = _v[i]; }
@@ -26,9 +28,11 @@ vec3 vec3::operator+( const vec3& other ) const { return vec3( v[0] + other.v[0]
 vec3 vec3::operator-( const vec3& other ) const { return vec3( v[0] - other.v[0], v[1] - other.v[1], v[2] - other.v[2] ); }
 vec3 vec3::operator-() const { return vec3( -v[0], -v[1], -v[2] ); }
 vec3 vec3::operator*( float f ) const { return vec3( v[0] * f, v[1] * f, v[2] * f ); }
-vec3 vec3::operator/( float f ) const { return vec3( v[0] / f, v[1] / f, v[2] / f ); }
+vec3 vec3::operator/(float f) const { float _f = 1.f / f; return vec3(v[0] * _f, v[1] * _f, v[2] * _f); }
 vec3 operator*( float f, const vec3& v ) { return vec3( v[0] * f, v[1] * f, v[2] * f ); }
-vec3 operator/( float f, const vec3& v ) { return vec3( v[0] / f, v[1] / f, v[2] / f ); }
+vec3 operator/(float f, const vec3& v) { float _f = 1.f / f; return vec3(v[0] * _f, v[1] * _f, v[2] * _f); }
+
+vec3 vec3::operator*(const mat3& m) { vec3 result; for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) result[i] += v[j] * m[i][j]; return result; }
 
 float vec3::length( const vec3 v ) { return sqrtf( v.v[0] * v.v[0] + v.v[1] * v.v[1] + v.v[2] * v.v[2] ); }
 float vec3::dot( const vec3 a, const vec3 b ) { return a.v[0] * b.v[0] + a.v[1] * b.v[1] + a.v[2] * b.v[2]; }
@@ -36,7 +40,7 @@ vec3 vec3::cross( const vec3 a, const vec3 b ) { return vec3( a.v[1] * b.v[2] - 
 vec3 vec3::lerp( const vec3 a, const vec3 b, float t ) { return vec3( lerpf( a.v[0], b.v[0], t ), lerpf( a.v[1], b.v[1], t ), lerpf( a.v[2], b.v[2], t ) ); }
 
 //vec4
-vec4::vec4() : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { for( int i = 0; i < 4; i++ ) v[i] = 0; } vec4::~vec4() {}
+vec4::vec4() : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { memset(v, 0, 4 * sizeof(float)); } vec4::~vec4() {}
 vec4::vec4( const vec4& other ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { for (int i = 0; i < 4; i++) v[i] = other.v[i]; }
 vec4& vec4::operator=( const vec4& other ) { for (int i = 0; i < 4; i++) v[i] = other.v[i]; return *this; }
 vec4::vec4( float _x, float _y, float _z, float _w ) : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { v[0] = _x; v[1] = _y; v[2] = _z; v[3] = _w; }
@@ -49,6 +53,8 @@ vec4 vec4::operator-( const vec4& other ) { return vec4( x - other.x, y - other.
 vec4 vec4::operator*( float f ) { return vec4( x * f, y * f, z * f, w * f ); }
 vec4 vec4::operator/( float f ) { return vec4( x / f, y / f, z / f, w / f ); }
 
+vec4 vec4::operator*(const mat4& m) { vec4 result; for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) result[i] += v[j] * m[i][j]; return result; }
+
 float vec4::length( vec4 v ) { return sqrtf( v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w ); }
 float vec4::dot( vec4 a, vec4 b ) { return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w; }
 vec4 vec4::lerp( vec4 a, vec4 b, float t ) { return vec4( lerpf( a.x, b.x, t ), lerpf( a.y, b.y, t ), lerpf( a.z, b.z, t ), lerpf( a.w, b.w, t ) ); }
@@ -57,20 +63,19 @@ vec4 vec4::lerp( vec4 a, vec4 b, float t ) { return vec4( lerpf( a.x, b.x, t ), 
 //the zero matrix
 mat3::mat3() { memset(m, 0, 9 * sizeof(float)); } mat3::~mat3() {}
 //sets the diagonal to f, everything else 0
-mat3::mat3(float f) { memset(m, 0, 9 * sizeof(float)); for (int i = 0; i < 3; i++) m[i * 4] = f; }
+mat3::mat3(float f) { memset(m, 0, 9 * sizeof(float)); for (int i = 0; i < 3; i++) m[i << 2] = f; }
 mat3::mat3(float r1, float r2, float r3) { memset(m, 0, 9 * sizeof(float)); m[0] = r1; m[4] = r2; m[8] = r3; }
 mat3::mat3(vec3 c1, vec3 c2, vec3 c3) { for (int i = 0; i < 3; i++) { m[i] = c1[i]; m[i + 3] = c2[i]; m[i + 6] = c3[i]; } }
 mat3::mat3(float* _m) { for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) m[i * 3 + j] = _m[i * 3 + j]; }
 
 //accessor is [col][row]... which is weird, I know
-const float* mat3::operator[](int i) const { return &m[i * 3]; } float* mat3::operator[](int i) { return &m[i * 3]; }
+const float* mat3::operator[](int i) const { return &m[(i << 1) + i]; } float* mat3::operator[](int i) { return &m[(i << 1) + i]; }
 mat3 mat3::operator+(const mat3& other) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] += other[i][j]; return r; }
 mat3 mat3::operator-(const mat3& other) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] -= other[i][j]; return r; }
 mat3 mat3::operator*(float f) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] *= f; return r; }
 mat3 mat3::operator/(float f) { mat3 r(m); for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] /= f; return r; }
 
 mat3 mat3::operator*(const mat3& other) { mat3 r; for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) for (int k = 0; k < 3; k++) r[j][i] += m[k * 3 + i] * other[j][k]; return r; }
-vec3 mat3::operator*(const vec3& v) { vec3 result; for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) result[i] += m[j * 3 + i] * v[j]; return result; }
 
 mat3 mat3::transpose(mat3& m) { mat3 r; for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) r[i][j] = m[j][i]; return r; }
 
@@ -91,7 +96,6 @@ mat4 mat4::operator*( float f ) { mat4 r( m ); for( int i = 0; i < 4; i++ ) for(
 mat4 mat4::operator/( float f ) { mat4 r( m ); for( int i = 0; i < 4; i++ ) for( int j = 0; j < 4; j++ ) r[i][j] /= f; return r; }
 
 mat4 mat4::operator*( const mat4& other ) { mat4 r; for( int i = 0; i < 4; i++ ) for( int j = 0; j < 4; j++ ) for( int k = 0; k < 4; k++ ) r[j][i] += m[( k << 2 ) + i] * other[j][k]; return r; }
-vec4 mat4::operator*( const vec4& v ) { vec4 result; for( int i = 0; i < 4; i++ ) for( int j = 0; j < 4; j++ ) result[i] += m[( j << 2 ) + i] * v[j]; return result; }
 
 mat4 mat4::transpose( mat4& m ) { mat4 r; for( int i = 0; i < 4; i++ ) for( int j = 0; j < 4; j++ ) r[i][j] = m[j][i]; return r; }
 //based on the transform inverse shortcut where the mat is [M 0, v 1] (rows) and the inverse is [M^-1 0, -M^-1*v 1]

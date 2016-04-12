@@ -51,6 +51,7 @@ void ColliderObject::update( float dt, Mouse* mouse ) {
 	transform.position( transform.position() + body.vel() * (float)dt );
 	transform.rotate(body.angVel() * (float)dt);
 	_collider->update();
+	assert(!NaN_CHECK(transform.position().x));
 }
 
 void ColliderObject::calcForces(double dt) {
@@ -104,6 +105,9 @@ void ColliderObject::handleCollision(ColliderObject* other, Manifold& m, double 
 	vec3 correction = max(-m.pen - slop, 0.0f) * percent * (1 + body.fixed() + oRB.fixed()) / (body.invMass() + oRB.invMass()) * m.axis;
 	transform.position( transform.position() - (body.invMass() + oRB.fixed() * oRB.invMass()) * (1 - body.fixed()) * correction );
 	other->transform.position( other->transform.position() + (oRB.invMass() + body.fixed() * body.invMass()) * (1 - oRB.fixed()) * correction );
+
+	assert(!NaN_CHECK(transform.position().x));
+	assert(!NaN_CHECK(other->transform.position().x));
 }
 
 //Given a collision force F, calculates the change in angular acceleration it causes
