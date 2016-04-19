@@ -76,6 +76,12 @@
     <Filter Include="Source Files\Misc">
       <UniqueIdentifier>{1c660b21-8b11-4ed8-8ca3-8af5a28a5dd9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Spatial\GameObjects">
+      <UniqueIdentifier>{9f056174-793c-4a72-92e8-822578f11553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Spatial\GameObjects">
+      <UniqueIdentifier>{9d5b827e-2ecb-4667-b02b-986531176241}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -203,6 +209,15 @@
     </ClCompile>
     <ClCompile Include="SimpleShader.cpp">
       <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="Ship.cpp">
+      <Filter>Source Files\Spatial\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Source Files\Spatial\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Cannon.cpp">
+      <Filter>Source Files\Spatial\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -358,6 +373,15 @@
     </ClInclude>
     <ClInclude Include="SimpleShader.h">
       <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="Ship.h">
+      <Filter>Header Files\Spatial\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>Header Files\Spatial\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Cannon.h">
+      <Filter>Header Files\Spatial\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

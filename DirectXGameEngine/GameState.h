@@ -7,6 +7,7 @@
 #include "MeshImporter.h"
 #include "DrawMesh.h"
 #include "ColliderObject.h"
+#include "Ship.h"
 #include "SimpleShader.h"
 #include "Camera.h"
 
@@ -20,6 +21,6 @@ public:
 	void update(float dt, Mouse* mouse);
 
 private:
-	ColliderObject* ship;
+	Ship* ship;
 };
 

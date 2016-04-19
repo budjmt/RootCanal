@@ -69,8 +69,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Callback.h" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cannon.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ColliderObject.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
@@ -109,11 +111,14 @@
     <ClCompile Include="SceneEvent.cpp" />
     <ClCompile Include="SceneTransitionState.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SimpleShader.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cannon.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderObject.h" />
     <ClInclude Include="CollisionManager.h" />
@@ -159,6 +164,7 @@
     <ClInclude Include="SceneEvent.h" />
     <ClInclude Include="SceneTransitionState.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Ship.h" />
     <ClInclude Include="SimpleShader.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateManager.h" />
