@@ -219,6 +219,9 @@
     <ClCompile Include="Cannon.cpp">
       <Filter>Source Files\Spatial\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="UIObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -382,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="Cannon.h">
       <Filter>Header Files\Spatial\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="UIObject.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

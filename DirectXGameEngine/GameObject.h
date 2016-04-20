@@ -10,7 +10,8 @@
 enum GameObjectType {
 	NORMAL,
 	COLLIDER,
-	CAMERA
+	CAMERA,
+	UI
 };
 
 class Drawable;

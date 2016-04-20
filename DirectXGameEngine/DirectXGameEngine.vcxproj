@@ -114,6 +114,7 @@
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SimpleShader.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UIObject.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
