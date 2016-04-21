@@ -38,6 +38,16 @@ float vec3::length( const vec3 v ) { return sqrtf( v.v[0] * v.v[0] + v.v[1] * v.
 float vec3::dot( const vec3 a, const vec3 b ) { return a.v[0] * b.v[0] + a.v[1] * b.v[1] + a.v[2] * b.v[2]; }
 vec3 vec3::cross( const vec3 a, const vec3 b ) { return vec3( a.v[1] * b.v[2] - a.v[2] * b.v[1], a.v[2] * b.v[0] - a.v[0] * b.v[2], a.v[0] * b.v[1] - a.v[1] * b.v[0] ); }
 vec3 vec3::lerp( const vec3 a, const vec3 b, float t ) { return vec3( lerpf( a.v[0], b.v[0], t ), lerpf( a.v[1], b.v[1], t ), lerpf( a.v[2], b.v[2], t ) ); }
+vec3 vec3::limit( vec3 v, float mag )
+{
+    vec3 newVec = vec3( v );
+    float oldMag = vec3::length( v );
+
+    if (oldMag > mag)
+        newVec *= mag / oldMag;
+    
+    return newVec;
+}
 
 //vec4
 vec4::vec4() : x( v[0] ), y( v[1] ), z( v[2] ), w( v[3] ) { memset(v, 0, 4 * sizeof(float)); } vec4::~vec4() {}
