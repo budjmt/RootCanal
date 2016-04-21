@@ -1,6 +1,7 @@
 #pragma once
 
 #include "State.h"
+#include "Scene.h"
 #include "Mouse.h"
 
 class StateManager
@@ -28,12 +29,12 @@ public:
         _state->draw( deviceContext );
     }
 
-    bool nextScene() {
-         return _nextScene;
+    SceneType changeScene() {
+         return _nextSceneType;
     }
-    void nextScene( bool s )
+    void changeScene( SceneType s )
     {
-        _nextScene = s;
+        _nextSceneType = s;
     }
 
 private:
@@ -42,5 +43,5 @@ private:
     void operator=( StateManager const& ) = delete;
 
     State* _state;
-    bool _nextScene;
+    SceneType _nextSceneType = SceneType::DEFAULT;
 };

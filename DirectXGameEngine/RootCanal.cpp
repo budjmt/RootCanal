@@ -221,18 +221,21 @@ void RootCanal::UpdateScene(float deltaTime, float totalTime)
 
     currScene->update( deltaTime );
 
-    if( StateManager::getInstance().nextScene() )
+    switch( StateManager::getInstance().changeScene() )
     {
+    case SceneType::MENU_SCENE:
+        break;
+
+    case SceneType::GAME_SCENE:
         CreateMatrices();
         gameScene = new GameScene( &camera, vertexShader, pixelShader );
         SetScene( gameScene );
-        StateManager::getInstance().nextScene( false );
         OnResize();
+        break;
     }
-    else
-    {
-        StateManager::getInstance().update( deltaTime, &mouse );
-    }
+
+    StateManager::getInstance().changeScene( SceneType::DEFAULT );
+    StateManager::getInstance().update( deltaTime, &mouse );
 
     mouse.prev.x = mouse.curr.x;
     mouse.prev.y = mouse.curr.y;

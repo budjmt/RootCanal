@@ -23,3 +23,8 @@ protected:
     Camera** _camera; 
 };
 
+enum SceneType {
+    MENU_SCENE,
+    GAME_SCENE,
+    DEFAULT
+};
