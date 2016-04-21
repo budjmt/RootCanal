@@ -22,5 +22,7 @@ public:
 
 private:
 	Ship* ship;
+
+    void updateCamera( float dt );
 };
 
