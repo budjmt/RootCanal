@@ -3,6 +3,7 @@
 #include "State.h"
 #include "Scene.h"
 #include "Mouse.h"
+#include <DirectXMath.h>
 
 class StateManager
 {

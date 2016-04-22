@@ -68,10 +68,10 @@ void GameState::updateCamera( float dt )
 
     // If the ship is moving enough, we'll start moving the camera ahead so the
     // player can see where they're moving
-    float seekAheadFactor = minf( 20.f, vec3::length( shipVel ) * .4f );
+    float seekAheadFactor = minf( 20.f, vec3::length( shipVel ) * .3f );
     maxCamPos += ship->transform.forward() * seekAheadFactor;
 
-    // The camera should stay at the same Z value away from the target that it follows (this ship)
+    // The camera should pull back from target that it follows (this ship) when the target moves
     maxCamPos.z = shipPos.z - ( 9.5f + seekAheadFactor * .5f );
 
     vec3 desiredCamPos = vec3::lerp( oldCamPos, maxCamPos, minf( 8.f * dt, 0.65f ) );

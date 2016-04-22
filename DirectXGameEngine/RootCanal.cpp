@@ -63,15 +63,14 @@ RootCanal::RootCanal(HINSTANCE hInstance)
 // --------------------------------------------------------
 RootCanal::~RootCanal()
 {
-	delete vertexShader;
-    delete pixelShader;
-
 	for (auto m : Mesh::loadedMeshes )
 		delete m.second;
 	for (auto m : Material::loadedMaterials )
 		delete m.second;
-    for( auto pair : Texture::loadedTextures )
-        delete pair.second;
+    for( auto t : Texture::loadedTextures )
+        delete t.second;
+    for( auto s : Shader::loadedShaders )
+        delete s.second;
 
     delete currScene;
 }
@@ -130,9 +129,7 @@ bool RootCanal::Init()
 	// geometric primitives we'll be using and how to interpret them
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    menuScene = new MenuScene( &camera, vertexShader, pixelShader );
-
-    SetScene( menuScene );
+    SetScene( new MenuScene( &camera ) );
 
 	// Successfully initialized
 	return true;
@@ -146,11 +143,21 @@ bool RootCanal::Init()
 // --------------------------------------------------------
 void RootCanal::LoadShaders()
 {
-	vertexShader = new SimpleVertexShader(device, deviceContext);
-	assert(vertexShader->LoadShaderFile(L"VertexShader.cso"));
+    Shader::createShader<SimpleVertexShader>
+    (
+        L"BasicVertex",
+        L"VertexShader.cso",
+        device,
+        deviceContext
+    );
 
-	pixelShader = new SimplePixelShader(device, deviceContext);
-	assert(pixelShader->LoadShaderFile(L"PixelShader.cso"));
+    Shader::createShader<SimplePixelShader>
+    (
+        L"BasicPixel",
+        L"PixelShader.cso",
+        device,
+        deviceContext
+     );
 }
 
 
@@ -159,22 +166,9 @@ void RootCanal::LoadShaders()
 // --------------------------------------------------------
 void RootCanal::CreateGeometry()
 {
-
 #if DEBUG
 	DrawDebug::getInstance().camera(&camera);
 #endif
-
-	l1 = {
-		XMFLOAT4(0.f,0.1f,0.1f,1.f),
-		XMFLOAT4(0.8f,1.f,0,1.f),
-		XMFLOAT3(0.5f,-1.f,1.f)
-	};
-
-	l2 = {
-		XMFLOAT4(0.05f,0.1f,0.05f,1.f),
-		XMFLOAT4(0.6f,0.f,0.25f,1.f),
-		XMFLOAT3(-1.f,1.f,-0.5f)
-	};
 }
 
 
@@ -184,11 +178,12 @@ void RootCanal::CreateGeometry()
 // --------------------------------------------------------
 void RootCanal::CreateMatrices()
 {
+    // TODO: Figure out why the camera cannot be deleted here when necessary
+    //if( camera ) delete camera;
+
     // TODO: Clean this up and everything involving cameras and transforms
     camera = new Camera();
-    OnResize();
 	camera->transform.position( vec3(0.f, 0.f, -5.f) );
-	//camera->transform.rotate(0, PI, 0);
 	camera->update(0.f, &mouse);
 	camera->updateProjection(windowWidth, windowHeight, aspectRatio);
 }
@@ -221,20 +216,28 @@ void RootCanal::UpdateScene(float deltaTime, float totalTime)
 
     currScene->update( deltaTime );
 
-    switch( StateManager::getInstance().changeScene() )
+    // If the game is not in a default scene state and needs to change, then
+    // change to the appropriate scene
+    SceneType sceneType = StateManager::getInstance().changeScene();
+    if( sceneType != SceneType::DEFAULT )
     {
-    case SceneType::MENU_SCENE:
-        break;
-
-    case SceneType::GAME_SCENE:
         CreateMatrices();
-        gameScene = new GameScene( &camera, vertexShader, pixelShader );
-        SetScene( gameScene );
+
+        switch( sceneType )
+        {
+        case SceneType::MENU:
+            SetScene( new MenuScene( &camera ) );
+            break;
+
+        case SceneType::GAME:
+            SetScene( new GameScene( &camera ) );
+            break;
+        }
+
         OnResize();
-        break;
+        StateManager::getInstance().changeScene( SceneType::DEFAULT );
     }
 
-    StateManager::getInstance().changeScene( SceneType::DEFAULT );
     StateManager::getInstance().update( deltaTime, &mouse );
 
     mouse.prev.x = mouse.curr.x;
@@ -246,60 +249,36 @@ void RootCanal::UpdateScene(float deltaTime, float totalTime)
 // --------------------------------------------------------
 void RootCanal::DrawScene(float deltaTime, float totalTime)
 {
-	// Background color (Cornflower Blue in this case) for clearing
-	const float color[4] = { 0.4f, 0.6f, 0.75f, 0.0f };
+    // Background color (Cornflower Blue in this case) for clearing
+    const float color[4] = { 0.4f, 0.6f, 0.75f, 0.0f };
 
-	// Clear the render target and depth buffer (erases what's on the screen)
-	//  - Do this ONCE PER FRAME
-	//  - At the beginning of DrawScene (before drawing *anything*)
-	deviceContext->ClearRenderTargetView(renderTargetView, color);
-	deviceContext->ClearDepthStencilView(
-		depthStencilView,
-		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-		1.0f,
-		0);
+    // Clear the render target and depth buffer (erases what's on the screen)
+    //  - Do this ONCE PER FRAME
+    //  - At the beginning of DrawScene (before drawing *anything*)
+    deviceContext->ClearRenderTargetView( renderTargetView, color );
+    deviceContext->ClearDepthStencilView(
+        depthStencilView,
+        D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+        1.0f,
+        0 );
 
-	camera->updateCamMat(vertexShader);
-
-	pixelShader->SetData("light1", &l1, sizeof(DirectionalLight));
-	pixelShader->SetData("light2", &l2, sizeof(DirectionalLight));
-
-	//optimize for transparent/non-transparent stuff later
-	auto& dx = DXInfo::getInstance();
-	dx.deviceContext->OMSetBlendState(dx.blendState, NULL, 0xffff);
-    StateManager::getInstance().draw( deviceContext );
+    currScene->draw();
 
 #if DEBUG
-	DrawDebug::getInstance().draw();
+    DrawDebug::getInstance().draw();
 #endif
 
-	// Present the buffer
-	//  - Puts the image we're drawing into the window so the user can see it
-	//  - Do this exactly ONCE PER FRAME
-	//  - Always at the very end of the frame
-	HR(swapChain->Present(0, 0));
-}
-
-void RootCanal::OnSceneChange( Event e )
-{
-    SceneTransitionState* transition = static_cast<SceneTransitionState*>( StateManager::getInstance().gameState() );
-    SetScene( transition->getNewScene() );
-
-    camera = *(currScene->camera());
-    StateManager::getInstance().gameState( transition->getState() );
-
-    RootCanal::OnResize();
+    // Present the buffer
+    //  - Puts the image we're drawing into the window so the user can see it
+    //  - Do this exactly ONCE PER FRAME
+    //  - Always at the very end of the frame
+    HR( swapChain->Present( 0, 0 ) );
 }
 
 void RootCanal::SetScene( Scene* scene )
 {
     if( currScene ) delete currScene;
-
     currScene = scene;
-
-    // Add event listener on the scene for when it needs to switch to another
-    /*Callback c = std::bind( &RootCanal::OnSceneChange, this, std::placeholders::_1 );
-    currScene->addEventListener( SceneEvent::CHANGE, c  );*/
 }
 
 #pragma endregion

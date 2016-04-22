@@ -11,7 +11,7 @@
 // --------------------------------------------------------
 // Game class which extends the base DirectXGameCore class
 // --------------------------------------------------------
-class Game : public DirectXGameCore , public EventDispatcher{
+class Game : public DirectXGameCore {
 public:
 	Game(HINSTANCE hInstance);
 	virtual ~Game();
