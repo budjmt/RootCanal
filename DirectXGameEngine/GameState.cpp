@@ -29,20 +29,17 @@ GameState::~GameState()
 {
 }
 
-void GameState::update(float dt, Mouse* mouse) {
+void GameState::update( float dt, Mouse* mouse ) {
 
-	ship->processMovement(dt);
+    ship->processMovement( dt );
 
-	vec3 oldCamPos = (*_scene->camera())->transform.position();
-	vec3 newCamPos = ship->transform.position();
+    updateCamera( dt );
 
-	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.forward(), vec3(0, 1, 1));
-	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.up() + vec3(0,0.001f,0), vec3(1, 1, 0));
-	DrawDebug::getInstance().drawDebugVector(newCamPos, newCamPos + ship->transform.right()	 , vec3(1, 0, 1));
+    vec3 shipPos = ship->transform.position();
 
-	newCamPos.z = newCamPos.z - 6;
-
-	(*_scene->camera())->transform.position(vec3::lerp(oldCamPos, newCamPos, minf(10.f * dt, 1.f)));
+	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.forward(), vec3(0, 1, 1));
+	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.up() + vec3(0,0.001f,0), vec3(1, 1, 0));
+	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.right()	 , vec3(1, 0, 1));
 
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);
@@ -59,4 +56,25 @@ void GameState::update(float dt, Mouse* mouse) {
 	//for (int i = 0; i < div; i++) for (int j = 0; j < div; j++) d.drawDebugVector(vec3(), (vec3)(mat4::rotate(c * i / div, vec3(1, 0, 0)) * mat4::rotate(c * j / div, vec3(0, 1, 0)) * vec4(v)));
 	CollisionManager::getInstance().draw();
 #endif
+}
+
+void GameState::updateCamera( float dt )
+{
+    vec3 shipPos = ship->transform.position();
+    vec3 shipVel = ship->rigidBody().vel();
+
+    vec3 oldCamPos = ( *_scene->camera() )->transform.position();
+    vec3 maxCamPos = shipPos;
+
+    // If the ship is moving enough, we'll start moving the camera ahead so the
+    // player can see where they're moving
+    float seekAheadFactor = minf( 20.f, vec3::length( shipVel ) * .3f );
+    maxCamPos += ship->transform.forward() * seekAheadFactor;
+
+    // The camera should pull back from target that it follows (this ship) when the target moves
+    maxCamPos.z = shipPos.z - ( 9.5f + seekAheadFactor * .5f );
+
+    vec3 desiredCamPos = vec3::lerp( oldCamPos, maxCamPos, minf( 8.f * dt, 0.65f ) );
+
+    ( *_scene->camera() )->transform.position( desiredCamPos );
 }

@@ -58,8 +58,8 @@ void ColliderObject::calcForces(double dt) {
 	body.netForce += vec3(0, body.mass() * -9.8f * 0.5f * (1 - body.floating()), 0);//gravity
 	//collision resolution stuff here
 
-	body.netForce += body.quadDrag(-0.15f, body.vel(), body.heading());//quadratic drag, no mass involved, it's all velocity dependent
-	body.netAngAccel += body.quadDrag(-1.75f, body.angVel(), body.angHeading());//for ang accel too
+	body.netForce += body.quadDrag(-0.5f, body.vel(), body.heading());//quadratic drag, no mass involved, it's all velocity dependent
+	body.netAngAccel += body.quadDrag(-10.f, body.angVel(), body.angHeading());//for ang accel too
 
 	//body.netForce *= body.invMass();
 }

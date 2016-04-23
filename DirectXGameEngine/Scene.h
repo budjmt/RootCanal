@@ -1,14 +1,15 @@
 #pragma once
 
 #include "Camera.h"
-#include "EventDispatcher.h"
+#include "Shader.h"
 
-class Scene : public EventDispatcher
+class Scene
 {
 public:
     virtual ~Scene() {};
 
     virtual void update( float dt ) {};
+    virtual void draw() {};
 
     // For handing mouse input
     virtual void OnMouseDown( WPARAM btnState, int x, int y ) {};
@@ -23,3 +24,8 @@ protected:
     Camera** _camera; 
 };
 
+enum SceneType {
+    MENU,
+    GAME,
+    DEFAULT
+};

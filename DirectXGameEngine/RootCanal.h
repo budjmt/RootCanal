@@ -10,9 +10,10 @@
 #include "CollisionManager.h"
 #include "StateManager.h"
 #include "SceneEvent.h"
-#include "Callback.h"
+#include "Shader.h"
 
 #include "MenuScene.h"
+#include "GameScene.h"
 
 class RootCanal : public Game
 {
@@ -26,13 +27,7 @@ public:
 	void UpdateScene(float deltaTime, float totalTime) override;
 	void DrawScene(float deltaTime, float totalTime) override;
 
-    void OnSceneChange( Event e );
     void SetScene( Scene* scene );
-
-	// For handing mouse input
-	//void OnMouseDown(WPARAM btnState, int x, int y);
-	//void OnMouseUp(WPARAM btnState, int x, int y);
-	//void OnMouseMove(WPARAM btnState, int x, int y);
 
 private:
 	// Initialization for our "game" demo - Feel free to
@@ -46,9 +41,4 @@ private:
 	SimplePixelShader* pixelShader;
 
 	Camera* camera = nullptr;
-
-	DirectionalLight l1, l2;
-
-    MenuScene* menuScene;
-    GameScene* gameScene;
 };

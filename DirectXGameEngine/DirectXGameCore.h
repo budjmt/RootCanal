@@ -17,8 +17,6 @@
 
 #include "dxerr.h"
 
-#include "EventDispatcher.h"
-
 // --------------------------------------------------------
 // Convenience macro for releasing COM objects.
 //

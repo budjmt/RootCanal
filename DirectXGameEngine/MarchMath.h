@@ -38,6 +38,7 @@ public:
     static float dot( const vec3 a, const vec3 b ); 
 	static vec3 cross( const vec3 a, const vec3 b );
     static vec3 lerp( const vec3 a, const vec3 b, float t );
+    static vec3 limit( vec3 v, float mag );
 
 private:
     float v[3];

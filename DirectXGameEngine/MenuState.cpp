@@ -29,12 +29,10 @@ void MenuState::update(float dt, Mouse* mouse) {
 	if (keys.isDown(' '))
 	{
 		CollisionManager::getInstance().clear();
-
-		StateManager::getInstance().nextScene(true);
-		/* SceneTransitionState* transition = new SceneTransitionState( this, gameScene );
-		StateManager::getInstance().gameState( transition );
-		dispatchEvent( SceneEvent::CHANGE );*/
+		StateManager::getInstance().changeScene( SceneType::GAME );
 	}
-
-	State::update(dt, mouse);
+    else
+    {
+        State::update( dt, mouse );
+    }
 }

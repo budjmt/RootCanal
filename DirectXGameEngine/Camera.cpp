@@ -4,15 +4,6 @@ void Camera::updateCamMat(ISimpleShader* shader) {
 	//we pre-transpose projection because it doesn't change very often
 	shader->SetMatrix4x4("projection", &projection[0][0]);
 	shader->SetMatrix4x4("view", &view[0][0]);
-
-	/*vec3 l = getLookAt(), u = getUp();
-	DirectX::XMVECTOR eye = { transform.position.x, transform.position.y, transform.position.z };
-	DirectX::XMVECTOR target = { l.x, l.y, l.z };
-	DirectX::XMVECTOR up = { u.x, u.y, u.z };
-	DirectX::XMMATRIX x = DirectX::XMMatrixLookAtLH(eye, target, up);
-	DirectX::XMFLOAT4X4 v;
-	XMStoreFloat4x4(&v, XMMatrixTranspose(x));
-	shader->SetMatrix4x4("view", v);*/
 }
 
 void Camera::update(float dt, Mouse* mouse) {
@@ -36,11 +27,7 @@ vec3 Camera::getLookAt() {
 void Camera::updateProjection(int width, int height, float aspect) {
 	float znear = 0.01f;
 	float zfar = 1000.f;
-	//transpose for direct x
-	//projection = mat4::perspective((float)width, (float)height, znear, zfar);
 	projection = mat4::perspectiveFOV(CAM_FOV, aspect, znear, zfar);
-	//projection = mat4::transpose(mat4::orthographic((float)width, (float)height, znear, zfar));
-	//DirectX::XMMATRIX x = DirectX::XMMatrixPerspectiveFovLH(CAM_FOV, aspect, znear, zfar);
 }
 
 vec3 Camera::getForward() { return transform.forward(); }
