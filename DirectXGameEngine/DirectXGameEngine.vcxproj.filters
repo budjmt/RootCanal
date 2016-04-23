@@ -222,6 +222,12 @@
     <ClCompile Include="UIObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UIAxes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -387,6 +393,12 @@
       <Filter>Header Files\Spatial\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="UIObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UIAxes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

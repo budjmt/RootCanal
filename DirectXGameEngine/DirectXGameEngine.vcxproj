@@ -82,6 +82,7 @@
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="DrawDebug.cpp" />
     <ClCompile Include="DrawMesh.cpp" />
+    <ClCompile Include="DrawScreen.cpp" />
     <ClCompile Include="GameEntryPoint.hpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Event.cpp" />
@@ -114,6 +115,7 @@
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SimpleShader.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UIAxes.cpp" />
     <ClCompile Include="UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +131,7 @@
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="DrawDebug.h" />
     <ClInclude Include="DrawMesh.h" />
+    <ClInclude Include="DrawScreen.h" />
     <ClInclude Include="DXInfo.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Event.h" />
@@ -170,6 +173,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UIAxes.h" />
     <ClInclude Include="UIObject.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
