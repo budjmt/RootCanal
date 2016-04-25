@@ -14,6 +14,8 @@
 
 #include "MenuScene.h"
 #include "GameScene.h"
+#include "PostProcess.h"
+#include "PostChainManager.h"
 
 class RootCanal : public Game
 {
@@ -37,8 +39,16 @@ private:
 	void CreateGeometry();
 	void CreateMatrices();
 
+	void setupRenderTarget();
+
 	SimpleVertexShader* vertexShader;
 	SimplePixelShader* pixelShader;
+
+	ID3D11RenderTargetView* ppRTV;
+	ID3D11ShaderResourceView* ppSRV;
+
+	PostProcess* post;
+	PostChainManager* postManager;
 
 	Camera* camera = nullptr;
 };
