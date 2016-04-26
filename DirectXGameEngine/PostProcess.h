@@ -12,7 +12,7 @@ class PostProcess
 public:
 	PostProcess(ID3D11Device* _device,ID3D11DeviceContext* _deviceContext, ID3D11SamplerState* _sampler, ID3D11DepthStencilView* _depthStencilView);
 	~PostProcess();
-	void draw(ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView);
+	void draw(ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView, ID3D11RenderTargetView* backBufferView);
 	void AddEffect(PostProcessBase* effect);
 private:
 	std::vector<PostProcessBase*> ppChain;

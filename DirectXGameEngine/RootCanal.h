@@ -39,12 +39,12 @@ private:
 	void CreateGeometry();
 	void CreateMatrices();
 
-	void setupRenderTarget();
+	void setupPostProcess();
 
 	SimpleVertexShader* vertexShader;
 	SimplePixelShader* pixelShader;
 
-	ID3D11RenderTargetView* ppRTV;
+	ID3D11RenderTargetView*   ppRTV;
 	ID3D11ShaderResourceView* ppSRV;
 
 	PostProcess* post;

@@ -21,7 +21,7 @@ PostProcess::~PostProcess()
 
 void PostProcess::AddEffect(PostProcessBase* effect) { ppChain.push_back(effect); }
 
-void PostProcess::draw(ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView) {
+void PostProcess::draw(ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView, ID3D11RenderTargetView* backBufferView) {
 	SRV* srv = ppSRV;
 	const float color[4] = { 0.1f, 0.1f, 0.1f, 0.1f };
 	//D3D11_SAMPLER_DESC samplerDesc = {};
@@ -46,8 +46,8 @@ void PostProcess::draw(ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* 
 	deviceContext->OMSetDepthStencilState(0, 0);
 
 	// Done with set to final render state
-	deviceContext->OMSetRenderTargets(1, &renderTargetView, 0);
-	deviceContext->ClearRenderTargetView(renderTargetView, color);
+	deviceContext->OMSetRenderTargets(1, &backBufferView, 0);
+	deviceContext->ClearRenderTargetView(backBufferView, color);
 
 	ppVS->SetShader();
 

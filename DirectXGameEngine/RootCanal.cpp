@@ -92,6 +92,8 @@ bool RootCanal::Init()
 	d.device = device;
 	d.deviceContext = deviceContext;
 
+	ZeroMemory(&d.rasterDesc, sizeof(d.rasterDesc));
+	d.rasterDesc.FillMode = D3D11_FILL_SOLID;
 	d.rasterDesc.CullMode = D3D11_CULL_BACK;
 	//d.rasterDesc.CullMode = D3D11_CULL_NONE;
 	d.rasterDesc.DepthClipEnable = true;
@@ -124,20 +126,8 @@ bool RootCanal::Init()
 	LoadShaders();
 	CreateGeometry();
 	CreateMatrices();
-	setupRenderTarget();
 
-	ID3D11SamplerState* samplerState;
-
-	// Create the sampler state
-	D3D11_SAMPLER_DESC samplerDesc = {};
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	device->CreateSamplerState(&samplerDesc, &samplerState);
-
-	postManager = new PostChainManager(post, windowWidth, windowHeight, device, deviceContext, samplerState);
+	setupPostProcess();
 
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives we'll be using and how to interpret them
@@ -266,28 +256,20 @@ void RootCanal::DrawScene(float deltaTime, float totalTime)
     // Background color (Cornflower Blue in this case) for clearing
     const float color[4] = { 0.4f, 0.6f, 0.75f, 0.0f };
 
-	
-
-	deviceContext->OMSetRenderTargets(1, &ppRTV, depthStencilView);
-
 	// Clear the render target and depth buffer (erases what's on the screen)
 	//  - Do this ONCE PER FRAME
 	//  - At the beginning of DrawScene (before drawing *anything*)
 	//deviceContext->ClearRenderTargetView(renderTargetView, color);
+
+	deviceContext->OMSetRenderTargets(1, &ppRTV, depthStencilView);
 	deviceContext->ClearRenderTargetView(ppRTV, color);
-	deviceContext->ClearDepthStencilView(
-		depthStencilView,
-		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-		1.0f,
-		0);
+	deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,	1.0f, 0);
 
     currScene->draw();
-
-	post->draw(ppSRV,ppRTV);
-
+	post->draw(ppSRV,ppRTV,renderTargetView);
 
 #if DEBUG
-    DrawDebug::getInstance().draw();
+    //DrawDebug::getInstance().draw();
 #endif
 
     // Present the buffer
@@ -303,25 +285,22 @@ void RootCanal::SetScene( Scene* scene )
     currScene = scene;
 }
 
-void RootCanal::setupRenderTarget() {
+void RootCanal::setupPostProcess() {
 	// Create a texture
-	D3D11_TEXTURE2D_DESC tDesc = {};
-	tDesc.Width = windowWidth;
-	tDesc.Height = windowHeight;
+	D3D11_TEXTURE2D_DESC tDesc;
+	tDesc.Width = windowWidth; tDesc.Height = windowHeight;
 	tDesc.ArraySize = 1;
 	tDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	tDesc.CPUAccessFlags = 0;
 	tDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	tDesc.MipLevels = 1;
-	tDesc.MiscFlags = 0;
-	tDesc.SampleDesc.Count = 1;
-	tDesc.SampleDesc.Quality = 0;
+	tDesc.MipLevels = 1; tDesc.MiscFlags = 0;
+	tDesc.SampleDesc.Count = 1; tDesc.SampleDesc.Quality = 0;
 	tDesc.Usage = D3D11_USAGE_DEFAULT;
 	ID3D11Texture2D* ppTexture;
 	device->CreateTexture2D(&tDesc, 0, &ppTexture);
 
 	// Make a render target view for rendering into the texture
-	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
 	rtvDesc.Format = tDesc.Format;
 	rtvDesc.Texture2D.MipSlice = 0;
 	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
@@ -337,6 +316,21 @@ void RootCanal::setupRenderTarget() {
 
 	// Get rid of ONE of the texture references
 	ppTexture->Release();
+
+	ID3D11SamplerState* psamplerState;
+
+	// Create the sampler state
+	D3D11_SAMPLER_DESC samplerDesc;
+	ZeroMemory(&samplerDesc, sizeof(samplerDesc));
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	device->CreateSamplerState(&samplerDesc, &psamplerState);
+
+	post = new PostProcess(device, deviceContext, psamplerState, depthStencilView);
+	postManager = new PostChainManager(post, windowWidth, windowHeight, device, deviceContext, psamplerState);
 }
 
 #pragma endregion
