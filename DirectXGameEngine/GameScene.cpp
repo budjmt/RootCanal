@@ -6,19 +6,21 @@ GameScene::GameScene( Camera** camera )
 {
 	_camera = camera;
 
+    DXInfo& dx = DXInfo::getInstance();
+
     _vertexShader = Shader::getShader<SimpleVertexShader>( L"BasicVertex" );
-    _pixelShader = Shader::getShader<SimplePixelShader>( L"BasicPixel" );
+    _pixelShader = Shader::getShader<SimplePixelShader>( L"ToonPixel" );
 
     _l1 = {
-        XMFLOAT4( 0.f,0.1f,0.1f,1.f ),
-        XMFLOAT4( 0.8f,1.f,0,1.f ),
-        XMFLOAT3( 0.5f,-1.f,1.f )
+        XMFLOAT4( 0.7f, 0.65f, 0.8f, .9f ),
+        XMFLOAT4( 0.8f, 1.f, 1.f, .9f ),
+        XMFLOAT3( 0.1f, -1.f, 0.f )
     };
 
     _l2 = {
-        XMFLOAT4( 0.05f,0.1f,0.05f,1.f ),
-        XMFLOAT4( 0.6f,0.f,0.25f,1.f ),
-        XMFLOAT3( -1.f,1.f,-0.5f )
+        XMFLOAT4( 0.05f, 0.1f, 0.05f, .5f ),
+        XMFLOAT4( 0.6f, 0.f, 0.25f, .1f ),
+        XMFLOAT3( -1.f, 1.f, -0.5f )
     };
 
 	gameState = new GameState( this, _vertexShader, _pixelShader );

@@ -28,6 +28,6 @@ void Ship::processMovement(float dt)
 	}
 
 	if (keys.isDown(VK_UP)) {
-		rigidBody().netForce += rigidBody().mass() * 100 * transform.forward();
+		rigidBody().netForce += rigidBody().mass() * 150 * transform.forward();
 	}
 }
