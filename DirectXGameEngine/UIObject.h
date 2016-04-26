@@ -3,6 +3,8 @@
 #include "GameObject.h"
 
 //UIObjects are GameObjects that have screen-space transforms
+//Their representation is highly individualized; some are textures, some have geometry etc.
+//As such, it's expected that child classes will set up their buffers themselves
 class UIObject : public GameObject
 {
 public:

@@ -13,7 +13,7 @@ public:
 protected:
 	float windowWidth, windowHeight;
 
-	void setupRenderTarget(ID3D11RenderTargetView** rtv, SRV** srv);
+	virtual void setupRenderTarget(RTV** rtv, SRV** srv);
 
 	ID3D11Device* device;
 	ID3D11DeviceContext * deviceContext;

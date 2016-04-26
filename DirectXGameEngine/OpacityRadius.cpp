@@ -1,21 +1,38 @@
-#include "PostProcessBase.h"
+#include "OpacityRadius.h"
 
-
-
-PostProcessBase::PostProcessBase()
+OpacityRadius::OpacityRadius() : PostProcessBase()
 {
+	ps->LoadShaderFile(L"OpacityPost.cso");
 }
 
 
-PostProcessBase::~PostProcessBase()
+OpacityRadius::~OpacityRadius()
 {
+	ReleaseMacro(renderTarget); ReleaseMacro(resourceView);
+	delete ps;
 }
 
-ID3D11ShaderResourceView* PostProcessBase::draw(SRV* ppSRV){
-	return ppSRV;
+SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
+	//whatever calls this must bind a VS and give it necessary values
+
+	const float color[4] = { 0.1f, 0.1f, 0.1f, 0.1f };
+
+	deviceContext->OMSetRenderTargets(1, &renderTarget, 0);
+	deviceContext->ClearRenderTargetView(renderTarget, color);
+
+	ps->SetShaderResourceView("diffuseTexture", resourceView);
+	ps->SetSamplerState("basicSampler", sampler);
+	ps->SetFloat4("playerPos", &vec4(playerPos)[0]);
+	ps->SetShader();
+
+	deviceContext->Draw(3, 0);
+
+	ps->SetShaderResourceView("diffuseTexture", 0);
+
+	return resourceView;
 }
 
-void PostProcessBase::setupRenderTarget(RTV** rtv, SRV** srv) {
+void OpacityRadius::setupRenderTarget(RTV** rtv, SRV** srv) {
 	// Create a texture
 	D3D11_TEXTURE2D_DESC tDesc = {};
 	tDesc.Width = windowWidth;
@@ -23,7 +40,7 @@ void PostProcessBase::setupRenderTarget(RTV** rtv, SRV** srv) {
 	tDesc.ArraySize = 1;
 	tDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	tDesc.CPUAccessFlags = 0;
-	tDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	tDesc.Format = DXGI_FORMAT_R8_UNORM;
 	tDesc.MipLevels = 1;
 	tDesc.MiscFlags = 0;
 	tDesc.SampleDesc.Count = 1;

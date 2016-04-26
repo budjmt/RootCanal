@@ -20,10 +20,12 @@ public:
     virtual void draw( vec3 pos, vec3 scale, vec3 rotAxis, float rot, ID3D11DeviceContext* deviceContext );
     virtual void draw( Transform* t, ID3D11DeviceContext* deviceContext );
     mat4 genWorldMatrix( vec3 pos, vec3 scale, vec3 rotAxis, float rot );
+
+	// Buffers to hold actual geometry data
+	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* indexBuffer;
+
 protected:
-    // Buffers to hold actual geometry data
-    ID3D11Buffer* vertexBuffer;
-    ID3D11Buffer* indexBuffer;
     // Wrappers for DirectX shaders to provide simplified functionality
     Material* _material;
 };
