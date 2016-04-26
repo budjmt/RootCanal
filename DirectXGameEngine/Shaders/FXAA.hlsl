@@ -31,27 +31,23 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	float4 totalColorX = pixels.Sample(trilinear, input.uv);
 	float4 totalColorY = pixels.Sample(trilinear, input.uv);
-	uint sampleCount = 1;
 	
-	if (mask) {
+	if (mask) {		
+		uint sampleCount = blurAmount * 2 + 1;
+
 		for (int v = 1; v <= blurAmount; v++) {
 			float2 uvMod = float2(0, v * pixelHeight);
 
 			totalColorX += pixels.SampleLevel(trilinear, input.uv + uvMod, 0);
 			totalColorX += pixels.SampleLevel(trilinear, input.uv - uvMod, 0);
-
-			sampleCount += 2;
 		}
 		totalColorX /= sampleCount;
 
-		sampleCount = 1;
 		for (int u = 1; u <= blurAmount; u++) {
 			float2 uvMod = float2(u * pixelHeight, 0);
 
 			totalColorY += pixels.SampleLevel(trilinear, input.uv + uvMod, 0);
 			totalColorY += pixels.SampleLevel(trilinear, input.uv - uvMod, 0);
-
-			sampleCount += 2;
 		}
 		totalColorY /= sampleCount;
 	}

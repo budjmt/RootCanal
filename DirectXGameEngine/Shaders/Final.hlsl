@@ -15,5 +15,5 @@ SamplerState trilinear	: register(s0);
 // Entry point for this pixel shader
 float4 main(VertexToPixel input) : SV_TARGET
 {
-	return pixels.Sample(trilinear, input.uv);
+	return pixels.SampleLevel(trilinear, input.uv, 0);
 }

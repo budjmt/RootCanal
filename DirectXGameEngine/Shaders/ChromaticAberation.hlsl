@@ -26,10 +26,11 @@ float4 main(VertexToPixel input) : SV_TARGET
 	float distFromCenter = distance(float2(0.5f,0.5f), input.uv);
 	
 	float4 outColor = float4(0,0,0,1);
-
-	outColor.x = pixels.Sample(trilinear, input.uv - float2(saturate(distFromCenter * pixelWidth * distortAmount), saturate(distFromCenter * pixelWidth * distortAmount)/2)).x;
-	outColor.y = pixels.Sample(trilinear, input.uv + float2(saturate(distFromCenter * pixelWidth * distortAmount), saturate(distFromCenter * pixelWidth * distortAmount)/2)).y;
-	outColor.z = pixels.Sample(trilinear, input.uv + float2(saturate(distFromCenter * pixelWidth * distortAmount), -saturate(distFromCenter * pixelWidth * distortAmount)/2)).z;
+	
+	float saturation = saturate(distFromCenter * pixelWidth * distortAmount);
+	outColor.r = pixels.SampleLevel(trilinear, input.uv - float2(saturation,  saturation/2), 0).r;
+	outColor.g = pixels.SampleLevel(trilinear, input.uv + float2(saturation,  saturation/2), 0).g;
+	outColor.b = pixels.SampleLevel(trilinear, input.uv + float2(saturation, -saturation/2), 0).b;
 
 	return outColor;
 	return pixels.Sample(trilinear,input.uv);

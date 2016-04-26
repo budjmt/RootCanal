@@ -20,7 +20,7 @@ SamplerState trilinear	: register(s0);
 // Entry point for this pixel shader
 float4 main(VertexToPixel input) : SV_TARGET
 {
-	float4 color = pixels.Sample(trilinear, input.uv);
+	float4 color = pixels.SampleLevel(trilinear, input.uv, 0);
 	//return color;
 
 	if (color.x >= minBrightness || color.y >= minBrightness || color.z >= minBrightness) {
