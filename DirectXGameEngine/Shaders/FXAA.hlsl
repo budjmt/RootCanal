@@ -21,38 +21,40 @@ SamplerState trilinear	: register(s0);
 
 float pixelIntensity(float4 inColor) {
 	//simple average of rgb, may change later
-	return (inColor.x + inColor.y + inColor.z) /3;
+	return (inColor.r + inColor.g + inColor.b) /3;
 }
 
 float4 main(VertexToPixel input) : SV_TARGET
 {
 	float4 blurColor = blur.Sample(trilinear, input.uv);
+	bool mask = blurColor.g > 0.5f;
 
-	bool mask = blurColor.y > 0.5f;
-
-	float4 totalColor = float4(0, 0, 0, 0);
-	uint sampleCount = 0;
+	float4 totalColorX = pixels.Sample(trilinear, input.uv);
+	float4 totalColorY = pixels.Sample(trilinear, input.uv);
+	uint sampleCount = 1;
 	
-	totalColor += pixels.Sample(trilinear, input.uv);
-	sampleCount++;
-	
-	for (int i = 1; i <= blurAmount; i++) {
-		if (mask) {
-			float2 uvMod = float2(0, i * pixelHeight);
+	if (mask) {
+		for (int v = 1; v <= blurAmount; v++) {
+			float2 uvMod = float2(0, v * pixelHeight);
 
-			totalColor += pixels.Sample(trilinear, input.uv + uvMod);
-			totalColor += pixels.Sample(trilinear, input.uv - uvMod);
-
-			sampleCount += 2;
-
-			uvMod = float2(i * pixelHeight, 0);
-
-			totalColor += pixels.Sample(trilinear, input.uv + uvMod);
-			totalColor += pixels.Sample(trilinear, input.uv - uvMod);
+			totalColorX += pixels.SampleLevel(trilinear, input.uv + uvMod, 0);
+			totalColorX += pixels.SampleLevel(trilinear, input.uv - uvMod, 0);
 
 			sampleCount += 2;
 		}
+		totalColorX /= sampleCount;
+
+		sampleCount = 1;
+		for (int u = 1; u <= blurAmount; u++) {
+			float2 uvMod = float2(u * pixelHeight, 0);
+
+			totalColorY += pixels.SampleLevel(trilinear, input.uv + uvMod, 0);
+			totalColorY += pixels.SampleLevel(trilinear, input.uv - uvMod, 0);
+
+			sampleCount += 2;
+		}
+		totalColorY /= sampleCount;
 	}
 	
-	return (totalColor / sampleCount);
+	return ((totalColorX + totalColorY) / 2);
 }

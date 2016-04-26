@@ -1,10 +1,10 @@
 #include "UIAxes.h"
 
-
+#include "Drawable.h"
 
 UIAxes::UIAxes() : UIObject()
 {
-	_shape = new DrawScreen();
+	_shape = new Drawable();
 }
 
 

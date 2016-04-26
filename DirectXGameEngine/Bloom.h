@@ -23,6 +23,6 @@ private:
 	SimplePixelShader* compositePS;
 
 	float minIntensity = 0.5f;
-	float blurAmount = 10;
+	int blurAmount = 10;
 };
 

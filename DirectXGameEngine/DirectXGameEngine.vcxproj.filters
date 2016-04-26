@@ -234,9 +234,6 @@
     <ClCompile Include="UIAxes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DrawScreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChromaticAberation.cpp">
       <Filter>Source Files\PostProcess</Filter>
     </ClCompile>
@@ -429,9 +426,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UIAxes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChromaticAberation.h">
