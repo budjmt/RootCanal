@@ -73,6 +73,7 @@ RootCanal::~RootCanal()
         delete s.second;
 
     delete currScene;
+    delete post;
 }
 
 #pragma endregion
@@ -128,6 +129,19 @@ bool RootCanal::Init()
 	CreateMatrices();
 
 	setupPostProcess();
+	ID3D11SamplerState* samplerState;
+
+	// Create the sampler state
+	D3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	device->CreateSamplerState(&samplerDesc, &samplerState);
+
+    post = new PostProcess( device, deviceContext, samplerState, depthStencilView );
+	postManager = new PostChainManager(post, windowWidth, windowHeight, device, deviceContext, samplerState);
 
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives we'll be using and how to interpret them
@@ -162,6 +176,14 @@ void RootCanal::LoadShaders()
         device,
         deviceContext
      );
+
+    Shader::createShader<SimplePixelShader>
+    (
+        L"ToonPixel",
+        L"ToonPixelShader.cso",
+        device,
+        deviceContext
+    );
 }
 
 

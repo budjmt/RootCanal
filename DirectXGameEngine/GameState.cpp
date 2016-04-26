@@ -7,10 +7,15 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 {
 	addGameObject(*_scene->camera());
 
+    _vertexShader = vertexShader;
+    _pixelShader = pixelShader;
+
 	DXInfo& dx = DXInfo::getInstance();
 
+    _toonLightingTexture = Texture::createTexture( L"../Assets/toonlighting.png", dx.device, dx.deviceContext );
+
 	Texture* texture = Texture::createTexture(L"../Assets/texture.png", dx.device, dx.deviceContext);
-	Material* material = Material::createMaterial(L"material", texture, vertexShader, pixelShader, _scene->camera());
+    Material* material = Material::createMaterial(L"material", texture, vertexShader, pixelShader, _scene->camera());
 	Mesh* mesh1 = Mesh::createMesh("../Assets/cone_Z.obj");
 	Mesh* mesh2 = Mesh::createMesh("../Assets/cube.obj");
 
@@ -56,6 +61,15 @@ void GameState::update( float dt, Mouse* mouse ) {
 	//for (int i = 0; i < div; i++) for (int j = 0; j < div; j++) d.drawDebugVector(vec3(), (vec3)(mat4::rotate(c * i / div, vec3(1, 0, 0)) * mat4::rotate(c * j / div, vec3(0, 1, 0)) * vec4(v)));
 	CollisionManager::getInstance().draw();
 #endif
+}
+
+void GameState::draw( ID3D11DeviceContext* deviceContext )
+{
+    for( auto g : _gameObjects )
+    {
+        _pixelShader->SetShaderResourceView( "lightingTexture", _toonLightingTexture->resourceView );
+        g->draw( deviceContext );
+    }
 }
 
 void GameState::updateCamera( float dt )
