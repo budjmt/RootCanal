@@ -15,10 +15,10 @@ SamplerState basicSampler : register(s0);
 
 static int radius = 50;
 
-float main(VertexToPixel input)
+float main(VertexToPixel input) : SV_TARGET
 {
-	float alpha = diffuseTexture.SampleLevel(basicSampler, uv, 0);
-	float4 bet = playerPos - position;
+	float alpha = diffuseTexture.SampleLevel(basicSampler, input.uv, 0);
+	float4 bet = playerPos - input.position;
 	if (dot(bet, bet) < radius * radius) {
 		return 0;
 	}

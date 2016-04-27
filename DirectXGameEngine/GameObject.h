@@ -48,8 +48,5 @@ protected:
 	Transform _transform;
 	bool _active = true;
 	GameObjectType _type;
-
-	//friend void GameObject::addChild(GameObject* c);
-	//friend void GameObject::removeChild(GameObject* c, bool del);
 };
 

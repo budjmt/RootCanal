@@ -27,6 +27,8 @@ public:
 
 	static void mayaCam(int width, int height, float dt, Mouse* mouse, Camera* camera);
 
+	UINT windowWidth, windowHeight;
+
 private:
 	mat4 projection, view;
 };

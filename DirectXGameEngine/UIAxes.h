@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UIObject.h"
+#include "Camera.h"
 
 class UIAxes : public UIObject
 {

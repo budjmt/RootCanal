@@ -15,10 +15,10 @@ public:
     }
 
     template <class type>
-    static ISimpleShader* createShader( const wchar_t* key, const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext )
+    static ISimpleShader* createShader( const wchar_t* key, const wchar_t* shaderFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext )
     {
         ISimpleShader* shader = new type( device, deviceContext );
-        assert( shader->LoadShaderFile( texFile ) );
+        assert( shader->LoadShaderFile( shaderFile ) );
         loadedShaders[key] = shader;
         return shader;
     }

@@ -1,33 +1,38 @@
 #include "OpacityRadius.h"
 
-OpacityRadius::OpacityRadius() : PostProcessBase()
+#include "Shader.h"
+#include "DXInfo.h"
+
+OpacityRadius::OpacityRadius(UINT w, UINT h) : PostProcessBase()
 {
-	ps->LoadShaderFile(L"OpacityPost.cso");
+	DXInfo& d = DXInfo::getInstance();
+	device = d.device;
+	deviceContext = d.deviceContext;
+	windowWidth = w; windowHeight = h;
+	setupRenderTarget(&renderTarget, &resourceView);
+	ps = Shader::getShader<SimplePixelShader>(L"OpacityMap");
 }
 
 
 OpacityRadius::~OpacityRadius()
 {
 	ReleaseMacro(renderTarget); ReleaseMacro(resourceView);
-	delete ps;
 }
 
 SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
-	//whatever calls this must bind a VS and give it necessary values
-
-	const float color[4] = { 0.1f, 0.1f, 0.1f, 0.1f };
-
+	RTV* oldTarget;
+	deviceContext->OMGetRenderTargets(1, &oldTarget, nullptr);
 	deviceContext->OMSetRenderTargets(1, &renderTarget, 0);
-	deviceContext->ClearRenderTargetView(renderTarget, color);
 
-	ps->SetShaderResourceView("diffuseTexture", resourceView);
-	ps->SetSamplerState("basicSampler", sampler);
+	//ps->SetShaderResourceView("diffuseTexture", resourceView);
+	//ps->SetSamplerState("basicSampler", sampler);
 	ps->SetFloat4("playerPos", &vec4(playerPos)[0]);
 	ps->SetShader();
 
 	deviceContext->Draw(3, 0);
 
-	ps->SetShaderResourceView("diffuseTexture", 0);
+	//ps->SetShaderResourceView("diffuseTexture", 0);
+	deviceContext->OMSetRenderTargets(1, &oldTarget, 0);
 
 	return resourceView;
 }
@@ -35,8 +40,8 @@ SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 void OpacityRadius::setupRenderTarget(RTV** rtv, SRV** srv) {
 	// Create a texture
 	D3D11_TEXTURE2D_DESC tDesc = {};
-	tDesc.Width = windowWidth;
-	tDesc.Height = windowHeight;
+	tDesc.Width  = (UINT)windowWidth;
+	tDesc.Height = (UINT)windowHeight;
 	tDesc.ArraySize = 1;
 	tDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	tDesc.CPUAccessFlags = 0;

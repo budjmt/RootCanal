@@ -184,6 +184,14 @@ void RootCanal::LoadShaders()
         device,
         deviceContext
     );
+
+	Shader::createShader<SimplePixelShader>
+		(
+			L"OpacityMap",
+			L"OpacityPost.cso",
+			device,
+			deviceContext
+		);
 }
 
 
@@ -211,6 +219,7 @@ void RootCanal::CreateMatrices()
     camera = new Camera();
 	camera->transform.position( vec3(0.f, 0.f, -5.f) );
 	camera->update(0.f, &mouse);
+	camera->windowWidth = windowWidth; camera->windowHeight = windowHeight;
 	camera->updateProjection(windowWidth, windowHeight, aspectRatio);
 }
 
@@ -225,7 +234,10 @@ void RootCanal::CreateMatrices()
 void RootCanal::OnResize()
 {
 	Game::OnResize();
-	if (camera) camera->updateProjection(windowWidth, windowHeight, aspectRatio);
+	if (camera) {
+		camera->windowWidth = windowWidth; camera->windowHeight = windowHeight;
+		camera->updateProjection(windowWidth, windowHeight, aspectRatio);
+	}
 }
 #pragma endregion
 

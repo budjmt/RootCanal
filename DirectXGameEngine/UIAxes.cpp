@@ -18,7 +18,7 @@ UIAxes::~UIAxes()
 }
 
 void UIAxes::update(float dt, Mouse* mouse) {
-	this->transform.rotation = (*camera)->transform.rotation();
+	//_transform.rotation((*camera)->transform().rotation());
 }
 
 void UIAxes::draw(ID3D11DeviceContext* deviceContext) {

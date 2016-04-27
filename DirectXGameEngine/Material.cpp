@@ -40,7 +40,7 @@ Material* Material::createMaterial( const wchar_t* key, Texture* texture, Simple
 
 std::map<const wchar_t*, Texture*> Texture::loadedTextures;
 
-Texture::~Texture() { ReleaseMacro(resourceView); ReleaseMacro(samplerState); }
+Texture::~Texture() { for (auto srv : resourceViews) { if (srv) { ReleaseMacro(srv); srv = nullptr; } } ReleaseMacro(samplerState); }
 
 Texture* Texture::getTexture( const wchar_t* key ) {
     return loadedTextures.at(key);
@@ -48,8 +48,9 @@ Texture* Texture::getTexture( const wchar_t* key ) {
 
 Texture* Texture::createTexture( const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext ) {
     Texture* texture = new Texture;
-    HR( DirectX::CreateWICTextureFromFile( device, deviceContext, texFile, nullptr, &texture->resourceView ) );
-	assert(texture->resourceView);
+	texture->resourceViews.push_back(nullptr);
+    HR( DirectX::CreateWICTextureFromFile( device, deviceContext, texFile, nullptr, &texture->resourceViews[texture->resourceViews.size() - 1] ) );
+	assert(texture->resourceViews.size());
 
     D3D11_SAMPLER_DESC desc;
     ZeroMemory( &desc, sizeof( desc ) );
@@ -66,7 +67,16 @@ Texture* Texture::createTexture( const wchar_t* texFile, ID3D11Device* device, I
     return texture;
 }
 
+void Texture::addTex( ID3D11ShaderResourceView* srv ) {
+	resourceViews.push_back(srv);
+}
+
 void Texture::updateTex( ISimpleShader* shader ) {
-    shader->SetShaderResourceView( "diffuseTexture", resourceView );
+	size_t numTextures = resourceViews.size();
+	if (numTextures) {
+		for (size_t i = 0; i < numTextures; i++)
+			shader->SetShaderResourceView("diffuseTexture" + i, resourceViews[i]);
+	}
+	else shader->SetShaderResourceView("diffuseTexture", resourceViews[0]);
     shader->SetSamplerState( "basicSampler", samplerState );
 }
