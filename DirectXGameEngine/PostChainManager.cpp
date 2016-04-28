@@ -15,7 +15,7 @@ PostChainManager::~PostChainManager()
 
 void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11SamplerState* sampler) {
 	Bloom* bloomEffect = new Bloom(width, height, device, deviceContext, sampler);
-	bloomEffect->setBlurAmount(1.5f);
+	bloomEffect->setBlurAmount(1);
 	bloomEffect->setMinIntensity(0.9f);
 
 	ChromaticAberation* test = new ChromaticAberation(width, height, device, deviceContext,sampler);

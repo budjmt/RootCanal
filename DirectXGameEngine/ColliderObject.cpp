@@ -64,7 +64,9 @@ void ColliderObject::calcForces(double dt) {
 	//body.netForce *= body.invMass();
 }
 
-void ColliderObject::handleCollision(ColliderObject* other, Manifold& m, double dt) {
+//override this (and preferably call it) to change on-collision behavior
+//decrement the numCollisions counter if this collision is considered "resolved" without actually resolving the collision
+void ColliderObject::handleCollision(ColliderObject* other, Manifold& m, double dt, size_t& numCollisions) {
 	RigidBody oRB = other->rigidBody();
 	float velAlongAxis = vec3::dot(oRB.vel() - body.vel(), m.axis);
 	//if the two bodies are travelling in the same direction along the axis

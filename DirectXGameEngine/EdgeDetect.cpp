@@ -2,7 +2,7 @@
 
 
 
-EdgeDetect::EdgeDetect(float width, float height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext)
+EdgeDetect::EdgeDetect(UINT width, UINT height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext)
 {
 	device = _device;
 	deviceContext = _deviceContext;
@@ -70,8 +70,8 @@ SRV* EdgeDetect::draw(SRV* ppSRV) {
 	edgePS->SetFloat("outlineWidth", outlineWidth);
 	edgePS->SetFloat("thresholdMin", 0.2f);
 	edgePS->SetFloat("thresholdMax", 0.5f);
-	edgePS->SetFloat("pixelWidth", windowWidth);
-	edgePS->SetFloat("pixelHeight", windowHeight);
+	edgePS->SetFloat("pixelWidth", 1.f / windowWidth);
+	edgePS->SetFloat("pixelHeight", 1.f / windowHeight);
 	edgePS->SetShader();
 
 	deviceContext->Draw(3, 0);

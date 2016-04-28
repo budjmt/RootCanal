@@ -46,14 +46,14 @@ uint32_t CollisionManager::narrowPhase(float dt) {
 		Manifold m = a->collider()->intersects( b->collider() );
 		if (m.originator) {
 			if (m.originator == a->collider())
-				a->handleCollision(b, m, dt);
+				a->handleCollision(b, m, dt, numCollisions);
 			else 
-				b->handleCollision(a, m, dt);
+				b->handleCollision(a, m, dt, numCollisions);
 			a->collider()->update();
 			b->collider()->update();
-
 			++numCollisions;
-			std::cout << "collision! " << a->collider() << ", " << b->collider() << "; " << m.originator << ", " << m.pen << std::endl;
+
+			//std::cout << "collision! " << a->collider() << ", " << b->collider() << "; " << m.originator << ", " << m.pen << std::endl;
 		}
 		//std::cout << "Collision Check Time: " << DebugBenchmark::end() << std::endl;
 	}

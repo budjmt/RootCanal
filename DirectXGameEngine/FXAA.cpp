@@ -1,6 +1,6 @@
 #include "FXAA.h"
 
-FXAA::FXAA(float width, float height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext, ID3D11SamplerState* _sampler)
+FXAA::FXAA(UINT width, UINT height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext, ID3D11SamplerState* _sampler)
 {
 	windowWidth = width;
 	windowHeight = height;
@@ -43,8 +43,8 @@ SRV* FXAA::draw(SRV* ppSRV) {
 	fxaaPS->SetInt("blurAmount", blurAmount);
 	fxaaPS->SetShaderResourceView("pixels", ppSRV);
 	fxaaPS->SetShaderResourceView("blur", srv);
-	fxaaPS->SetFloat("pixelWidth", 1 / windowWidth);
-	fxaaPS->SetFloat("pixelHeight", 1 / windowHeight);
+	fxaaPS->SetFloat("pixelWidth", 1.f / windowWidth);
+	fxaaPS->SetFloat("pixelHeight", 1.f / windowHeight);
 	fxaaPS->SetShader();
 
 	deviceContext->Draw(3, 0);

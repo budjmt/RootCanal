@@ -35,8 +35,8 @@ float edgeDetect(float2 uv) {
 		return 0.f;
 	}
 
-	float dx = 1/pixelWidth;
-	float dy = 1/pixelHeight;
+	float dx = pixelWidth;
+	float dy = pixelHeight;
 
 	float pixel[9];
 	int k = -1;

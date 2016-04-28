@@ -3,7 +3,8 @@
 Cannon::Cannon(Mesh * mesh, Material * material, Mesh* bMesh, Material* bMaterial, State* gamestate, Ship* player)
 	:ColliderObject(mesh, material)
 {
-	rigidBody().floating(true);
+	//body.floating(true);
+	body.fixed(1.f);
 	transform.setBaseDirections(vec3(0, 1, 0), vec3(0, 0, -1));
 	reloadTime = 300.0f;
 	reloadTimer = 3.0;
@@ -28,7 +29,7 @@ void Cannon::update(float dt)
 {
 	reloadTimer -= dt;
 
-	for (int i = 0; i < bullets.size(); i++) {
+	for (size_t i = 0, numBullets = bullets.size(); i < numBullets; i++) {
 		bullets[i]->update( dt );
 	}
 
