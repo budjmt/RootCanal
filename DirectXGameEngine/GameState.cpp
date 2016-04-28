@@ -18,7 +18,8 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 
 	Texture* texture = Texture::createTexture(L"../Assets/texture.png", dx.device, dx.deviceContext);
     Material* material = Material::createMaterial(L"material", texture, vertexShader, pixelShader, _scene->camera());
-	Material* material2 = Material::createMaterial(L"material2", texture, vertexShader, pixelShader, _scene->camera());
+	Material* material2 = Material::createMaterial(L"material2", texture, vertexShader, Shader::getShader<SimplePixelShader>(L"ToothPixel"), _scene->camera());
+	
 	Mesh* mesh1 = Mesh::createMesh("../Assets/cone_Z.obj");
 	Mesh* mesh2 = Mesh::createMesh("../Assets/cube.obj");
 
@@ -29,15 +30,14 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	cube->transform.position(vec3(0, 0, 2));
 	cube->transform.scale(vec3(100, 100, 1));
 
-	/*ToothFront* tooth = new ToothFront(mesh2, material2, _scene->camera());
-	tooth->rigidBody().floating(true);
-	cube->transform.position(vec3(0, 0, -1));
-	cube->transform.scale(vec3(100, 100, 1));
-	tooth->ship = ship;*/
+	ToothFront* tooth = new ToothFront(mesh2, material2, _scene->camera());
+	tooth->transform.position(vec3(0, 0, -1));
+	tooth->transform.scale(vec3(100, 100, 1));
+	tooth->ship = ship;
 
 	addGameObject(ship);
 	addGameObject(cube);
-	//addGameObject(tooth);
+	addGameObject(tooth);
 }
 
 GameState::~GameState()
@@ -52,9 +52,9 @@ void GameState::update( float dt, Mouse* mouse ) {
 
     vec3 shipPos = ship->transform.position();
 
-	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.forward(), vec3(0, 1, 1));
+	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.forward()              , vec3(0, 1, 1));
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.up() + vec3(0,0.001f,0), vec3(1, 1, 0));
-	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.right()	 , vec3(1, 0, 1));
+	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.right()                , vec3(1, 0, 1));
 
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);

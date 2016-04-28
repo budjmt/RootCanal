@@ -6,6 +6,10 @@ void Camera::updateCamMat(ISimpleShader* shader) {
 	shader->SetMatrix4x4("view", &view[0][0]);
 }
 
+mat4 Camera::getCamMat() {
+	return view * projection;// order is for vector-first multiplication
+}
+
 void Camera::update(float dt, Mouse* mouse) {
 	view = mat4::lookAt(transform.position(), getLookAt(), getUp());
 }

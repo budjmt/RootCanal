@@ -2,7 +2,7 @@
 
 
 
-ChromaticAberation::ChromaticAberation(float width, float height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext, ID3D11SamplerState* _sampler)
+ChromaticAberation::ChromaticAberation(UINT width, UINT height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext, ID3D11SamplerState* _sampler)
 {
 	windowWidth = width;
 	windowHeight = height;
@@ -47,8 +47,8 @@ SRV* ChromaticAberation::draw(SRV* ppSRV) {
 	deviceContext->ClearRenderTargetView(caRTV, color);
 
 	caPS->SetFloat("distortAmount", amount);
-	caPS->SetFloat("pixelWidth", 1 / windowWidth);
-	caPS->SetFloat("pixelHeight", 1 / windowHeight);
+	caPS->SetFloat("pixelWidth", 1.f / windowWidth);
+	caPS->SetFloat("pixelHeight", 1.f / windowHeight);
 	caPS->SetShaderResourceView("pixels",ppSRV);
 	caPS->SetShader();
 

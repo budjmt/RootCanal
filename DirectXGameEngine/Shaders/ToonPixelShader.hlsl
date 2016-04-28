@@ -62,5 +62,6 @@ float4 main( VertexToPixel input ) : SV_TARGET
 
     input.color = float4( 1, 1, 1, 1 );
 
-    return saturate(returnColor);
+	//return saturate(returnColor);
+	return surfaceColor * combinedLight;
 }

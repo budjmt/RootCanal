@@ -5,7 +5,7 @@
 #include "OpacityRadius.h"
 
 class ToothFront :
-	public ColliderObject
+	public GameObject
 {
 public:
 	ToothFront(Mesh* mesh, Material* material, Camera** cam);
@@ -15,7 +15,8 @@ public:
 	void draw(ID3D11DeviceContext* deviceContext);
 
 	Ship* ship;
-	OpacityRadius opacityRadius;
+	Camera** camera;
+	OpacityRadius* opacityRadius;
 	Drawable* opacity;
 };
 

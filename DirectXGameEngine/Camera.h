@@ -14,6 +14,7 @@ const float CAM_FOV = 2 * PI / 5;
 class Camera : public GameObject {
 public:
 	void updateCamMat(ISimpleShader* shader);
+	mat4 getCamMat();
 	void update(float dt, Mouse* mouse);
 	void draw(ID3D11DeviceContext* deviceContext);
 

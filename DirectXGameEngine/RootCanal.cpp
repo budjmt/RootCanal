@@ -186,12 +186,20 @@ void RootCanal::LoadShaders()
     );
 
 	Shader::createShader<SimplePixelShader>
-		(
-			L"OpacityMap",
-			L"OpacityPost.cso",
-			device,
-			deviceContext
-		);
+	(
+		L"ToothPixel",
+		L"ToothPixel.cso",
+		device,
+		deviceContext
+	);
+
+	Shader::createShader<SimplePixelShader>
+	(
+		L"OpacityMap",
+		L"OpacityPost.cso",
+		device,
+		deviceContext
+	);
 }
 
 
