@@ -21,8 +21,6 @@ public:
     virtual void update( float dt, Mouse* mouse );
     virtual void draw( ID3D11DeviceContext* deviceContext );
 
-    void setupToonShader();
-
 private:
     Texture* _toonLightingTexture;
 	Ship* ship;

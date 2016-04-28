@@ -53,14 +53,14 @@ float4 main( VertexToPixel input ) : SV_TARGET
     float3 light2Dir = normalize( -light2.direction );
     float lamb2 = saturate( dot( input.normal, light2Dir ) );
 
-    float4 surfaceColor = diffuseTexture.Sample( basicSampler, input.uv );
     float4 combinedLight =
         ( light1.diffuseColor * lamb1 + light1.ambientColor
         + light2.diffuseColor * lamb2 + light2.ambientColor );
+    float4 surfaceColor = diffuseTexture.Sample( basicSampler, input.uv ) * combinedLight;
 
-    float4 returnColor = lightingTexture.SampleLevel( basicSampler, input.uv.xx, 0 ).xxxx * ( light1.diffuseColor + light2.diffuseColor ) * surfaceColor;// *combinedLight;
+    float4 returnColor = lightingTexture.SampleLevel( basicSampler, combinedLight, 0 ) * surfaceColor;
 
     input.color = float4( 1, 1, 1, 1 );
 
-    return saturate(returnColor);
+    return saturate( returnColor );
 }
