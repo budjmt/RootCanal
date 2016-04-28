@@ -7,6 +7,8 @@
 #include "MeshImporter.h"
 #include "DrawMesh.h"
 #include "ColliderObject.h"
+
+#include "Cannon.h"
 #include "SimpleShader.h"
 #include "Camera.h"
 
@@ -22,11 +24,10 @@ public:
     virtual void update( float dt, Mouse* mouse );
     virtual void draw( ID3D11DeviceContext* deviceContext );
 
-    //void setupToonShader();
-
 private:
     Texture* _toonLightingTexture;
 	Ship* ship;
+	Cannon* cannon;
     SimplePixelShader* _pixelShader;
     SimpleVertexShader* _vertexShader;
 
