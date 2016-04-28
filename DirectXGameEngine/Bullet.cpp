@@ -10,6 +10,6 @@ Bullet::Bullet(Mesh * mesh, Material * material, float speed, vec3 dir)
 void Bullet::setSpeed(float s){ speed = s; }
 
 void Bullet::update(float dt) {
-	rigidBody().netAngAccel += (direction * speed * dt);
+	transform.forward() = direction;
 	rigidBody().netForce += rigidBody().mass() * 15 * transform.forward();
 }

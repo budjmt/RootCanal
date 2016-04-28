@@ -8,6 +8,7 @@
 #include "DrawMesh.h"
 #include "ColliderObject.h"
 #include "Ship.h"
+#include "Cannon.h"
 #include "SimpleShader.h"
 #include "Camera.h"
 
@@ -26,6 +27,7 @@ public:
 private:
     Texture* _toonLightingTexture;
 	Ship* ship;
+	Cannon* cannon;
     SimplePixelShader* _pixelShader;
     SimpleVertexShader* _vertexShader;
 

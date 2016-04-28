@@ -24,6 +24,8 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	Mesh* mesh2 = Mesh::createMesh("../Assets/cube.obj");
 
 	ship = new Ship(mesh1, material);
+	cannon = new Cannon(mesh2, material, mesh2, material, this);
+	cannon->transform.position() = vec3(0.f, 5.f, 0.f);
 
 	ColliderObject* cube = new ColliderObject(mesh2, material);
 	cube->rigidBody().floating(true);
@@ -36,6 +38,7 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	tooth->ship = ship;
 
 	addGameObject(ship);
+	addGameObject(cannon);
 	addGameObject(cube);
 	addGameObject(tooth);
 }
@@ -46,7 +49,8 @@ GameState::~GameState()
 
 void GameState::update( float dt, Mouse* mouse ) {
 
-    ship->processMovement( dt );
+	ship->update( dt );
+	cannon->update( dt );
 
     updateCamera( dt );
 
