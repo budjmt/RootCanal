@@ -4,12 +4,14 @@
 #include "Ship.h"
 #include "Bullet.h"
 #include "State.h"
+#include <vector>
+using namespace std;
 
 class Cannon :
 	public ColliderObject
 {
 public:
-	Cannon(Mesh* mesh, Material* material, Mesh* bMesh, Material* bMaterial, State* gamestate);
+	Cannon(Mesh* mesh, Material* material, Mesh* bMesh, Material* bMaterial, State* gamestate, Ship* player);
 
 	void setBulletMesh(Mesh* mesh);
 	void setBulletMaterial(Material* mat);
@@ -18,6 +20,7 @@ public:
 	void shoot();
 private:
 	Ship* ship;
+	vector<Bullet*> bullets;
 
 	State* state;
 	Mesh* bulletMesh;

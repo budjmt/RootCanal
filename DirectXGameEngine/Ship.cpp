@@ -8,14 +8,6 @@ Ship::Ship(Mesh * mesh, Material * material)
 	health = 100;
 }
 
-Ship::Ship(vec3 p, vec3 dims, vec3 sc, vec3 rA, float r, Drawable* s)
-	: ColliderObject(p, dims, sc, rA, r, s)
-{
-	rigidBody().floating(true);
-	transform.setBaseDirections(vec3(0, 1, 0), vec3(0, 0, -1));
-	health = 100;
-}
-
 void Ship::addHealth(float hp){ health += hp; }
 
 void Ship::update(float dt)
