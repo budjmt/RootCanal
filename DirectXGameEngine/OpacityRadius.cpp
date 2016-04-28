@@ -21,8 +21,8 @@ OpacityRadius::~OpacityRadius()
 
 SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 	RTV* oldTarget;
-	deviceContext->OMGetRenderTargets(1, &oldTarget, nullptr);
-	deviceContext->OMSetRenderTargets(1, &renderTarget, 0);
+	deviceContext->OMGetRenderTargets(1, &oldTarget, NULL);
+	deviceContext->OMSetRenderTargets(1, &renderTarget, NULL);
 
 	//ps->SetShaderResourceView("diffuseTexture", resourceView);
 	//ps->SetSamplerState("basicSampler", sampler);
@@ -32,7 +32,8 @@ SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 	deviceContext->Draw(3, 0);
 
 	//ps->SetShaderResourceView("diffuseTexture", 0);
-	deviceContext->OMSetRenderTargets(1, &oldTarget, 0);
+	deviceContext->OMSetRenderTargets(1, &oldTarget, NULL);
+	oldTarget->Release();
 
 	return resourceView;
 }
@@ -40,8 +41,8 @@ SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 void OpacityRadius::setupRenderTarget(RTV** rtv, SRV** srv) {
 	// Create a texture
 	D3D11_TEXTURE2D_DESC tDesc = {};
-	tDesc.Width  = (UINT)windowWidth;
-	tDesc.Height = (UINT)windowHeight;
+	tDesc.Width  = windowWidth;
+	tDesc.Height = windowHeight;
 	tDesc.ArraySize = 1;
 	tDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	tDesc.CPUAccessFlags = 0;

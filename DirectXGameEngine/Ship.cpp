@@ -16,6 +16,15 @@ Ship::Ship(vec3 p, vec3 dims, vec3 sc, vec3 rA, float r, Drawable* s)
 	health = 100;
 }
 
+void Ship::addHealth(float hp){ health += hp; }
+
+void Ship::update()
+{
+	if (health < 0) {
+		//sceneManager.SetScene(new MenuScene(&cam));
+	}
+}
+
 void Ship::processMovement(float dt)
 {
 	Keyboard& keys = Keyboard::getInstance();

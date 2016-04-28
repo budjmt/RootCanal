@@ -6,7 +6,7 @@
 class Blur: public PostProcessBase
 {
 public:
-	Blur(float width, float height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext,ID3D11SamplerState* _sampler, ID3D11RenderTargetView* _rtv);
+	Blur(UINT width, UINT height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext,ID3D11SamplerState* _sampler, ID3D11RenderTargetView* _rtv);
 	~Blur();
 
 	virtual ID3D11ShaderResourceView* draw(ID3D11ShaderResourceView* ppSRV);

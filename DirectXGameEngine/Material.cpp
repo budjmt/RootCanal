@@ -40,7 +40,7 @@ Material* Material::createMaterial( const wchar_t* key, Texture* texture, Simple
 
 std::map<const wchar_t*, Texture*> Texture::loadedTextures;
 
-Texture::~Texture() { for (auto srv : resourceViews) { if (srv) { ReleaseMacro(srv); srv = nullptr; } } ReleaseMacro(samplerState); }
+Texture::~Texture() { for (size_t i = 0, numSRV = resourceViews.size(); i < numSRV; i++) { ReleaseMacro(resourceViews[i]); } ReleaseMacro(samplerState); }
 
 Texture* Texture::getTexture( const wchar_t* key ) {
     return loadedTextures.at(key);
