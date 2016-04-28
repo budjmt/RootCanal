@@ -22,5 +22,6 @@ private:
 	Material* bulletMaterial;
 
 	float reloadTimer;
+	float reloadTime;
 	bool shouldShoot;
 };
