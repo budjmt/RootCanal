@@ -7,9 +7,10 @@
 #include "MeshImporter.h"
 #include "DrawMesh.h"
 #include "ColliderObject.h"
-#include "Ship.h"
 #include "SimpleShader.h"
 #include "Camera.h"
+
+class Ship;
 
 class GameState :
     public State
@@ -21,7 +22,7 @@ public:
     virtual void update( float dt, Mouse* mouse );
     virtual void draw( ID3D11DeviceContext* deviceContext );
 
-    void setupToonShader();
+    //void setupToonShader();
 
 private:
     Texture* _toonLightingTexture;

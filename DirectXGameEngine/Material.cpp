@@ -15,7 +15,11 @@ void Material::updateMaterial( mat4& world ) {
     vertex->SetMatrix4x4( "world", &world[0][0] );
     vertex->SetMatrix4x4( "inv_trans_world", &mat4::inv_tp_tf( world )[0][0] );
     ( *_camera )->updateCamMat( vertex );
-    if( _texture ) _texture->updateTex( pixel );
+    if( _texture ) _texture->bindTex( pixel );
+}
+
+void Material::unbindSRV() {
+	if (_texture) _texture->unbindTex(pixel);
 }
 
 void Material::setActive( bool b ) {
@@ -40,7 +44,11 @@ Material* Material::createMaterial( const wchar_t* key, Texture* texture, Simple
 
 std::map<const wchar_t*, Texture*> Texture::loadedTextures;
 
-Texture::~Texture() { for (size_t i = 0, numSRV = resourceViews.size(); i < numSRV; i++) { ReleaseMacro(resourceViews[i]); } ReleaseMacro(samplerState); }
+Texture::~Texture() { 
+	for (size_t i = 0, numSRV = resourceViews.size(); i < numSRV; i++) 
+		ReleaseMacro(resourceViews[i]);
+	ReleaseMacro(samplerState); 
+}
 
 Texture* Texture::getTexture( const wchar_t* key ) {
     return loadedTextures.at(key);
@@ -71,12 +79,25 @@ void Texture::addTex( ID3D11ShaderResourceView* srv ) {
 	resourceViews.push_back(srv);
 }
 
-void Texture::updateTex( ISimpleShader* shader ) {
+void Texture::bindTex( ISimpleShader* shader ) {
 	size_t numTextures = resourceViews.size();
 	if (numTextures) {
-		for (size_t i = 0; i < numTextures; i++)
-			shader->SetShaderResourceView("diffuseTexture" + i, resourceViews[i]);
+		for (size_t i = 0; i < numTextures; i++) {
+			std::string str = "diffuseTexture" + i;
+			shader->SetShaderResourceView(str.c_str(), resourceViews[i]);
+		}
 	}
 	else shader->SetShaderResourceView("diffuseTexture", resourceViews[0]);
     shader->SetSamplerState( "basicSampler", samplerState );
+}
+
+void Texture::unbindTex( ISimpleShader* shader ) {
+	size_t numTextures = resourceViews.size();
+	if (numTextures) {
+		for (size_t i = 0; i < numTextures; i++) {
+			std::string str = "diffuseTexture" + i;
+			shader->SetShaderResourceView(str.c_str(), 0);
+		}
+	}
+	else shader->SetShaderResourceView("diffuseTexture", 0);
 }

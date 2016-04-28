@@ -16,7 +16,8 @@ OpacityRadius::OpacityRadius(UINT w, UINT h) : PostProcessBase()
 
 OpacityRadius::~OpacityRadius()
 {
-	ReleaseMacro(renderTarget); ReleaseMacro(resourceView);
+	ReleaseMacro(renderTarget); 
+	ReleaseMacro(resourceView);
 }
 
 SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
@@ -24,14 +25,14 @@ SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 	deviceContext->OMGetRenderTargets(1, &oldTarget, NULL);
 	deviceContext->OMSetRenderTargets(1, &renderTarget, NULL);
 
-	//ps->SetShaderResourceView("diffuseTexture", resourceView);
-	//ps->SetSamplerState("basicSampler", sampler);
+	ps->SetShaderResourceView("diffuseTexture", resourceView);
+	ps->SetSamplerState("basicSampler", sampler);
 	ps->SetFloat4("playerPos", &vec4(playerPos)[0]);
 	ps->SetShader();
 
 	deviceContext->Draw(3, 0);
-
-	//ps->SetShaderResourceView("diffuseTexture", 0);
+	
+	ps->SetShaderResourceView("diffuseTexture", 0);
 	deviceContext->OMSetRenderTargets(1, &oldTarget, NULL);
 	oldTarget->Release();
 

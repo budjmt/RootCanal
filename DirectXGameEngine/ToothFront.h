@@ -17,6 +17,5 @@ public:
 	Ship* ship;
 	Camera** camera;
 	OpacityRadius* opacityRadius;
-	Drawable* opacity;
 };
 

@@ -56,7 +56,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 	//lamb2 = ceil(lamb2 * 3) / 3;
 
 	float4 surfaceColor = diffuseTexture0.Sample(basicSampler, input.uv);
-	surfaceColor.a = diffuseTexture1.Sample(basicSampler, input.uv);
+	//surfaceColor.a = diffuseTexture1.Sample(basicSampler, input.uv).a;//it's one channel
 
 	input.color = float4(1, 1, 1, 1);
 	return surfaceColor

@@ -22,7 +22,8 @@ public:
     static Texture* createTexture( const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext );
 
 	void addTex(ID3D11ShaderResourceView* srv);
-    void updateTex( ISimpleShader* shader );
+    void bindTex( ISimpleShader* shader );
+	void unbindTex(ISimpleShader* shader);
 };
 
 class Material
@@ -38,6 +39,7 @@ public:
     void camera( Camera** c );
 
     void updateMaterial( mat4& world );
+	void unbindSRV();
     void setActive( bool b );
 
     static std::map<const wchar_t*, Material*> loadedMaterials;//all currently loaded materials

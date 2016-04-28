@@ -6,7 +6,9 @@ cbuffer externalData : register(b0)
 
 struct VertexToPixel
 {
+	float4 color		: COLOR;
 	float4 position		: SV_POSITION;
+	float3 normal		: NORMAL;
 	float2 uv			: TEXCOORD;
 };
 
@@ -17,7 +19,7 @@ static int radius = 50;
 
 float main(VertexToPixel input) : SV_TARGET
 {
-	float alpha = diffuseTexture.SampleLevel(basicSampler, input.uv, 0);
+	float alpha = diffuseTexture.SampleLevel(basicSampler, input.uv, 0).r;
 	float4 bet = playerPos - input.position;
 	if (dot(bet, bet) < radius * radius) {
 		return 0;
