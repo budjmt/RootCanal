@@ -36,3 +36,8 @@ void Ship::processMovement(float dt)
 		rigidBody().netForce += rigidBody().mass() * 150 * transform.forward();
 	}
 }
+
+void Ship::handleCollision(ColliderObject* other, Manifold& m, double dt, size_t& numCollisions)
+{
+	return;
+}

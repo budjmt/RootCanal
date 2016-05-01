@@ -12,6 +12,7 @@ public:
 	void addHealth(float hp);
 	void update(float dt);
 	void processMovement(float dt);
+	void handleCollision(ColliderObject* other, Manifold& m, double dt, size_t& numCollisions);
 private:
 	float health;
 	Camera* cam;
