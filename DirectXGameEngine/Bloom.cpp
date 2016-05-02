@@ -79,6 +79,7 @@ ID3D11ShaderResourceView* Bloom::draw(ID3D11ShaderResourceView* ppSRV){
 
 	deviceContext->Draw(3, 0);
 	compositePS->SetShaderResourceView("pixels", 0);
+	compositePS->SetShaderResourceView("test", 0);
 
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;

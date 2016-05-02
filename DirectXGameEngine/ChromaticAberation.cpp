@@ -54,6 +54,8 @@ SRV* ChromaticAberation::draw(SRV* ppSRV) {
 
 	deviceContext->Draw(3, 0);
 
+	caPS->SetShaderResourceView("pixels", 0);
+
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
