@@ -38,15 +38,15 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	cube->transform.position(vec3(0, 0, 2));
 	cube->transform.scale(vec3(100, 100, 1));
 
-	/*ToothFront* tooth = new ToothFront(mesh2, material2, _scene->camera());
+	ToothFront* tooth = new ToothFront(mesh2, material2, _scene->camera());
 	tooth->transform.position(vec3(0, 0, -1));
 	tooth->transform.scale(vec3(100, 100, 1));
-	tooth->ship = ship;*/
+	tooth->ship = ship;
 
 	addGameObject(ship);
 	addGameObject(cannon);
 	addGameObject(cube);
-	//addGameObject(tooth);
+	addGameObject(tooth);
 }
 
 GameState::~GameState()
@@ -89,6 +89,7 @@ void GameState::draw( ID3D11DeviceContext* deviceContext )
     {
         _pixelShader->SetShaderResourceView( "lightingTexture", _toonLightingTexture->resourceViews[0] );
         g->draw( deviceContext );
+		_pixelShader->SetShaderResourceView("lightingTexture", 0);
     }
 }
 

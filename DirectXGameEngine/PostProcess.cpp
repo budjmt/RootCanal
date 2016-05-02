@@ -14,7 +14,6 @@ PostProcess::PostProcess(ID3D11Device* _device, ID3D11DeviceContext* _deviceCont
 	ppPS->LoadShaderFile(L"Final.cso");
 }
 
-
 PostProcess::~PostProcess()
 {
 }

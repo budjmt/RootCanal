@@ -10,21 +10,31 @@ OpacityRadius::OpacityRadius(UINT w, UINT h) : PostProcessBase()
 	deviceContext = d.deviceContext;
 	windowWidth = w; windowHeight = h;
 	setupRenderTarget(&renderTarget, &resourceView);
+	vs = Shader::getShader<SimpleVertexShader>(L"FinalVertex");
 	ps = Shader::getShader<SimplePixelShader>(L"OpacityMap");
 }
 
 
 OpacityRadius::~OpacityRadius()
 {
-	ReleaseMacro(renderTarget); 
 	ReleaseMacro(resourceView);
+	ReleaseMacro(renderTarget); 
 }
 
+#include "Vertex.h"
 SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 	RTV* oldTarget;
 	deviceContext->OMGetRenderTargets(1, &oldTarget, NULL);
 	deviceContext->OMSetRenderTargets(1, &renderTarget, NULL);
 
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	ID3D11Buffer* nothing = 0;
+	deviceContext->IASetVertexBuffers(0, 1, &nothing, &stride, &offset);
+	deviceContext->IASetIndexBuffer(0, DXGI_FORMAT_R32_UINT, 0);
+	vs->SetShader();
+
+	//THIS LINE IS CAUSING THE PROBLEM. WHY?
 	ps->SetShaderResourceView("diffuseTexture", resourceView);
 	ps->SetSamplerState("basicSampler", sampler);
 	ps->SetFloat4("playerPos", &vec4(playerPos)[0]);
@@ -33,6 +43,7 @@ SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 	deviceContext->Draw(3, 0);
 	
 	ps->SetShaderResourceView("diffuseTexture", 0);
+
 	deviceContext->OMSetRenderTargets(1, &oldTarget, NULL);
 	oldTarget->Release();
 

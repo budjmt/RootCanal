@@ -19,7 +19,9 @@ void Material::updateMaterial( mat4& world ) {
 }
 
 void Material::unbindSRV() {
-	if (_texture) _texture->unbindTex(pixel);
+	if (_texture) {
+		_texture->unbindTex(pixel);
+	}
 }
 
 void Material::setActive( bool b ) {
@@ -45,8 +47,9 @@ Material* Material::createMaterial( const wchar_t* key, Texture* texture, Simple
 std::map<const wchar_t*, Texture*> Texture::loadedTextures;
 
 Texture::~Texture() { 
-	for (size_t i = 0, numSRV = resourceViews.size(); i < numSRV; i++) 
+	for (size_t i = 0, numSRV = resourceViews.size(); i < numSRV; i++) {
 		ReleaseMacro(resourceViews[i]);
+	}
 	ReleaseMacro(samplerState); 
 }
 

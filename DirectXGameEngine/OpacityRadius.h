@@ -16,6 +16,7 @@ public:
 	SRV* resourceView = nullptr;
 private:
 	RTV* renderTarget = nullptr; //opacity map
+	SimpleVertexShader* vs;
 	SimplePixelShader* ps;
 };
 

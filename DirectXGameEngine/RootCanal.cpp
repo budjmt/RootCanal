@@ -193,6 +193,14 @@ void RootCanal::LoadShaders()
 		deviceContext
 	);
 
+	Shader::createShader<SimpleVertexShader>
+	(
+		L"FinalVertex",
+		L"FinalVS.cso",
+		device,
+		deviceContext
+	);
+
 	Shader::createShader<SimplePixelShader>
 	(
 		L"OpacityMap",
