@@ -12,7 +12,7 @@ GameScene::GameScene( Camera** camera )
     _pixelShader = Shader::getShader<SimplePixelShader>( L"ToonPixel" );
 
     _l1 = {
-        XMFLOAT4( 0.7f, 0.65f, 0.8f, .9f ),
+        XMFLOAT4( 0.07f, 0.065f, 0.08f, .9f ),
         XMFLOAT4( 0.8f, 1.f, 1.f, .9f ),
         XMFLOAT3( 0.1f, .3f, 0.37f )
     };
