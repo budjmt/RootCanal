@@ -2,8 +2,10 @@
 
 #include "Shader.h"
 #include "DXInfo.h"
+#include "Mesh.h"
+#include "DrawMesh.h"
 
-OpacityRadius::OpacityRadius(UINT w, UINT h) : PostProcessBase()
+OpacityRadius::OpacityRadius(UINT w, UINT h, ID3D11SamplerState* sampler, Camera** cam) : PostProcessBase()
 {
 	DXInfo& d = DXInfo::getInstance();
 	device = d.device;
@@ -12,13 +14,24 @@ OpacityRadius::OpacityRadius(UINT w, UINT h) : PostProcessBase()
 	setupRenderTarget(&renderTarget, &resourceView);
 	vs = Shader::getShader<SimpleVertexShader>(L"FinalVertex");
 	ps = Shader::getShader<SimplePixelShader>(L"OpacityMap");
+
+	opacityGO = new GameObject(new DrawMesh(Mesh::createMesh("../Assets/cube.obj"), nullptr, DXInfo::getInstance().device));
+	Texture* t = new Texture;
+	t->resourceViews.push_back(resourceView);
+	t->samplerState = sampler;
+	auto m = new Material(t);
+	m->vertexShader(Shader::getShader<SimpleVertexShader>(L"BasicVertex"));
+	m->pixelShader(ps);
+	m->camera(cam);
+	opacityGO->_shape->material(m);
 }
 
 
 OpacityRadius::~OpacityRadius()
 {
-	ReleaseMacro(resourceView);
+	//ReleaseMacro(resourceView);
 	ReleaseMacro(renderTarget); 
+	delete opacityGO->_shape->material();
 }
 
 #include "Vertex.h"
@@ -27,12 +40,12 @@ SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 	deviceContext->OMGetRenderTargets(1, &oldTarget, NULL);
 	deviceContext->OMSetRenderTargets(1, &renderTarget, NULL);
 
-	UINT stride = sizeof(Vertex);
+	/*UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 	ID3D11Buffer* nothing = 0;
 	deviceContext->IASetVertexBuffers(0, 1, &nothing, &stride, &offset);
 	deviceContext->IASetIndexBuffer(0, DXGI_FORMAT_R32_UINT, 0);
-	vs->SetShader();
+	vs->SetShader();*/
 
 	//THIS LINE IS CAUSING THE PROBLEM. WHY?
 	ps->SetShaderResourceView("diffuseTexture", resourceView);
@@ -40,7 +53,8 @@ SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 	ps->SetFloat4("playerPos", &vec4(playerPos)[0]);
 	ps->SetShader();
 
-	deviceContext->Draw(3, 0);
+	//deviceContext->Draw(3, 0);
+	opacityGO->draw(deviceContext);
 	
 	ps->SetShaderResourceView("diffuseTexture", 0);
 

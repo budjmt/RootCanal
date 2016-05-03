@@ -3,10 +3,11 @@
 ToothFront::ToothFront(Mesh* mesh, Material* material, Camera** cam) : GameObject(new DrawMesh(mesh,nullptr,DXInfo::getInstance().device))
 {
 	camera = cam;
-	opacityRadius = new OpacityRadius((*cam)->windowWidth, (*cam)->windowHeight);
+	opacityRadius = new OpacityRadius((*cam)->windowWidth, (*cam)->windowHeight,material->texture()->samplerState,cam);
 
 	material->texture()->addTex(opacityRadius->resourceView);
 	_shape->material(material);
+
 }
 
 

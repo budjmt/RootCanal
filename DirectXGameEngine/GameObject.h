@@ -42,9 +42,11 @@ public:
 	virtual void update(float dt, Mouse* mouse);
 	virtual void draw(ID3D11DeviceContext* deviceContext);
 
+	Drawable* _shape;
+
 protected:
 	GameObject* _parent;
-    Drawable* _shape;
+    
 	Transform _transform;
 	bool _active = true;
 	GameObjectType _type;

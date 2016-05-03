@@ -42,7 +42,7 @@ struct VertexToPixel
 // - Named "main" because that's the default the shader compiler looks for
 // --------------------------------------------------------
 float4 main(VertexToPixel input) : SV_TARGET
-{
+{	
 	// Just return the input color
 	// - This color (like most values passing through the rasterizer) is 
 	//   interpolated for each pixel between the corresponding vertices 
@@ -56,7 +56,10 @@ float4 main(VertexToPixel input) : SV_TARGET
 	//lamb2 = ceil(lamb2 * 3) / 3;
 
 	float4 surfaceColor = diffuseTexture0.Sample(basicSampler, input.uv);
-	//surfaceColor.a = diffuseTexture1.Sample(basicSampler, input.uv).a;//it's one channel
+	//surfaceColor = float4(0, 1, 0, 0.5f);
+	surfaceColor.a = diffuseTexture1.Sample(basicSampler, input.uv*10).r;//it's one channel
+
+	//return float4(diffuseTexture1.Sample(basicSampler, input.uv * 2).rrr,1);
 
 	input.color = float4(1, 1, 1, 1);
 	return surfaceColor

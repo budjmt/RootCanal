@@ -10,7 +10,7 @@ cbuffer externalData : register( b0 ) {
 };
 
 Texture2D diffuseTexture : register( t0 );
-Texture2D lightingTexture : register( t1 );
+Texture2D lightingTexture : register( t6 );
 SamplerState basicSampler : register( s0 );
 
 // Struct representing the data we expect to receive from earlier pipeline stages

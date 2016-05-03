@@ -17,5 +17,6 @@ public:
 	Ship* ship;
 	Camera** camera;
 	OpacityRadius* opacityRadius;
+	GameObject* opacityGO;
 };
 
