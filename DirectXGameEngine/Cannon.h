@@ -18,6 +18,7 @@ public:
 
 	void update(float dt);
 	void shoot();
+    void handleCollision( ColliderObject* other, Manifold& m, double dt, size_t& numCollisions );
 private:
 	Ship* ship;
 	vector<Bullet*> bullets;

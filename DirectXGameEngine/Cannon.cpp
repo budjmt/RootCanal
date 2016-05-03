@@ -62,3 +62,8 @@ void Cannon::shoot()
 	bullets.push_back(bullet);
 	state->addGameObject(bullet);
 }
+
+void Cannon::handleCollision( ColliderObject* other, Manifold& m, double dt, size_t& numCollisions )
+{
+    numCollisions--;
+}

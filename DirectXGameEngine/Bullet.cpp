@@ -24,4 +24,6 @@ void Bullet::handleCollision(ColliderObject* other, Manifold& m, double dt, size
 		ship->addHealth(-1.f);
 		transform.scale(vec3(0.f, 0.f, 0.f));
 	}
+
+    numCollisions--;
 }

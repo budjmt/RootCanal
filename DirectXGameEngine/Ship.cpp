@@ -39,5 +39,5 @@ void Ship::processMovement(float dt)
 
 void Ship::handleCollision(ColliderObject* other, Manifold& m, double dt, size_t& numCollisions)
 {
-	return;
+    numCollisions--;
 }
