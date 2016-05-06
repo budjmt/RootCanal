@@ -19,8 +19,6 @@ static int radius = 0.2;
 
 float main(VertexToPixel input) : SV_TARGET
 {
-	//return 1;
-
 	float alpha = diffuseTexture.SampleLevel(basicSampler, input.uv, 0).r;
 	float4 bet = playerPos - input.position;
 	if (dot(bet, bet) < radius * radius) {

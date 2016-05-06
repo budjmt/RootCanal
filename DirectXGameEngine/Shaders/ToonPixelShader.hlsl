@@ -61,7 +61,9 @@ float4 main( VertexToPixel input ) : SV_TARGET
 	//return surfaceColor;
 	//return saturate(combinedLight);
 
-    float4 returnColor = lightingTexture.SampleLevel( basicSampler,clamp(lamb1,0.1f,0.9f), 0 ) * surfaceColor;
+	//return surfaceColor * combinedLight;
+
+    float4 returnColor = lightingTexture.Sample( basicSampler,clamp(lamb1,0.1f,0.9f) ) * surfaceColor;
 
     input.color = float4( 1, 1, 1, 1 );
 

@@ -84,9 +84,9 @@ void Texture::addTex( ID3D11ShaderResourceView* srv ) {
 
 void Texture::bindTex( ISimpleShader* shader ) {
 	size_t numTextures = resourceViews.size();
-	if (numTextures) {
+	if (numTextures > 1) {
 		for (size_t i = 0; i < numTextures; i++) {
-			std::string str = "diffuseTexture" + i;
+			std::string str = "diffuseTexture" + i;// std::to_string(i);
 			shader->SetShaderResourceView(str.c_str(), resourceViews[i]);
 		}
 	}
@@ -96,9 +96,9 @@ void Texture::bindTex( ISimpleShader* shader ) {
 
 void Texture::unbindTex( ISimpleShader* shader ) {
 	size_t numTextures = resourceViews.size();
-	if (numTextures) {
+	if (numTextures > 1) {
 		for (size_t i = 0; i < numTextures; i++) {
-			std::string str = "diffuseTexture" + i;
+			std::string str = "diffuseTexture" + i;//std::to_string(i);
 			shader->SetShaderResourceView(str.c_str(), 0);
 		}
 	}

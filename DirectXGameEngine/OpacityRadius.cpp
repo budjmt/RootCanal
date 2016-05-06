@@ -32,6 +32,7 @@ OpacityRadius::~OpacityRadius()
 	//ReleaseMacro(resourceView);
 	ReleaseMacro(renderTarget); 
 	delete opacityGO->_shape->material();
+	delete opacityGO;
 }
 
 #include "Vertex.h"

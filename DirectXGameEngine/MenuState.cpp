@@ -8,7 +8,7 @@ MenuState::MenuState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	DXInfo& dx = DXInfo::getInstance();
 
 	Texture* texture = Texture::createTexture(L"../Assets/menu.png", dx.device, dx.deviceContext);
-	Material* material = Material::createMaterial(L"material", texture, vertexShader, pixelShader, _scene->camera());
+	Material* material = Material::createMaterial(L"dumbmaterial", texture, vertexShader, pixelShader, _scene->camera());
 	Mesh* mesh = Mesh::createMesh("../Assets/cube.obj");
 
 	ColliderObject* obj1 = new ColliderObject(mesh, material);
