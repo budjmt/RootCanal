@@ -9,8 +9,8 @@ cbuffer externalData : register( b0 ) {
     DirectionalLight light1, light2;
 };
 
-Texture2D diffuseTexture : register( t0 );
-Texture2D lightingTexture : register( t6 );
+Texture2D diffuseTexture0 : register( t0 );//diffuse texture
+Texture2D diffuseTexture1 : register( t6 );//lighting texture
 SamplerState basicSampler : register( s0 );
 
 // Struct representing the data we expect to receive from earlier pipeline stages
@@ -56,14 +56,14 @@ float4 main( VertexToPixel input ) : SV_TARGET
     float4 combinedLight =
         ( (light1.diffuseColor * lamb1) + light1.ambientColor
         + (light2.diffuseColor * lamb2) + light2.ambientColor );
-	float4 surfaceColor = diffuseTexture.Sample(basicSampler, input.uv);// *saturate(combinedLight);
+	float4 surfaceColor = diffuseTexture0.Sample(basicSampler, input.uv);// *saturate(combinedLight);
 
 	//return surfaceColor;
 	//return saturate(combinedLight);
 
 	//return surfaceColor * combinedLight;
 
-    float4 returnColor = lightingTexture.Sample( basicSampler,clamp(lamb1,0.1f,0.9f) ) * surfaceColor;
+    float4 returnColor = diffuseTexture1.Sample( basicSampler,clamp(lamb1,0.1f,0.9f) ) * surfaceColor;
 
     input.color = float4( 1, 1, 1, 1 );
 

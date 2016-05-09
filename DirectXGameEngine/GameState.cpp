@@ -19,9 +19,13 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
     _toonLightingTexture = Texture::createTexture( L"../Assets/toonlighting.png", dx.device, dx.deviceContext );
 
 	Texture* texture = Texture::createTexture(L"../Assets/texture.png", dx.device, dx.deviceContext);
+	texture->addTex(_toonLightingTexture->resourceViews[0]);
     Texture* shipTexture = Texture::createTexture( L"../Assets/ship.png", dx.device, dx.deviceContext );
+	shipTexture->addTex(_toonLightingTexture->resourceViews[0]);
+
     Material* material = Material::createMaterial(L"material", texture, vertexShader, pixelShader, _scene->camera());
     Material* shipMaterial = Material::createMaterial( L"ship", shipTexture, vertexShader, pixelShader, _scene->camera() );
+
 	Material* material2 = Material::createMaterial(L"material2", texture, vertexShader, Shader::getShader<SimplePixelShader>(L"ToothPixel"), _scene->camera());
     
 	Mesh* mesh1 = Mesh::createMesh("../Assets/cone_Z.obj");
@@ -87,9 +91,7 @@ void GameState::draw( ID3D11DeviceContext* deviceContext )
 {
     for( auto g : _gameObjects )
     {
-        _pixelShader->SetShaderResourceView( "lightingTexture", _toonLightingTexture->resourceViews[0] );
         g->draw( deviceContext );
-		_pixelShader->SetShaderResourceView("lightingTexture", 0);
     }
 }
 

@@ -48,7 +48,6 @@ SRV* OpacityRadius::draw(vec3 playerPos, ID3D11SamplerState* sampler) {
 	deviceContext->IASetIndexBuffer(0, DXGI_FORMAT_R32_UINT, 0);
 	vs->SetShader();*/
 
-	//THIS LINE IS CAUSING THE PROBLEM. WHY?
 	ps->SetShaderResourceView("diffuseTexture", resourceView);
 	ps->SetSamplerState("basicSampler", sampler);
 	ps->SetFloat4("playerPos", &vec4(playerPos)[0]);
