@@ -91,6 +91,9 @@
     <Filter Include="Header Files\Display\PostProcess">
       <UniqueIdentifier>{51b73ce4-0a30-43ac-9a06-189707af5fb7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Compute">
+      <UniqueIdentifier>{3edaa942-fa97-45bb-8d1e-9813153f29b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -262,6 +265,9 @@
       <Filter>Source Files\Display\PostProcess</Filter>
     </ClCompile>
     <ClCompile Include="ToothFront.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpacityCompute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -464,6 +470,9 @@
     <ClInclude Include="ToothFront.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OpacityCompute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
@@ -519,6 +528,9 @@
     </FxCompile>
     <FxCompile Include="ToothPixel.hlsl">
       <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Opacity.hlsl">
+      <Filter>Shaders\Compute</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

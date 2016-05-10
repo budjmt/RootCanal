@@ -42,7 +42,7 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	cube->transform.position(vec3(0, 0, 2));
 	cube->transform.scale(vec3(100, 100, 1));
 
-	ToothFront* tooth = new ToothFront(mesh2, material2, _scene->camera());
+	ToothFront* tooth = new ToothFront(mesh2, material2, _scene->camera(),dx.device);
 	tooth->transform.position(vec3(0, 0, -1));
 	tooth->transform.scale(vec3(100, 100, 1));
 	tooth->ship = ship;

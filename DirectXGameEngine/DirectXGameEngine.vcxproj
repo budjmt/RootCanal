@@ -109,6 +109,7 @@
     <ClCompile Include="MeshImportData.cpp" />
     <ClCompile Include="MeshImporter.cpp" />
     <ClCompile Include="MouseEvent.cpp" />
+    <ClCompile Include="OpacityCompute.cpp" />
     <ClCompile Include="OpacityRadius.cpp" />
     <ClCompile Include="PostChainManager.cpp" />
     <ClCompile Include="PostProcess.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="MeshImporter.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="MouseEvent.h" />
+    <ClInclude Include="OpacityCompute.h" />
     <ClInclude Include="OpacityRadius.h" />
     <ClInclude Include="PostChainManager.h" />
     <ClInclude Include="PostProcess.h" />
@@ -198,6 +200,13 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Opacity.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EnableDebuggingInformation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableDebuggingInformation>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="OpacityPost.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
