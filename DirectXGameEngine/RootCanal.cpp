@@ -25,6 +25,7 @@
 
 #include "MeshImporter.h"
 #include "DrawDebug.h"
+#include "UIObject.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -125,6 +126,7 @@ bool RootCanal::Init()
 	// with and set up matrices so we can see how to pass data to the GPU.
 	//  - For your own projects, feel free to expand/replace these.
 	LoadShaders();
+	UIObject::loadFonts();
 	CreateGeometry();
 	CreateMatrices();
 

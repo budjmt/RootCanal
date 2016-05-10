@@ -128,6 +128,7 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UIAxes.cpp" />
     <ClCompile Include="UIObject.cpp" />
+    <ClCompile Include="UIText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bloom.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UIAxes.h" />
     <ClInclude Include="UIObject.h" />
+    <ClInclude Include="UIText.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>

@@ -7,20 +7,8 @@ MenuState::MenuState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 
 	DXInfo& dx = DXInfo::getInstance();
 
-	Texture* texture = Texture::createTexture(L"../Assets/menu.png", dx.device, dx.deviceContext);
-	Material* material = Material::createMaterial(L"dumbmaterial", texture, vertexShader, pixelShader, _scene->camera());
-	Mesh* mesh = Mesh::createMesh("../Assets/cube.obj");
-
-	ColliderObject* obj1 = new ColliderObject(mesh, material);
-	obj1->rigidBody().floating(true);
-	obj1->transform.rotate(vec3(0, 0, PI * 0.5f));
-	obj1->transform.scale(vec3(6, 6, 1));
-
-	addGameObject(obj1);
-}
-
-MenuState::~MenuState()
-{
+	text = new UIText();
+	addGameObject(text);
 }
 
 void MenuState::update(float dt, Mouse* mouse) {
@@ -33,6 +21,8 @@ void MenuState::update(float dt, Mouse* mouse) {
 	}
     else
     {
+		text->drawText(L"PRESS SPACE", vec3(300, 300, 0), CENTER, vec4(.9f,.9f,.9f,1.f));
+		text->drawText(L"TO PLAY", vec3(300, 400, 0), CENTER, vec4(.9f, .9f, .9f, 1.f));
         State::update( dt, mouse );
     }
 }

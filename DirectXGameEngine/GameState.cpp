@@ -47,10 +47,13 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	tooth->transform.scale(vec3(100, 100, 1));
 	tooth->ship = ship;
 
+	text = new UIText();
+
 	addGameObject(ship);
 	addGameObject(cannon);
 	addGameObject(cube);
 	addGameObject(tooth);
+	addGameObject(text);
 }
 
 GameState::~GameState()
@@ -69,6 +72,8 @@ void GameState::update( float dt, Mouse* mouse ) {
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.forward()              , vec3(0, 1, 1));
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.up() + vec3(0,0.001f,0), vec3(1, 1, 0));
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.right()                , vec3(1, 0, 1));
+
+	text->drawText(L"HEY THERE FUCKER", vec3());
 
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);

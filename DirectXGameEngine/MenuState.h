@@ -20,8 +20,10 @@ class MenuState :
 {
 public:
     MenuState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixelShader* pixelShader );
-    ~MenuState();
 
 	void update(float dt, Mouse* mouse);
+
+private:
+	UIText* text;
 };
 

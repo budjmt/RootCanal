@@ -14,8 +14,12 @@ public:
         _scene = scene;
     }
     virtual ~State() {
-        for( auto g : _gameObjects )
-            delete g;
+		for (auto g : _gameObjects) {
+			if (g) {
+				delete g;
+				g = nullptr;
+			}
+		}
     };
 
     virtual void addGameObject( GameObject* g )

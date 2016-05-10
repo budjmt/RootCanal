@@ -91,6 +91,12 @@
     <Filter Include="Header Files\Display\PostProcess">
       <UniqueIdentifier>{51b73ce4-0a30-43ac-9a06-189707af5fb7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Misc\UI">
+      <UniqueIdentifier>{0cb080c9-31bf-48e1-a566-7bce1f4645f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Misc\UI">
+      <UniqueIdentifier>{3f8da48c-5a48-4d9d-9b6c-6dea1f88d705}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -228,12 +234,6 @@
     <ClCompile Include="Cannon.cpp">
       <Filter>Source Files\Misc\GameObjects</Filter>
     </ClCompile>
-    <ClCompile Include="UIObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UIAxes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChromaticAberation.cpp">
       <Filter>Source Files\Display\PostProcess</Filter>
     </ClCompile>
@@ -263,6 +263,15 @@
     </ClCompile>
     <ClCompile Include="ToothFront.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIObject.cpp">
+      <Filter>Source Files\Misc\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIAxes.cpp">
+      <Filter>Source Files\Misc\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIText.cpp">
+      <Filter>Source Files\Misc\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -428,12 +437,6 @@
     <ClInclude Include="Cannon.h">
       <Filter>Header Files\Misc\GameObjects</Filter>
     </ClInclude>
-    <ClInclude Include="UIObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UIAxes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ChromaticAberation.h">
       <Filter>Header Files\Display\PostProcess</Filter>
     </ClInclude>
@@ -463,6 +466,15 @@
     </ClInclude>
     <ClInclude Include="ToothFront.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UIAxes.h">
+      <Filter>Header Files\Misc\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIObject.h">
+      <Filter>Header Files\Misc\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIText.h">
+      <Filter>Header Files\Misc\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

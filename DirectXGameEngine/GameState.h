@@ -8,6 +8,7 @@
 #include "DrawMesh.h"
 #include "ColliderObject.h"
 
+#include "UIText.h"
 #include "Cannon.h"
 #include "SimpleShader.h"
 #include "Camera.h"
@@ -25,6 +26,7 @@ public:
     virtual void draw( ID3D11DeviceContext* deviceContext );
 
 private:
+	UIText* text;
     Texture* _toonLightingTexture;
 	Ship* ship;
 	Cannon* cannon;
