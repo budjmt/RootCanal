@@ -96,6 +96,9 @@
     </Filter>
     <Filter Include="Header Files\Misc\UI">
       <UniqueIdentifier>{3f8da48c-5a48-4d9d-9b6c-6dea1f88d705}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="Shaders\Compute">
+      <UniqueIdentifier>{3edaa942-fa97-45bb-8d1e-9813153f29b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -272,6 +275,9 @@
     </ClCompile>
     <ClCompile Include="UIText.cpp">
       <Filter>Source Files\Misc\UI</Filter>
+	</ClCompile>
+    <ClCompile Include="OpacityCompute.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -475,6 +481,9 @@
     </ClInclude>
     <ClInclude Include="UIText.h">
       <Filter>Header Files\Misc\UI</Filter>
+	</ClInclude>
+    <ClInclude Include="OpacityCompute.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -531,6 +540,9 @@
     </FxCompile>
     <FxCompile Include="ToothPixel.hlsl">
       <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Opacity.hlsl">
+      <Filter>Shaders\Compute</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

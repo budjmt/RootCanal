@@ -3,12 +3,13 @@
 #include "GameObject.h"
 #include "Ship.h"
 #include "OpacityRadius.h"
+#include "OpacityCompute.h"
 
 class ToothFront :
 	public GameObject
 {
 public:
-	ToothFront(Mesh* mesh, Material* material, Camera** cam);
+	ToothFront(Mesh* mesh, Material* material, Camera** cam, ID3D11Device* _device);
 	~ToothFront();
 
 	void update(float dt, Mouse* m) {};
@@ -18,5 +19,8 @@ public:
 	Camera** camera;
 	OpacityRadius* opacityRadius;
 	GameObject* opacityGO;
+	OpacityCompute* compute;
+
+	vec3 cornerPos;
 };
 

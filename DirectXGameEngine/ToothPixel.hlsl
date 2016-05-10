@@ -11,6 +11,7 @@ cbuffer externalData : register(b0) {
 
 Texture2D diffuseTexture0 : register(t0);//actual texture
 Texture2D diffuseTexture1 : register(t1);//opacity map
+Texture2D diffuseTexture2 : register(t2);//opacity map
 SamplerState basicSampler : register(s0);
 
 // Struct representing the data we expect to receive from earlier pipeline stages
@@ -43,6 +44,10 @@ struct VertexToPixel
 // --------------------------------------------------------
 float4 main(VertexToPixel input) : SV_TARGET
 {	
+	float4 color = diffuseTexture2.Sample(basicSampler,input.uv);
+	color.w = 0.8f;
+	return color;
+
 	// Just return the input color
 	// - This color (like most values passing through the rasterizer) is 
 	//   interpolated for each pixel between the corresponding vertices 
