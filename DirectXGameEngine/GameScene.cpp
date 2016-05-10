@@ -2,7 +2,7 @@
 
 using namespace DirectX;
 
-GameScene::GameScene( Camera** camera )
+GameScene::GameScene( Camera** camera ) : Scene()
 {
 	_camera = camera;
 

@@ -57,10 +57,6 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	addGameObject(text);
 }
 
-GameState::~GameState()
-{
-}
-
 void GameState::update( float dt, Mouse* mouse ) {
 
 	ship->update( dt );

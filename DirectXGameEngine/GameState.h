@@ -20,7 +20,6 @@ class GameState :
 {
 public:
     GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixelShader* pixelShader );
-    ~GameState();
 
     virtual void update( float dt, Mouse* mouse );
     virtual void draw( ID3D11DeviceContext* deviceContext );
