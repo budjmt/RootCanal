@@ -41,6 +41,7 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	cube->rigidBody().floating(true);
 	cube->transform.position(vec3(0, 0, 2));
 	cube->transform.scale(vec3(100, 100, 1));
+	cube->rigidBody().solid(0);
 
 	ToothFront* tooth = new ToothFront(mesh2, material2, _scene->camera(),dx.device);
 	tooth->transform.position(vec3(0, 0, -1));
