@@ -32,14 +32,16 @@ ID3D11ShaderResourceView* OpacityCompute::getSRV() {
 void OpacityCompute::dispatch(vec3 relativePos) {
 	
 	computeShader->SetInt("width", textureSize);
-	computeShader->SetUnorderedAccessView("outTex", uavArray[(z++)%2]);
-	//computeShader->SetUnorderedAccessView("readTex", uavArray[(z++)%2]);
+	computeShader->SetUnorderedAccessView("outTex", uavArray[z%2]);
+	computeShader->SetUnorderedAccessView("readTex", uavArray[(z+1)%2]);
 	//computeShader->SetFloat2("relativePos", { relativePos.x,relativePos.y});
 	computeShader->SetFloat2("relativePos", { relativePos.x,relativePos.y });
 	computeShader->SetShader(true);
 	computeShader->DispatchByThreads(textureSize, textureSize, 1);
 
 	computeShader->SetUnorderedAccessView("outTex", 0);
+	computeShader->SetUnorderedAccessView("readTex", 0);
+	z++;
 }
 
 void OpacityCompute::setupTextures() {
@@ -53,7 +55,7 @@ void OpacityCompute::setupTextures() {
 	texDesc.ArraySize = 1;
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 	texDesc.CPUAccessFlags = 0;
-	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	texDesc.Format = DXGI_FORMAT_R8_UNORM;//DXGI_FORMAT_R8G8B8A8_UNORM;
 	texDesc.MipLevels = 1;
 	texDesc.MiscFlags = 0;
 	texDesc.SampleDesc.Count = 1;
@@ -84,7 +86,7 @@ void OpacityCompute::setupTextures() {
 	texDesc2.ArraySize = 1;
 	texDesc2.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 	texDesc2.CPUAccessFlags = 0;
-	texDesc2.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	texDesc2.Format = DXGI_FORMAT_R8_UNORM; // DXGI_FORMAT_R8G8B8A8_UNORM;
 	texDesc2.MipLevels = 1;
 	texDesc2.MiscFlags = 0;
 	texDesc2.SampleDesc.Count = 1;
