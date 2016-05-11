@@ -17,17 +17,11 @@ private:
 	int textureSize;
 
 	SimpleComputeShader* computeShader;
+	SimpleComputeShader* initShader;
+
 	ID3D11ShaderResourceView* textureSRV;
 	ID3D11UnorderedAccessView* textureUAV;
 
-	ID3D11ShaderResourceView* textureSRV2;
-	ID3D11UnorderedAccessView* textureUAV2;
-
-	ID3D11ShaderResourceView** srvArray;
-	ID3D11UnorderedAccessView** uavArray;
 	void setupTextures();
-
-	SimpleComputeShader* initShader;
-	int z = 0;
 };
 

@@ -23,6 +23,10 @@ OpacityCompute::OpacityCompute(ID3D11Device* _device)
 
 OpacityCompute::~OpacityCompute()
 {
+	ReleaseMacro(textureSRV);
+	ReleaseMacro(textureUAV);
+	delete computeShader;
+	delete initShader;
 }
 
 ID3D11ShaderResourceView* OpacityCompute::getSRV() {

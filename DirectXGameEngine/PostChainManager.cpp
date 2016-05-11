@@ -10,22 +10,23 @@ PostChainManager::PostChainManager(PostProcess* pp, UINT width, UINT height, ID3
 
 PostChainManager::~PostChainManager()
 {
+	delete bloom; delete ca; delete edgeDetect;
 	delete postProcess;
 }
 
 void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11SamplerState* sampler) {
-	Bloom* bloomEffect = new Bloom(width, height, device, deviceContext, sampler);
-	bloomEffect->setBlurAmount(1);
-	bloomEffect->setMinIntensity(0.9f);
+	bloom = new Bloom(width, height, device, deviceContext, sampler);
+	bloom->setBlurAmount(1);
+	bloom->setMinIntensity(0.9f);
 
-	ChromaticAberation* test = new ChromaticAberation(width, height, device, deviceContext,sampler);
-	test->setDistortAmount(5.f);
+	ca = new ChromaticAberation(width, height, device, deviceContext,sampler);
+	ca->setDistortAmount(5.f);
     
-	EdgeDetect* test2 = new EdgeDetect(width, height, device, deviceContext);
-	test->setDistortAmount(5.f);
+	edgeDetect = new EdgeDetect(width, height, device, deviceContext);
+	
 
-	postProcess->AddEffect(test2);
-	postProcess->AddEffect(test);
-	postProcess->AddEffect(bloomEffect);
+	//postProcess->AddEffect(edgeDetect);
+	postProcess->AddEffect(ca);
+	postProcess->AddEffect(bloom);
 	
 }

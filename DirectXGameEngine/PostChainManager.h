@@ -11,5 +11,8 @@ public:
 private:
 	PostProcess* postProcess;
 	std::map<char*, int> ppChainReference;
+	Bloom* bloom;
+	ChromaticAberation* ca;
+	EdgeDetect* edgeDetect;
 };
 
