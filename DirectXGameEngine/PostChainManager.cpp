@@ -11,7 +11,6 @@ PostChainManager::PostChainManager(PostProcess* pp, UINT width, UINT height, ID3
 PostChainManager::~PostChainManager()
 {
 	delete bloom; delete ca; delete edgeDetect;
-	delete postProcess;
 }
 
 void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11SamplerState* sampler) {

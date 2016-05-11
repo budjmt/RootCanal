@@ -9,6 +9,7 @@ PostProcessBase::PostProcessBase()
 
 PostProcessBase::~PostProcessBase()
 {
+	ReleaseMacro(sampler);
 }
 
 ID3D11ShaderResourceView* PostProcessBase::draw(SRV* ppSRV){

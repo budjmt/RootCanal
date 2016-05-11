@@ -74,7 +74,7 @@ RootCanal::~RootCanal()
         delete s.second;
 
     delete currScene;
-    delete post;
+	delete post; delete postManager;
 }
 
 #pragma endregion
