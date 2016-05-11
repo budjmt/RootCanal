@@ -18,11 +18,11 @@ void main(uint3 id : SV_DispatchThreadID) {
 
 	float2 uvPos = float2(id.x, id.y);
 
-	if (distance(relativePos.yx * width, uvPos) < 20) {
+	if (distance(relativePos.yx * width, uvPos) < 30) {
 		outTex[id.xy] = 0;// float4(0, 0, 0, 0);
 	}
 	else {
-		outTex[id.xy] = 1 * readTex[id.xy];// float4(1, 1, 1, 1);// readTex[id.xy];//float4(1, 1, 1, 1);// *readTex[id.xy].w;
+		outTex[id.xy] = 1 * outTex[id.xy];// float4(1, 1, 1, 1);// readTex[id.xy];//float4(1, 1, 1, 1);// *readTex[id.xy].w;
 		//readTex[id.xy] = float4(0, 1, 1, 1);
 	}
 

@@ -21,6 +21,11 @@ void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, I
 	ChromaticAberation* test = new ChromaticAberation(width, height, device, deviceContext,sampler);
 	test->setDistortAmount(5.f);
     
+	EdgeDetect* test2 = new EdgeDetect(width, height, device, deviceContext);
+	test->setDistortAmount(5.f);
+
+	postProcess->AddEffect(test2);
 	postProcess->AddEffect(test);
 	postProcess->AddEffect(bloomEffect);
+	
 }
