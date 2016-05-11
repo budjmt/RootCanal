@@ -2,7 +2,7 @@
 RWTexture2D<float4> outTex : register(u0);
 
 cbuffer data : register (b0) {
-	int width;
+	uint width;
 	float2 relativePos;
 }
 

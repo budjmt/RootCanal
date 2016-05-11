@@ -10,13 +10,14 @@ Collider::Collider( void )
     _radius = 0;
 }
 
-Collider::Collider( Transform* t, vec3 d )
+Collider::Collider( Transform* t, vec3 d, bool fudge )
     : type( _type )
 {
     _transform = t;
 	dims(d);
 	base_aabb.center = _transform->getComputed().position();
 	transformed_aabb = base_aabb;
+	fudgeAABB = fudge;
 	updateDims(_transform);
     _type = ColliderType::BOX;
     //the order is important;
@@ -50,6 +51,7 @@ Collider::Collider( const Collider& other )
 {
     _transform = new Transform( *other.transform() );
     dims( other.dims() );
+	fudgeAABB = other.fudgeAABB;
 	base_aabb = other.base_aabb;
 	transformed_aabb = other.transformed_aabb;
     _radius = other.radius();
@@ -80,8 +82,10 @@ void Collider::updateDims( Transform* t ) {
     vec3 scale = t->getComputed().scale();
     _radius = maxf( maxf( _dims.x * scale.x, _dims.y * scale.y ), _dims.z * scale.z );
 	transformed_aabb.halfDims = base_aabb.halfDims;
-	for (int i = 0; i < 3; i++)
-		transformed_aabb.halfDims[i] *= scale[i] * 1.5f;//they're big right now
+	if (fudgeAABB) {
+		for (int i = 0; i < 3; i++)
+			transformed_aabb.halfDims[i] *= scale[i] * 1.5f;//they're big right now
+	}
 }
 
 void Collider::update() {

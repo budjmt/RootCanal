@@ -3,7 +3,7 @@
 OctTreeNode::OctTreeNode( vec3 center, vec3 halfWidths )
 {
 	transform.position( center );
-	_collider = new Collider(&transform, halfWidths);
+	_collider = new Collider(&transform, halfWidths, false);
 
     _containedChildren = std::vector<ColliderObject*>( CAPACITY );
 
