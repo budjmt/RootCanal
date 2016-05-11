@@ -35,6 +35,13 @@ void Ship::processMovement(float dt)
 	if (keys.isDown(VK_UP)) {
 		rigidBody().netForce += rigidBody().mass() * 150 * transform.forward() / dt / 100;
 	}
+
+	vec3 shipPos = transform.position();
+	if (shipPos.x > MAX_X || shipPos.x < -MAX_X)
+		shipPos.x *= -1;
+	if((shipPos.y > MAX_Y || shipPos.y < -MAX_Y))
+		shipPos.y *= -1;
+	transform.position(shipPos);
 }
 
 void Ship::handleCollision(ColliderObject* other, Manifold& m, double dt, size_t& numCollisions)

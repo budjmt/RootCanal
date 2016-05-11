@@ -2,6 +2,9 @@
 
 #include "ColliderObject.h"
 
+#define MAX_X 75
+#define MAX_Y 75
+
 class Ship :
 	public ColliderObject
 {
