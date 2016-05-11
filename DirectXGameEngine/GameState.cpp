@@ -36,6 +36,7 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	cannon = new Cannon(mesh2, material, mesh2, material, this, ship);
 	cannon->transform.position(vec3(0, 5, 0));
 	cannon->transform.scale(vec3(2, 2, 1));
+	cannon->spawnBullets(4);
 
 	ColliderObject* cube = new ColliderObject(mesh2, material);
 	cube->rigidBody().floating(true);

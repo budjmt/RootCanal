@@ -13,6 +13,8 @@ class Cannon :
 public:
 	Cannon(Mesh* mesh, Material* material, Mesh* bMesh, Material* bMaterial, State* gamestate, Ship* player);
 
+	void spawnBullets(int num);
+
 	void setBulletMesh(Mesh* mesh);
 	void setBulletMaterial(Material* mat);
 

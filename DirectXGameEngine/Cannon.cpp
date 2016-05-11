@@ -15,6 +15,19 @@ Cannon::Cannon(Mesh * mesh, Material * material, Mesh* bMesh, Material* bMateria
 	ship = player;
 }
 
+void Cannon::spawnBullets(int num) {
+	for (; num; --num) {
+		Bullet* bullet = new Bullet(bulletMesh, bulletMaterial, 0.5f, vec3(), ship);
+		bullet->transform.position(vec3(num * (rand() % 10), num * (rand() % 20), num * (rand() % 5)));
+		bullet->transform.scale(vec3(0.f, 0.f, 0.f));
+		bullet->rigidBody().solid(0);
+		bullet->active = false;
+		bullet->cannon = this;
+		bullets.push_back(bullet);
+		state->addGameObject(bullet);
+	}
+}
+
 void Cannon::setBulletMesh(Mesh* mesh)
 {
 	bulletMesh = mesh;
@@ -29,13 +42,8 @@ void Cannon::update(float dt)
 {
 	reloadTimer -= dt;
 
-	for (size_t i = 0, numBullets = bullets.size(); i < numBullets; i++) {
-		bullets[i]->update( dt );
-		if (!bullets[i]->active) {
-			bullets[i] = bullets.back();
-			bullets.pop_back();
-			numBullets--;
-		}
+	for (auto bullet : bullets) {
+		bullet->update( dt );
 	}
 
 	if (reloadTimer < 0.f) {
@@ -56,11 +64,16 @@ void Cannon::shoot()
 	vec3 dirToPlayer = vec3(0.f, 1.f, 0.f);
 	
 	// TODO: balance speed of bullet, currently set to 0.5f
-	Bullet* bullet = new Bullet(bulletMesh, bulletMaterial, 0.5f, dirToPlayer, ship);
-	bullet->transform.position(vec3(0, 8, 0));
-
-	bullets.push_back(bullet);
-	state->addGameObject(bullet);
+	for (auto bullet : bullets) {
+		if (!bullet->active) {
+			bullet->transform.position(transform.getComputed().position());
+			bullet->setDir(dirToPlayer);
+			bullet->transform.scale(vec3(1.f, 1.f, 1.f));
+			bullet->rigidBody().solid(1);
+			bullet->active = true;
+			break;
+		}
+	}
 }
 
 void Cannon::handleCollision( ColliderObject* other, Manifold& m, double dt, size_t& numCollisions )
