@@ -24,7 +24,7 @@ void OpacityCompute::dispatch(vec3 relativePos) {
 	
 	computeShader->SetInt("width", textureSize);
 	computeShader->SetUnorderedAccessView("outTex", textureUAV);
-	//computeShader->SetFloat2("relativePos", { relativePos.x,relativePos.y});
+	computeShader->SetFloat2("relativePos", { 0.5f,0.5f});
 	computeShader->SetShader(true);
 	computeShader->DispatchByThreads(textureSize, textureSize, 1);
 
@@ -33,7 +33,7 @@ void OpacityCompute::dispatch(vec3 relativePos) {
 
 void OpacityCompute::setupTextures() {
 	// Create texture for compute shader
-	textureSize = 512;
+	textureSize = 1024;
 	ID3D11Texture2D* tex;
 
 	D3D11_TEXTURE2D_DESC texDesc = {};

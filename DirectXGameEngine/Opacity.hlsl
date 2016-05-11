@@ -1,7 +1,7 @@
 
 RWTexture2D<float4> outTex : register(u0);
 
-cbuffer data : register (b0) {
+cbuffer data : register (b3) {
 	uint width;
 	float2 relativePos;
 }
@@ -12,10 +12,11 @@ void main(uint3 id : SV_DispatchThreadID) {
 	if(id.x < 100 && id.y < 100) outTex[id.xy] = float4(0, 0, 0, 1);
 	else outTex[id.xy] = float4(1, 0.5, 0.25, 1);
 	*/
-	float2 uvToID = width / 2;
+
+
 
 	float2 uvPos = float2(id.x, id.y);
-	if (distance(float2(256, 256), uvPos) < 10) outTex[id.xy] = float4(0, 0, 0, 1);
+	if (distance(relativePos * width, uvPos) < 30) outTex[id.xy] = float4(0, 0, 0, 1);
 	else outTex[id.xy] = float4(1, 0.5, 0.25, 1);
 
 	//outTex[id.xy] = distance(float2(0,0), uvPos);
