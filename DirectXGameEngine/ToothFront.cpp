@@ -12,7 +12,6 @@ ToothFront::ToothFront(Mesh* mesh, Material* material, Camera** cam, ID3D11Devic
 	material->texture()->addTex(compute->getSRV());
 	_shape->material(material);
 
-	cornerPos = transform.getComputed().position()-((DrawMesh*)_shape)->mesh()->getDims();
 }
 
 
@@ -23,13 +22,19 @@ ToothFront::~ToothFront()
 
 
 void ToothFront::draw(ID3D11DeviceContext* deviceContext) {
-	vec3 shipScreenPos = vec4(ship->transform.getComputed().position(),1) * (*camera)->getCamMat();
+
+	vec3 scale = transform.getComputed().scale();
+	cornerPos = transform.getComputed().position() - scale/2;
+
+	//vec3 shipScreenPos = vec4(ship->transform.getComputed().position(),1) * (*camera)->getCamMat();
 	//opacityRadius->draw(shipScreenPos, _shape->material()->texture()->samplerState);
 
-	vec3 relativePos = cornerPos - ship->transform.getComputed().position();
-	relativePos = relativePos / vec3::length(((DrawMesh*)_shape)->mesh()->getDims()) * 2;
+	vec3 shipPos = ship->transform.getComputed().position();
+	vec3 relativePos = shipPos - cornerPos;
+	relativePos.x /= scale.x;
+	relativePos.y /= scale.y;
 
-	compute->dispatch({ 0,0,0 });
+	compute->dispatch(relativePos);
 	GameObject::draw(deviceContext);
 	_shape->material()->unbindSRV();
 }

@@ -30,7 +30,8 @@ ColliderObject::~ColliderObject() {
 	delete _collider;
 }
 
-ColliderObject::ColliderObject(const ColliderObject& other) {
+ColliderObject::ColliderObject(const ColliderObject& other) : GameObject(other)
+{
 	collider(new Collider(*other.collider()));
 	body = other.body;
 }

@@ -60,7 +60,7 @@ class Collider
 {
 public:
     Collider( void );
-    Collider( Transform* t, vec3 d );
+    Collider( Transform* t, vec3 d, bool fudge = true );
     Collider( Mesh* m, Transform* t );
     Collider( const Collider& other );
     ~Collider( void );
@@ -109,7 +109,9 @@ public:
 private:
     Transform* _transform;
     vec3 _framePos;
-	vec3 _dims; AABB base_aabb, transformed_aabb;
+	vec3 _dims; 
+	bool fudgeAABB = true;//if this is true, the transformed aabb will be scaled by a factor of 1.5
+	AABB base_aabb, transformed_aabb;
     float _radius;
     ColliderType _type;
 
