@@ -45,7 +45,7 @@ struct VertexToPixel
 float4 main(VertexToPixel input) : SV_TARGET
 {	
 
-	float tunnelAlpha = diffuseTexture2.Sample(basicSampler,input.uv);
+	float tunnelAlpha = diffuseTexture2.Sample(basicSampler,input.uv).r;
 
 	// Just return the input color
 	// - This color (like most values passing through the rasterizer) is 

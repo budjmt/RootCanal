@@ -20,6 +20,6 @@ public:
 	Cannon* cannon;
 private:
 	float speed;
-	vec3 direction;
+	vec3 direction = vec3();
 	Ship *ship;
 };
