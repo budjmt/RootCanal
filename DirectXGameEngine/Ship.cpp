@@ -8,17 +8,16 @@ Ship::Ship(Mesh * mesh, Material * material)
 	health = 100;
 }
 
+float Ship::getHealth()
+{
+    return health;
+}
+
 void Ship::addHealth(float hp){ health += hp; }
 
 void Ship::update(float dt)
 {
 	processMovement(dt);
-
-	/*
-	if (health < 0) {
-		sceneManager.SetScene(new MenuScene(&cam));
-	}
-	*/
 }
 
 void Ship::processMovement(float dt)

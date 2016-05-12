@@ -30,7 +30,7 @@ void Bullet::handleCollision(ColliderObject* other, Manifold& m, double dt, size
 {
 	if (other->collider() == ship->collider()) {
 		active = false;
-		ship->addHealth(-1.f);
+		ship->addHealth(-50.f);
 		transform.scale(vec3(0.f, 0.f, 0.f));
 		body.solid(0);
 	}

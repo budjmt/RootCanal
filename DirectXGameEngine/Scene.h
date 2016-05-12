@@ -27,5 +27,6 @@ protected:
 enum SceneType {
     MENU,
     GAME,
+    GAME_OVER,
     DEFAULT
 };
