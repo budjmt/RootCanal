@@ -15,7 +15,7 @@ PostChainManager::~PostChainManager()
 
 void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11SamplerState* sampler) {
 	bloom = new Bloom(width, height, device, deviceContext, sampler);
-	bloom->setBlurAmount(4);
+	bloom->setBlurAmount(3);
 	bloom->setMinIntensity(0.9f);
 
 	ca = new ChromaticAberation(width, height, device, deviceContext,sampler);
@@ -27,5 +27,4 @@ void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, I
 	postProcess->AddEffect(edgeDetect);
 	postProcess->AddEffect(ca);
 	postProcess->AddEffect(bloom);
-	
 }

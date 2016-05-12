@@ -60,7 +60,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	//multi pass box blur
 	//faster than box, not as fast as gaussian
-	for (int z = 1; z < 5; z++) {
+	for (int z = 3; z < 4; z++) {
 		//the shameful box blur
 		for (int y = 1; y <= blurAmount*z; y+=z)
 		{
@@ -69,28 +69,28 @@ float4 main(VertexToPixel input) : SV_TARGET
 				float2 uv = input.uv + float2(x * pixelWidth, y * pixelHeight);
 				uv.x = saturate(uv.x);
 				uv.y = saturate(uv.y);
-				totalColor += test.Sample(trilinear, uv);
+				totalColor += test.SampleLevel(trilinear, uv,0);
 
 				sampleCount++;
 
 				uv = input.uv - float2(x * pixelWidth, y * pixelHeight);
 				uv.x = saturate(uv.x);
 				uv.y = saturate(uv.y);
-				totalColor += test.Sample(trilinear, uv);
+				totalColor += test.SampleLevel(trilinear, uv,0);
 
 				sampleCount++;
 
 				uv = input.uv + float2(-x * pixelWidth, y * pixelHeight);
 				uv.x = saturate(uv.x);
 				uv.y = saturate(uv.y);
-				totalColor += test.Sample(trilinear, uv);
+				totalColor += test.SampleLevel(trilinear, uv,0);
 
 				sampleCount++;
 
 				uv = input.uv + float2(x * pixelWidth, -y * pixelHeight);
 				uv.x = saturate(uv.x);
 				uv.y = saturate(uv.y);
-				totalColor += test.Sample(trilinear, uv);
+				totalColor += test.SampleLevel(trilinear, uv,0);
 
 				sampleCount++;
 			}
