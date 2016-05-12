@@ -29,7 +29,6 @@ struct VertexToPixel
     float4 position		: SV_POSITION;
     float3 normal		: NORMAL;
     float2 uv			: TEXCOORD;
-
 };
 
 // --------------------------------------------------------
@@ -59,8 +58,6 @@ float4 main( VertexToPixel input ) : SV_TARGET
 	float4 surfaceColor = diffuseTexture0.Sample(basicSampler, input.uv);
 
     float4 returnColor = diffuseTexture1.Sample( basicSampler, clamp( lamb1, 0.1f ,0.9f ) ) * surfaceColor;
-
-    //bool isEdge = dot( input.normal, 
 
     input.color = float4( 1, 1, 1, 1 );
 

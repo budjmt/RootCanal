@@ -19,7 +19,7 @@ EdgeDetect::EdgeDetect(UINT width, UINT height, ID3D11Device* _device, ID3D11Dev
 	setupRenderTarget(&edgeRTV, &edgeSRV);
 	setupRenderTarget(&blurRTV, &blurSRV);
 
-	outlineWidth = 3;
+	outlineWidth = 1;
 }
 
 EdgeDetect::~EdgeDetect()

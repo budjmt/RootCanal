@@ -73,6 +73,9 @@ void GameState::update( float dt, Mouse* mouse ) {
 
 	text->drawText(L"HEY THERE FUCKER", vec3());
 
+    text->drawText( L"HP:", vec3(0, 100, 0), TextJustify::LEFT, vec4(1, 1, 1, 1) );
+    text->drawText( std::to_wstring((int)ship->getHealth()), vec3( 100, 100, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
+
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);
 

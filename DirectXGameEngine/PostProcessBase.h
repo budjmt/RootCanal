@@ -10,6 +10,9 @@ public:
 	PostProcessBase();
 	~PostProcessBase();
 	virtual SRV* draw(SRV* ppSRV);
+
+    bool disabled();
+    void disabled( bool value );
 protected:
 	UINT windowWidth, windowHeight;
 
@@ -18,5 +21,7 @@ protected:
 	ID3D11Device* device;
 	ID3D11DeviceContext * deviceContext;
 	ID3D11SamplerState* sampler;
+
+    bool _disabled;
 };
 

@@ -35,7 +35,9 @@ void PostProcess::draw(ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* 
 	ppVS->SetShader();
 
 	for (size_t i = 0; i < ppChain.size(); ++i) {
-		srv = ppChain[i]->draw(srv);
+        if( !ppChain[i]->disabled() ) {
+            srv = ppChain[i]->draw( srv );
+        }
 	}
 
 	//srv = ppChain[0]->draw(srv);

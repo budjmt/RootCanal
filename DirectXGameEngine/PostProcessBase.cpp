@@ -4,6 +4,7 @@
 
 PostProcessBase::PostProcessBase()
 {
+    _disabled = false;
 }
 
 
@@ -14,6 +15,16 @@ PostProcessBase::~PostProcessBase()
 
 ID3D11ShaderResourceView* PostProcessBase::draw(SRV* ppSRV){
 	return ppSRV;
+}
+
+bool PostProcessBase::disabled()
+{
+    return _disabled;
+}
+
+void PostProcessBase::disabled( bool value )
+{
+    _disabled = value;
 }
 
 void PostProcessBase::setupRenderTarget(RTV** rtv, SRV** srv) {

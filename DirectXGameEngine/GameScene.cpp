@@ -14,7 +14,7 @@ GameScene::GameScene( Camera** camera ) : Scene()
     _l1 = {
         XMFLOAT4( 0.07f, 0.065f, 0.08f, .9f ),
         XMFLOAT4( 0.8f, 1.f, 1.f, .9f ),
-        XMFLOAT3( 0.1f, .3f, 0.37f )
+        XMFLOAT3( 0.1f, .2f, 0.25f )
     };
 
     _l2 = {
@@ -42,6 +42,8 @@ void GameScene::draw()
     auto& dx = DXInfo::getInstance();
 
     ( *_camera )->updateCamMat( _vertexShader );
+
+    vec3 camPos = ( *_camera )->transform.position();
 
     _pixelShader->SetData( "light1", &_l1, sizeof( DirectionalLight ) );
     _pixelShader->SetData( "light2", &_l2, sizeof( DirectionalLight ) );
