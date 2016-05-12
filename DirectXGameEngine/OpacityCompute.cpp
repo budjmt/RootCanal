@@ -47,7 +47,7 @@ void OpacityCompute::dispatch(vec3 relativePos) {
 
 void OpacityCompute::setupTextures() {
 	// Create texture for compute shader
-	textureSize = 4096;
+	textureSize = 2048;
 	ID3D11Texture2D* tex;
 
 	D3D11_TEXTURE2D_DESC texDesc = {};
