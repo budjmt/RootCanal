@@ -864,8 +864,8 @@ void GaussMap::addAdj( vec3 v, Adj a ) {
 }
 
 bool AABB::intersects(const AABB& other) {
-	bool xSeparate = center.x - halfDims.x > other.center.x + other.halfDims.x || other.center.x - halfDims.x > center.x + halfDims.x;
-	bool ySeparate = center.y - halfDims.y > other.center.y + other.halfDims.y || other.center.y - halfDims.y > center.y + halfDims.y;
-	bool zSeparate = center.z - halfDims.z > other.center.z + other.halfDims.z || other.center.z - halfDims.z > center.z + halfDims.z;
+	bool xSeparate = (center.x - halfDims.x > other.center.x + other.halfDims.x) || (center.x + halfDims.x < other.center.x - other.halfDims.x);
+    bool ySeparate = (center.y - halfDims.y > other.center.y + other.halfDims.y) || (center.y + halfDims.y < other.center.y - other.halfDims.y);
+    bool zSeparate = (center.z - halfDims.z > other.center.z + other.halfDims.z) || (center.z + halfDims.z < other.center.z - other.halfDims.z);
 	return !(xSeparate || ySeparate || zSeparate);
 }

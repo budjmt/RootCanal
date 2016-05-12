@@ -6,7 +6,7 @@ Cannon::Cannon(Mesh * mesh, Material * material, Mesh* bMesh, Material* bMateria
 	//body.floating(true);
 	body.fixed(1.f);
 	transform.setBaseDirections(vec3(0, 1, 0), vec3(0, 0, -1));
-	reloadTime = 3.0f;
+	reloadTime = 1.0f;
 	reloadTimer = reloadTime;
 	bulletMesh = bMesh;
 	bulletMaterial = bMaterial;
@@ -25,6 +25,7 @@ void Cannon::spawnBullets(int num) {
 		bullet->cannon = this;
 		bullets.push_back(bullet);
 		state->addGameObject(bullet);
+        CollisionManager::getInstance().addObject( bullet );
 	}
 }
 

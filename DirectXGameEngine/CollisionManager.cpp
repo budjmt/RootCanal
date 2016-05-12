@@ -7,6 +7,7 @@ CollisionManager::CollisionManager() { float d = 100.f; octTree = new OctTree(ve
 CollisionManager::~CollisionManager() { delete octTree; }
 
 void CollisionManager::addObject(ColliderObject* o) {
+    o->update( 0, nullptr );
 	octTree->add(o);
 }
 

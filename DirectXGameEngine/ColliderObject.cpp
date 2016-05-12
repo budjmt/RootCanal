@@ -15,7 +15,7 @@ ColliderObject::ColliderObject(Drawable* s)
 {
 	//_collider = new Collider(&transform,transform.scale);
 	_collider = new Collider(((DrawMesh*)s)->mesh(), &transform);
-	CollisionManager::getInstance().addObject(this);
+	//CollisionManager::getInstance().addObject(this);
 }
 
 ColliderObject::ColliderObject(vec3 p, vec3 dims, vec3 sc, vec3 rA, float r, Drawable* s)
@@ -23,7 +23,7 @@ ColliderObject::ColliderObject(vec3 p, vec3 dims, vec3 sc, vec3 rA, float r, Dra
 {
 	//_collider = new Collider(&transform,dims);
 	_collider = new Collider(((DrawMesh*)s)->mesh(), &transform);
-	CollisionManager::getInstance().addObject(this);
+	//CollisionManager::getInstance().addObject(this);
 }
 
 ColliderObject::~ColliderObject() {

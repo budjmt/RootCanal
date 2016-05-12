@@ -32,11 +32,19 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	Mesh* mesh2 = Mesh::createMesh("../Assets/cube.obj");
 
 	ship = new Ship(mesh1, shipMaterial);
+    ship->transform.position( vec3( -55, 0, 0 ) );
+    CollisionManager::getInstance().addObject( ship );
+
+    vec3 camPos = ship->transform.position();
+    camPos.z -= 5.f;
+
+    ( *_scene->camera() )->transform.position( camPos );
 
 	cannon = new Cannon(mesh2, material, mesh2, material, this, ship);
 	cannon->transform.position(vec3(0, 5, 0));
 	cannon->transform.scale(vec3(2, 2, 1));
-	cannon->spawnBullets(4);
+	cannon->spawnBullets(8);
+    CollisionManager::getInstance().addObject( cannon );
 
 	ColliderObject* cube = new ColliderObject(mesh2, material);
 	cube->rigidBody().floating(true);

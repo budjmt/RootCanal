@@ -33,7 +33,7 @@ void UIText::draw(ID3D11DeviceContext* deviceContext) {
 			break;
 		}
 		spriteBatch->Begin();
-		fonts["arialblack"]->DrawString(spriteBatch.get(), text.text.c_str(), pos, color, 0.f, origin);
+		fonts["arialblack"]->DrawString(spriteBatch.get(), text.text.c_str(), pos, color, 0.f, origin, .75f);
 		spriteBatch->End();
 		queuedText.pop_back();
 	}

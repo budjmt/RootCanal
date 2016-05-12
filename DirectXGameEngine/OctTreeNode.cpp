@@ -187,8 +187,12 @@ collisionPairList OctTreeNode::checkCollisions( ColliderObject* other )
 
 void OctTreeNode::add( ColliderObject* other )
 {
+    AABB otherAABB = other->collider()->aabb();
+    AABB thisAABB = _collider->aabb();
+    bool intersects = thisAABB.intersects( otherAABB );
+
     // Filter out colliders that don't hit binary box
-    if( !_collider->aabb().intersects( other->collider()->aabb() ) )
+    if( !intersects )
         return;
 
     // Branch if needed

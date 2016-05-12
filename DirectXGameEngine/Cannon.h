@@ -4,6 +4,7 @@
 #include "Ship.h"
 #include "Bullet.h"
 #include "State.h"
+#include "CollisionManager.h"
 #include <vector>
 using namespace std;
 
