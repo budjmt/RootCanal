@@ -72,8 +72,8 @@ float4 main(VertexToPixel input) : SV_TARGET
 	float4 color = float4(0,0,0,1);
 	//color.y = pixelIntensity(pixels.Sample(trilinear, input.uv));
 	//return float4(color.yyy,1);
-	color.z = edgeDetect(input.uv);
-	color.y = color.z;
+	color = edgeDetect(input.uv).xxxx;
+	//color.y = color.z;
 	return color;
 	return pixels.SampleLevel(trilinear, input.uv, 0);
 }

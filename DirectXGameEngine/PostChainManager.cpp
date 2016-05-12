@@ -15,16 +15,16 @@ PostChainManager::~PostChainManager()
 
 void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11SamplerState* sampler) {
 	bloom = new Bloom(width, height, device, deviceContext, sampler);
-	bloom->setBlurAmount(1);
+	bloom->setBlurAmount(4);
 	bloom->setMinIntensity(0.9f);
 
 	ca = new ChromaticAberation(width, height, device, deviceContext,sampler);
-	ca->setDistortAmount(5.f);
+	ca->setDistortAmount(6.f);
     
 	edgeDetect = new EdgeDetect(width, height, device, deviceContext);
 	
 
-	//postProcess->AddEffect(edgeDetect);
+	postProcess->AddEffect(edgeDetect);
 	postProcess->AddEffect(ca);
 	postProcess->AddEffect(bloom);
 	
