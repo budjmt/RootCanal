@@ -50,6 +50,7 @@ private:
 
 	PostProcess* post;
 	PostChainManager* postManager;
+	ID3D11SamplerState* psamplerState;
 
 	Camera* camera = nullptr;
 };

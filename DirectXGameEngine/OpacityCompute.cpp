@@ -48,6 +48,7 @@ void OpacityCompute::dispatch(vec3 relativePos) {
 void OpacityCompute::setupTextures() {
 	// Create texture for compute shader
 	textureSize = 2048;
+
 	ID3D11Texture2D* tex;
 
 	D3D11_TEXTURE2D_DESC texDesc = {};
@@ -77,5 +78,6 @@ void OpacityCompute::setupTextures() {
 	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 	device->CreateUnorderedAccessView(tex, &uavDesc, &textureUAV);
 
-	tex->Release();
+	//tex->Release();
+	ReleaseMacro(tex);
 }

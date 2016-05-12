@@ -17,7 +17,8 @@ ToothFront::ToothFront(Mesh* mesh, Material* material, Camera** cam, ID3D11Devic
 
 ToothFront::~ToothFront()
 {
-	delete opacityRadius;
+	//delete opacityRadius; 
+	delete compute;
 }
 
 

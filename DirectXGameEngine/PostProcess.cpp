@@ -1,6 +1,6 @@
 #include "PostProcess.h"
 
-
+#include "Shader.h"
 
 PostProcess::PostProcess(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext, ID3D11SamplerState* _sampler, ID3D11DepthStencilView* _depthStencilView)
 {
@@ -8,14 +8,14 @@ PostProcess::PostProcess(ID3D11Device* _device, ID3D11DeviceContext* _deviceCont
 	device = _device;
 	deviceContext = _deviceContext;
 	depthStencilView = _depthStencilView;
-	ppVS = new SimpleVertexShader(device, deviceContext);
-	ppVS->LoadShaderFile(L"FinalVS.cso");
-	ppPS = new SimplePixelShader(device, deviceContext);
-	ppPS->LoadShaderFile(L"Final.cso");
+	ppVS = Shader::getShader<SimpleVertexShader>(L"FinalVertex");
+	ppPS = Shader::getShader<SimplePixelShader>(L"FinalPixel");
 }
 
 PostProcess::~PostProcess()
 {
+	/*ReleaseMacro(device); ReleaseMacro(deviceContext); 
+	ReleaseMacro(sampler); ReleaseMacro(depthStencilView);*/
 }
 
 void PostProcess::AddEffect(PostProcessBase* effect) { ppChain.push_back(effect); }

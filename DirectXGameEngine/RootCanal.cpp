@@ -75,6 +75,9 @@ RootCanal::~RootCanal()
 
     delete currScene;
 	delete post; delete postManager;
+	ReleaseMacro(psamplerState);
+	ReleaseMacro(ppRTV);
+	ReleaseMacro(ppSRV);
 }
 
 #pragma endregion
@@ -142,8 +145,6 @@ bool RootCanal::Init()
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	device->CreateSamplerState(&samplerDesc, &samplerState);
 
-    post = new PostProcess( device, deviceContext, samplerState, depthStencilView );
-	postManager = new PostChainManager(post, windowWidth, windowHeight, device, deviceContext, samplerState);
 
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives we'll be using and how to interpret them
@@ -202,6 +203,13 @@ void RootCanal::LoadShaders()
 		device,
 		deviceContext
 	);
+	Shader::createShader<SimplePixelShader>
+		(
+			L"FinalPixel",
+			L"Final.cso",
+			device,
+			deviceContext
+			);
 
 	Shader::createShader<SimplePixelShader>
 	(
@@ -371,9 +379,8 @@ void RootCanal::setupPostProcess() {
 	device->CreateShaderResourceView(ppTexture, &srvDesc, &ppSRV);
 
 	// Get rid of ONE of the texture references
-	ppTexture->Release();
-
-	ID3D11SamplerState* psamplerState;
+	//ppTexture->Release();
+	ReleaseMacro(ppTexture);
 
 	// Create the sampler state
 	D3D11_SAMPLER_DESC samplerDesc;
