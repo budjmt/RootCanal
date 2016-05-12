@@ -14,6 +14,7 @@
 
 #include "MenuScene.h"
 #include "GameScene.h"
+#include "GameOverScene.h"
 #include "PostProcess.h"
 #include "PostChainManager.h"
 

@@ -56,14 +56,11 @@ float4 main( VertexToPixel input ) : SV_TARGET
     float4 combinedLight =
         ( (light1.diffuseColor * lamb1) + light1.ambientColor
         + (light2.diffuseColor * lamb2) + light2.ambientColor );
-	float4 surfaceColor = diffuseTexture0.Sample(basicSampler, input.uv);// *saturate(combinedLight);
+	float4 surfaceColor = diffuseTexture0.Sample(basicSampler, input.uv);
 
-	//return surfaceColor;
-	//return saturate(combinedLight);
+    float4 returnColor = diffuseTexture1.Sample( basicSampler, clamp( lamb1, 0.1f ,0.9f ) ) * surfaceColor;
 
-	//return surfaceColor * combinedLight;
-
-    float4 returnColor = diffuseTexture1.Sample( basicSampler,clamp(lamb1,0.1f,0.9f) ) * surfaceColor;
+    //bool isEdge = dot( input.normal, 
 
     input.color = float4( 1, 1, 1, 1 );
 

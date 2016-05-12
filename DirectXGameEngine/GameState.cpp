@@ -88,6 +88,12 @@ void GameState::update( float dt, Mouse* mouse ) {
 	//for (int i = 0; i < div; i++) for (int j = 0; j < div; j++) d.drawDebugVector(vec3(), (vec3)(mat4::rotate(c * i / div, vec3(1, 0, 0)) * mat4::rotate(c * j / div, vec3(0, 1, 0)) * vec4(v)));
 	CollisionManager::getInstance().draw();
 #endif
+
+    if( ship->getHealth() <= 0 )
+    {
+        CollisionManager::getInstance().clear();
+        StateManager::getInstance().changeScene( SceneType::GAME_OVER );
+    }
 }
 
 void GameState::draw( ID3D11DeviceContext* deviceContext )

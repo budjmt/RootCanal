@@ -288,6 +288,10 @@ void RootCanal::UpdateScene(float deltaTime, float totalTime)
         case SceneType::GAME:
             SetScene( new GameScene( &camera ) );
             break;
+
+        case SceneType::GAME_OVER:
+            SetScene( new GameOverScene( &camera ) );
+            break;
         }
 
         OnResize();

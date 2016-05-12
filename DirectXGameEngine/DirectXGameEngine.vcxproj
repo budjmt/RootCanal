@@ -97,6 +97,8 @@
     <ClCompile Include="FileImporter.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameEvent.cpp" />
+    <ClCompile Include="GameOverScene.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="ImportData.cpp" />
@@ -158,6 +160,8 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameEvent.h" />
     <ClInclude Include="GameException.h" />
+    <ClInclude Include="GameOverScene.h" />
+    <ClInclude Include="GameOverState.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="IEventDispatcher.h" />
