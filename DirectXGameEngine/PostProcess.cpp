@@ -25,7 +25,7 @@ void PostProcess::AddEffect(int i, PostProcessBase* effect) {
 }
 
 void PostProcess::setChain(int i) {
-	if (i == 0) ppChain = normalChain;
+	if (i == 0) ppChain = xrayChain;
 	else ppChain = normalChain;
 }
 

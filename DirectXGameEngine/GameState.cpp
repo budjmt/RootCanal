@@ -18,17 +18,26 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 
     _toonLightingTexture = Texture::createTexture( L"../Assets/toonlighting.png", dx.device, dx.deviceContext );
 
+
+	Texture* whiteTexture = Texture::createTexture(L"../Assets/white.png", dx.device, dx.deviceContext);
+	whiteTexture->addTex(_toonLightingTexture->resourceViews[0]);
+
+	Texture* toothTexture = Texture::createTexture(L"../Assets/toothCloud.png", dx.device, dx.deviceContext);
+	toothTexture->addTex(_toonLightingTexture->resourceViews[0]);
+
 	Texture* texture = Texture::createTexture(L"../Assets/texture.png", dx.device, dx.deviceContext);
 	texture->addTex(_toonLightingTexture->resourceViews[0]);
-    Texture* shipTexture = Texture::createTexture( L"../Assets/ship.png", dx.device, dx.deviceContext );
+    Texture* shipTexture = Texture::createTexture( L"../Assets/shipDiffuse.png", dx.device, dx.deviceContext );
 	shipTexture->addTex(_toonLightingTexture->resourceViews[0]);
 
     Material* material = Material::createMaterial(L"material", texture, vertexShader, pixelShader, _scene->camera());
     Material* shipMaterial = Material::createMaterial( L"ship", shipTexture, vertexShader, pixelShader, _scene->camera() );
 
-	Material* material2 = Material::createMaterial(L"material2", texture, vertexShader, Shader::getShader<SimplePixelShader>(L"ToothPixel"), _scene->camera());
+	Material* material2 = Material::createMaterial(L"material2", toothTexture, vertexShader, Shader::getShader<SimplePixelShader>(L"ToothPixel"), _scene->camera());
+	Material* material3 = Material::createMaterial(L"material3", whiteTexture, vertexShader, pixelShader, _scene->camera());
+
     
-	Mesh* mesh1 = Mesh::createMesh("../Assets/cone_Z.obj");
+	Mesh* mesh1 = Mesh::createMesh("../Assets/ship.obj");
 	Mesh* mesh2 = Mesh::createMesh("../Assets/cube.obj");
 
 	ship = new Ship(mesh1, shipMaterial);
@@ -46,7 +55,7 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	cannon->spawnBullets(8);
     CollisionManager::getInstance().addObject( cannon );
 
-	ColliderObject* cube = new ColliderObject(mesh2, material);
+	ColliderObject* cube = new ColliderObject(mesh2, material3);
 	cube->rigidBody().floating(true);
 	cube->transform.position(vec3(0, 0, 2));
 	cube->transform.scale(vec3(100, 100, 1));
@@ -66,7 +75,32 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	addGameObject(text);
 }
 
+#include "Keyboard.h"
+void GameState::toggleRenderMode() {
+	Keyboard& keys = Keyboard::getInstance();
+
+	static bool keyDown = false;
+	if (keys.isDown(VK_TAB) && !keyDown) {
+		keyDown = true;
+		if (renderSwap % 2 == 0) {
+			for (auto m : Material::loadedMaterials) {
+				m.second->setOpacity(0.6f);
+			}
+		}
+		else {
+			for (auto m : Material::loadedMaterials) {
+				m.second->setOpacity(1);
+			}
+		}
+		renderSwap++;
+	} if (!keys.isDown(VK_TAB) && keyDown) {
+		keyDown = false;
+	}
+}
+
 void GameState::update( float dt, Mouse* mouse ) {
+
+	toggleRenderMode();
 
 	ship->update( dt );
 	cannon->update( dt );

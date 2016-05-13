@@ -24,7 +24,7 @@ public:
 
     virtual void update( float dt, Mouse* mouse );
     virtual void draw( ID3D11DeviceContext* deviceContext );
-
+	void toggleRenderMode();
 private:
 	UIText* text;
     Texture* _toonLightingTexture;
@@ -34,5 +34,6 @@ private:
     SimpleVertexShader* _vertexShader;
 
     void updateCamera( float dt );
+	int renderSwap = 0;
 };
 

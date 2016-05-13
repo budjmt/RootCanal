@@ -7,6 +7,7 @@ struct DirectionalLight {
 
 cbuffer externalData : register(b0) {
 	DirectionalLight light1, light2;
+	float opacity;
 };
 
 Texture2D diffuseTexture0 : register(t0);//actual texture
@@ -62,11 +63,9 @@ float4 main(VertexToPixel input) : SV_TARGET
 	float4 surfaceColor = diffuseTexture0.Sample(basicSampler, input.uv);
 	//surfaceColor = float4(0, 1, 0, 0.5f);
 	surfaceColor.a = diffuseTexture1.SampleLevel(basicSampler, input.uv,0).r;//it's one channel
-
-	input.color = float4(1, 1, 1, 1);
-	surfaceColor *=
+	/*surfaceColor *=
 		(light1.diffuseColor * lamb1 + light1.ambientColor
-			+ light2.diffuseColor * lamb2 + light2.ambientColor);
+			+ light2.diffuseColor * lamb2 + light2.ambientColor);*/
 	surfaceColor.w = tunnelAlpha;
-	return surfaceColor;
+	return float4(surfaceColor.xyz,surfaceColor.w * pow(opacity,2));
 }

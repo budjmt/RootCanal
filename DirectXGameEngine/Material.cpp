@@ -41,6 +41,7 @@ Material* Material::createMaterial( const wchar_t* key, Texture* texture, Simple
     mat->camera( camera );
     mat->texture( texture );
     loadedMaterials[key] = mat;
+	mat->setOpacity(1);
     return mat;
 }
 
@@ -103,4 +104,8 @@ void Texture::unbindTex( ISimpleShader* shader ) {
 		}
 	}
 	else shader->SetShaderResourceView("diffuseTexture", 0);
+}
+
+void Material::setOpacity(float opacity) {
+	pixel->SetFloat("opacity", opacity);
 }

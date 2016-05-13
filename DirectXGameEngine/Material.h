@@ -42,6 +42,8 @@ public:
 	void unbindSRV();
     void setActive( bool b );
 
+	void setOpacity(float opacity);
+
     static std::map<const wchar_t*, Material*> loadedMaterials;//all currently loaded materials
     static Material* getMaterial( const wchar_t* key );
     static Material* createMaterial( const wchar_t* key, Texture* texture, SimpleVertexShader* vertexShader, SimplePixelShader* pixelShader, Camera** camera );
@@ -51,4 +53,5 @@ private:
     SimplePixelShader* pixel;
     Camera** _camera;
     Texture* _texture;
+	float opacity = 0;
 };

@@ -3,7 +3,7 @@
 #include "MarchMath.h"
 #include "SimpleShader.h"
 #include "DXInfo.h"
-
+#include "Material.h"
 class OpacityCompute
 {
 public:
@@ -13,6 +13,7 @@ public:
 	void dispatch(vec3 relativePos);
 	~OpacityCompute();
 private:
+	Texture* randomTexture;
 	ID3D11Device* device;
 	int textureSize;
 
