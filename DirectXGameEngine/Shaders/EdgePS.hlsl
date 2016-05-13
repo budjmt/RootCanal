@@ -70,7 +70,7 @@ float edgeDetect(float2 uv) {
 float4 main(VertexToPixel input) : SV_TARGET
 {
 	float4 color = float4(0,0,0,1);
-    color.xyz = 1 - edgeDetect( input.uv ).xxx;
-
+    color.xyz = edgeDetect( input.uv ).xxx;
+	return color;
     return color * pixels.SampleLevel( trilinear, input.uv, 0 );
 }

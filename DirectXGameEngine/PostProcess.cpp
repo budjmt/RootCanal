@@ -18,9 +18,33 @@ PostProcess::~PostProcess()
 	ReleaseMacro(sampler); ReleaseMacro(depthStencilView);*/
 }
 
-void PostProcess::AddEffect(PostProcessBase* effect) { ppChain.push_back(effect); }
+void PostProcess::AddEffect(int i, PostProcessBase* effect) {
+	if (i == 0) normalChain.push_back(effect);
+	else xrayChain.push_back(effect);
+	//ppChain.push_back(effect);
+}
+
+void PostProcess::setChain(int i) {
+	if (i == 0) ppChain = normalChain;
+	else ppChain = normalChain;
+}
+
+#include "Keyboard.h"
 
 void PostProcess::draw(ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView, ID3D11RenderTargetView* backBufferView) {
+
+	Keyboard& keys = Keyboard::getInstance();
+
+	static bool keyDown = false;
+	if (keys.isDown(VK_TAB) && !keyDown) {
+		keyDown = true;
+		if (chainSwap % 2 == 0) { ppChain = normalChain; }
+		else { ppChain = xrayChain;}
+		chainSwap++;
+	} if (!keys.isDown(VK_TAB) && keyDown) {
+		keyDown = false;
+	}
+
 	SRV* srv = ppSRV;
 	const float color[4] = { 0.1f, 0.1f, 0.1f, 0.1f };
 	//D3D11_SAMPLER_DESC samplerDesc = {};

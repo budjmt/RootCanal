@@ -22,9 +22,10 @@ void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, I
 	ca->setDistortAmount(6.f);
     
 	edgeDetect = new EdgeDetect(width, height, device, deviceContext);
-	
 
-	postProcess->AddEffect(edgeDetect);
-	postProcess->AddEffect(ca);
-	postProcess->AddEffect(bloom);
+	postProcess->AddEffect(0,edgeDetect);
+	postProcess->AddEffect(0,ca);
+	postProcess->AddEffect(0,bloom);
+
+	postProcess->setChain(0);
 }
