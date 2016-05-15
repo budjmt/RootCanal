@@ -73,6 +73,8 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	addGameObject(cube);
 	addGameObject(tooth);
 	addGameObject(text);
+
+	audioManager = new AudioManager();
 }
 
 #include "Keyboard.h"

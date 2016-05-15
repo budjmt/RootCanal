@@ -13,6 +13,7 @@
 #include "Cannon.h"
 #include "SimpleShader.h"
 #include "Camera.h"
+#include "AudioManager.h"
 
 class Ship;
 
@@ -32,6 +33,7 @@ private:
 	Cannon* cannon;
     SimplePixelShader* _pixelShader;
     SimpleVertexShader* _vertexShader;
+	AudioManager* audioManager;
 
     void updateCamera( float dt );
 	int renderSwap = 0;
