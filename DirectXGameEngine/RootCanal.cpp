@@ -345,6 +345,8 @@ void RootCanal::DrawScene(float deltaTime, float totalTime)
 
 void RootCanal::SetScene( Scene* scene )
 {
+    post->setSceneType( StateManager::getInstance().changeScene() );
+
     if( currScene ) delete currScene;
     currScene = scene;
 }

@@ -1,6 +1,7 @@
 #include "FXAA.h"
 
 FXAA::FXAA(UINT width, UINT height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext, ID3D11SamplerState* _sampler)
+	: PostProcessBase()
 {
 	windowWidth = width;
 	windowHeight = height;

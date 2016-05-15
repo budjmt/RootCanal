@@ -273,9 +273,6 @@
     <ClCompile Include="UIText.cpp">
       <Filter>Source Files\Misc\UI</Filter>
     </ClCompile>
-    <ClCompile Include="OpacityCompute.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MenuState.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
@@ -287,6 +284,11 @@
     </ClCompile>
     <ClCompile Include="AudioManager.cpp">
       <Filter>Source Files\Misc</Filter>
+    <ClCompile Include="CRT.cpp">
+      <Filter>Source Files\Display\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="OpacityCompute.cpp">
+      <Filter>Source Files\Display\PostProcess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -491,9 +493,6 @@
     <ClInclude Include="UIText.h">
       <Filter>Header Files\Misc\UI</Filter>
     </ClInclude>
-    <ClInclude Include="OpacityCompute.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameOverState.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
@@ -502,6 +501,11 @@
     </ClInclude>
     <ClInclude Include="AudioManager.h">
       <Filter>Header Files\Misc</Filter>
+    <ClInclude Include="CRT.h">
+      <Filter>Header Files\Display\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="OpacityCompute.h">
+      <Filter>Header Files\Display\PostProcess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -564,6 +568,9 @@
     </FxCompile>
     <FxCompile Include="InitTexture.hlsl">
       <Filter>Shaders\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="CRTFilter.hlsl">
+      <Filter>Shaders\PostProcess</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,7 @@ struct VertexToPixel
 Texture2D  diffuseTexture : register(t0);
 SamplerState basicSampler : register(s0);
 
-static int radius = 0.2;
+static float radius = 0.2;
 
 float main(VertexToPixel input) : SV_TARGET
 {

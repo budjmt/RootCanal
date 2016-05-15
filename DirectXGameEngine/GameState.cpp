@@ -41,6 +41,7 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 	Mesh* mesh2 = Mesh::createMesh("../Assets/cube.obj");
 
 	ship = new Ship(mesh1, shipMaterial);
+    ship->transform.rotate( 3.1415f * -.5f, vec3( 0, 0, -1 ) );
     ship->transform.position( vec3( -55, 0, 0 ) );
     CollisionManager::getInstance().addObject( ship );
 
@@ -95,7 +96,8 @@ void GameState::toggleRenderMode() {
 			}
 		}
 		renderSwap++;
-	} if (!keys.isDown(VK_TAB) && keyDown) {
+	}
+    if (!keys.isDown(VK_TAB) && keyDown) {
 		keyDown = false;
 	}
 }
@@ -115,10 +117,8 @@ void GameState::update( float dt, Mouse* mouse ) {
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.up() + vec3(0,0.001f,0), vec3(1, 1, 0));
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.right()                , vec3(1, 0, 1));
 
-	text->drawText(L"HEY THERE FUCKER", vec3());
-
-    text->drawText( L"HP:", vec3(0, 100, 0), TextJustify::LEFT, vec4(1, 1, 1, 1) );
-    text->drawText( std::to_wstring((int)ship->getHealth()), vec3( 100, 100, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
+    text->drawText( L"HP:", vec3(0, 0, 0), TextJustify::LEFT, vec4(1, 1, 1, 1) );
+    text->drawText( std::to_wstring((int)ship->getHealth()), vec3( 100, 0, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
 
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);
