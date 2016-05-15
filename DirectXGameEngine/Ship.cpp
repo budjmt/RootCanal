@@ -25,10 +25,10 @@ void Ship::processMovement(float dt)
 	Keyboard& keys = Keyboard::getInstance();
 
 	if (keys.isDown(VK_LEFT)) {
-		rigidBody().netAngAccel += vec3(0, 0, -PI * 2 * 15 / dt / 500);
+		rigidBody().netAngAccel += vec3(0, 0, -PI * 2 * 15 / dt / 300);
 	}
 	else if (keys.isDown(VK_RIGHT)) {
-		rigidBody().netAngAccel += vec3(0, 0, PI * 2 * 15 / dt / 500);
+		rigidBody().netAngAccel += vec3(0, 0, PI * 2 * 15 / dt / 300);
 	}
 
 	if (keys.isDown(VK_UP)) {

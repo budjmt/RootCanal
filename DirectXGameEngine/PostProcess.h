@@ -8,6 +8,7 @@
 #include "FXAA.h"
 #include "ChromaticAberation.h"
 #include "CRT.h"
+#include "Scene.h"
 class PostProcess
 {
 public:
@@ -16,6 +17,8 @@ public:
 	void draw(ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView, ID3D11RenderTargetView* backBufferView);
 	void AddEffect(int i, PostProcessBase* effect);
 	void setChain(int i);
+
+    void setSceneType( SceneType type );
 private:
 	std::vector<PostProcessBase*> ppChain;
 	std::vector<PostProcessBase*> normalChain;
@@ -30,5 +33,6 @@ private:
 	ID3D11DepthStencilView* depthStencilView;
 
 	int chainSwap = 0;
+    SceneType sceneType;
 };
 

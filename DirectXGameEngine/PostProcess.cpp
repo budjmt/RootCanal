@@ -10,6 +10,7 @@ PostProcess::PostProcess(ID3D11Device* _device, ID3D11DeviceContext* _deviceCont
 	depthStencilView = _depthStencilView;
 	ppVS = Shader::getShader<SimpleVertexShader>(L"FinalVertex");
 	ppPS = Shader::getShader<SimplePixelShader>(L"FinalPixel");
+    sceneType = SceneType::DEFAULT;
 }
 
 PostProcess::~PostProcess()
@@ -29,21 +30,31 @@ void PostProcess::setChain(int i) {
 	else ppChain = normalChain;
 }
 
+void PostProcess::setSceneType( SceneType type )
+{
+    sceneType = type;
+}
+
 #include "Keyboard.h"
 
-void PostProcess::draw(ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView, ID3D11RenderTargetView* backBufferView) {
+void PostProcess::draw( ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView, ID3D11RenderTargetView* backBufferView ) {
 
-	Keyboard& keys = Keyboard::getInstance();
+    if( sceneType == SceneType::GAME ) {
+        Keyboard& keys = Keyboard::getInstance();
 
-	static bool keyDown = false;
-	if (keys.isDown(VK_TAB) && !keyDown) {
-		keyDown = true;
-		if (chainSwap % 2 == 0) { ppChain = normalChain; }
-		else { ppChain = xrayChain;}
-		chainSwap++;
-	} if (!keys.isDown(VK_TAB) && keyDown) {
-		keyDown = false;
-	}
+        static bool keyDown = false;
+        if( keys.isDown( VK_TAB ) && !keyDown ) {
+            keyDown = true;
+            if( chainSwap % 2 == 0 ) { ppChain = normalChain; }
+            else { ppChain = xrayChain; }
+            chainSwap++;
+        }
+        if( !keys.isDown( VK_TAB ) && keyDown ) {
+            keyDown = false;
+        }
+    } else {
+        ppChain = xrayChain;
+    }
 
 	SRV* srv = ppSRV;
 	const float color[4] = { 0.1f, 0.1f, 0.1f, 0.1f };

@@ -94,7 +94,8 @@ void GameState::toggleRenderMode() {
 			}
 		}
 		renderSwap++;
-	} if (!keys.isDown(VK_TAB) && keyDown) {
+	}
+    if (!keys.isDown(VK_TAB) && keyDown) {
 		keyDown = false;
 	}
 }
