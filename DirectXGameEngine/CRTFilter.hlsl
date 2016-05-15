@@ -2,6 +2,7 @@
 cbuffer Data : register(c0) {
 	uint width;
 	uint height;
+	float time;
 }
 
 struct VertexToPixel {
@@ -31,11 +32,6 @@ float2 res = resolution.xy / 6.0
 // -4.0 = hard
 float hardPix = -3.0;
 
-// Display warp.
-// 0.0 = none
-// 1.0/8.0 = extreme
-float2 warp = float2(1.0 / 32.0, 1.0 / 24.0);
-
 // Amount of shadow mask.
 //float maskDark = 0.5;
 //float maskLight = 1.5;
@@ -58,7 +54,8 @@ float3 Fetch(float2 pos, float2 off, float2 res) {
 	pos = floor(pos * res + off) / res;
 	if (max(abs(pos.x - 0.5), abs(pos.y - 0.5)) > 0.5)
 		return float3(0.0, 0.0, 0.0);
-	return ToLinear(pixels.SampleLevel(trilinear, pos.xy, 0).rgb);
+	else//shut up compiler
+		return ToLinear(pixels.SampleLevel(trilinear, pos.xy, 0).rgb);
 }
 
 // Distance in emulated pixels to nearest texel.
@@ -123,16 +120,20 @@ float3 Tri(float2 pos, float2 res, float hardScan) {
 	return a*wa + b*wb + c*wc;
 }
 
+// Display warp.
+// 0.0 = none
+// 1.0/8.0 = extreme
+float2 warp = float2(1.0 / 32.0, 1.0 / 24.0);
 // Distortion of scanlines, and end of screen alpha.
 float2 Warp(float2 pos) {
 	pos = (pos * 2.0) - 1.0;
-	pos *= float2(1.0 + (pos.y * pos.y) * warp.x, 1.0 + (pos.x * pos.x) * warp.y);
+	pos *= float2(1.05 + (pos.y * pos.y) * warp.x, 1.05 + (pos.x * pos.x) * warp.y);
 	return (pos * 0.5) + 0.5;
 }
 
 // Shadow mask.
 float3 Mask(float2 pos, float maskDark, float maskLight) {
-	pos.x += pos.y * 3.0;
+	pos.x += pos.y * 2.0;//change the const value to change the pixels a bit
 	float3 mask = float3(maskDark, maskDark, maskDark);
 	pos.x = frac(pos.x / 6.0);
 	if (pos.x < 0.333)
@@ -144,6 +145,18 @@ float3 Mask(float2 pos, float maskDark, float maskLight) {
 	return mask;
 }
 
+float3 ScanMask(float posY, float maskDark, float maskLight) {
+	//return float3(1, 1, 1);
+	//posY *= 3;
+	float p = 0.75 * (fmod(time * 0.3, 2.0) - 1) + 0.5;
+	float r = 0.035;
+	float d = abs(posY - p) - r;
+	if (d <= 0)
+		return float3(maskLight, maskLight, maskLight) * (1.5 - clamp(5 * exp2(d), 0, 1.5));
+	else
+		return float3(maskDark, maskDark, maskDark);
+}
+
 // Entry.
 //credit to https://www.shadertoy.com/view/XsjSzR#
 float4 main(VertexToPixel input) : SV_TARGET {
@@ -151,14 +164,14 @@ float4 main(VertexToPixel input) : SV_TARGET {
 	float4 output = float4(0,0,0,0);
 	
 	float2 resolution = float2((float)width, (float)height);
-	float2 res = resolution / 4.0;
+	float2 res = resolution / 2.0;
 
 	float2 fragCoord = input.uv.xy * resolution.xy;//the coordinate in pixels
 	
 	// Hardness of scanline.
 	//  -8.0 = soft
 	// -16.0 = medium
-	float hardScan = -12.0;
+	float hardScan = -8.0;
 
 	// Amount of shadow mask.
 	float maskDark = 0.5;
@@ -166,9 +179,10 @@ float4 main(VertexToPixel input) : SV_TARGET {
 
 	// Unmodified.
 	float2 pos = Warp(input.uv);
-	//return float4(input.uv.x == pos.x, input.uv.y == pos.y, 0, 1);
+	//float2 pos = input.uv;
+	//return pixels.SampleLevel(trilinear, pos, 0) - pixels.SampleLevel(trilinear, input.uv, 0);
 	//return float4(pos,0,1);
-	output.rgb = Tri(pos, res, hardScan) * Mask(fragCoord.xy, maskDark, maskLight);
+	output.rgb = Tri(pos, res, hardScan) * Mask(fragCoord.xy, maskDark, maskLight) + ScanMask(input.uv.y, -maskDark * 0.05, maskLight * 0.05);
 	
 	output.rgb = ToSrgb(output.rgb);
 	output.a = 1.0;

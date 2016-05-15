@@ -14,4 +14,6 @@ private:
 	ID3D11ShaderResourceView* filterSRV;
 	SimpleVertexShader* filterVS;
 	SimplePixelShader* filterPS;
+
+	float timeElapsed;
 };

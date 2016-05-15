@@ -30,6 +30,7 @@ CRT::~CRT()
 	if (filterPS) { delete filterPS; filterPS = nullptr; }
 }
 
+#include "MarchMath.h"
 ID3D11ShaderResourceView* CRT::draw(ID3D11ShaderResourceView* ppSRV) {
 	const float color[4] = { 0.1f, 0.1f, 0.1f, 0.1f };
 
@@ -46,6 +47,10 @@ ID3D11ShaderResourceView* CRT::draw(ID3D11ShaderResourceView* ppSRV) {
 
 	filterPS->SetInt("width", windowWidth);
 	filterPS->SetInt("height", windowHeight);
+
+	timeElapsed = fmod(GetTickCount64() / 1000.f, PI * 200);
+	filterPS->SetFloat("time", timeElapsed);
+
 	filterPS->SetShaderResourceView("pixels", ppSRV);
 	filterPS->SetSamplerState("trilinear", sampler);
 	filterPS->SetShader();
