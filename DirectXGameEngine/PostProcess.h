@@ -7,6 +7,7 @@
 #include "EdgeDetect.h"
 #include "FXAA.h"
 #include "ChromaticAberation.h"
+#include "CRT.h"
 class PostProcess
 {
 public:

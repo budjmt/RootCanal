@@ -145,7 +145,8 @@ bool ISimpleShader::LoadShaderFile( LPCWSTR shaderFile )
 
     // Loop through all constant buffers
     for( unsigned int b = 0; b < constantBufferCount; b++ )
-    {
+ 
+	{
         // Get this buffer
         ID3D11ShaderReflectionConstantBuffer* cb =
             refl->GetConstantBufferByIndex( b );
@@ -790,7 +791,7 @@ void SimplePixelShader::CleanUp()
 {
     ISimpleShader::CleanUp();
     if( shader ) {
-        shader->Release(); shader = 0;
+		shader->Release(); shader = 0;
         if( shaderBlob ) { shaderBlob->Release(); shaderBlob = nullptr; }
     }
 }
@@ -915,10 +916,10 @@ SimpleDomainShader::~SimpleDomainShader()
 void SimpleDomainShader::CleanUp()
 {
     ISimpleShader::CleanUp();
-    if( shader ) {
-        shader->Release(); shader = 0;
-        if( shaderBlob ) { shaderBlob->Release(); shaderBlob = nullptr; }
-    }
+	if (shader) { 
+		shader->Release(); shader = nullptr; 
+		if (shaderBlob) { shaderBlob->Release(); shaderBlob = nullptr; } 
+	}
 }
 
 // --------------------------------------------------------

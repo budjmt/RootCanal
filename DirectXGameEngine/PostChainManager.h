@@ -1,6 +1,7 @@
 #pragma once
 #include "PostProcess.h"
 #include <map>
+
 class PostChainManager
 {
 public:
@@ -14,5 +15,6 @@ private:
 	Bloom* bloom;
 	ChromaticAberation* ca;
 	EdgeDetect* edgeDetect;
+	CRT* crt;
 };
 

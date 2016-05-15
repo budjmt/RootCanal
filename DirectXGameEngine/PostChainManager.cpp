@@ -10,7 +10,7 @@ PostChainManager::PostChainManager(PostProcess* pp, UINT width, UINT height, ID3
 
 PostChainManager::~PostChainManager()
 {
-	delete bloom; delete ca; delete edgeDetect;
+	delete bloom; delete ca; delete edgeDetect; delete crt;
 }
 
 void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11SamplerState* sampler) {
@@ -24,9 +24,14 @@ void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, I
 	edgeDetect = new EdgeDetect(width, height, device, deviceContext);
 	edgeDetect->setOutlineWidth(2);
 
+	crt = new CRT(width, height, device, deviceContext,sampler);
+
 	postProcess->AddEffect(0,edgeDetect);
 	postProcess->AddEffect(0,ca);
 	postProcess->AddEffect(0,bloom);
+	postProcess->AddEffect(0, crt);
+
+	postProcess->AddEffect(1, crt);
 
 	postProcess->setChain(0);
 }

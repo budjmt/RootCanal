@@ -3,6 +3,7 @@
 
 
 EdgeDetect::EdgeDetect(UINT width, UINT height, ID3D11Device* _device, ID3D11DeviceContext * _deviceContext)
+	: PostProcessBase()
 {
 	device = _device;
 	deviceContext = _deviceContext;
