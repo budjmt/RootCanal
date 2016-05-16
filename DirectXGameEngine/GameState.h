@@ -25,7 +25,7 @@ public:
 
     virtual void update( float dt, Mouse* mouse );
     virtual void draw( ID3D11DeviceContext* deviceContext );
-	void toggleRenderMode();
+	void toggleRenderMode( bool force = false );
 private:
 	UIText* text;
     Texture* _toonLightingTexture;

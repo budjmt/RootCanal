@@ -12,6 +12,8 @@ void CollisionManager::addObject(ColliderObject* o) {
 }
 
 void CollisionManager::update(float dt) {
+    octTree->update();
+
 	size_t numCollisions;
 	do {
 		collisionPairs = broadPhase();

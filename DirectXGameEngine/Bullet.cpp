@@ -24,6 +24,14 @@ void Bullet::update(float dt) {
 		transform.scale(vec3(0.f, 0.f, 0.f));
 		body.solid(0);
 	}
+
+    // TODO: Figure out why collisions aren't registering...
+    if( active && collider()->aabb().intersects( ship->collider()->aabb() ) ) {
+        active = false;
+        ship->addHealth( -50.f );
+        transform.scale( vec3( 0.f, 0.f, 0.f ) );
+        body.solid( 0 );
+    }
 }
 
 void Bullet::handleCollision(ColliderObject* other, Manifold& m, double dt, size_t& numCollisions)

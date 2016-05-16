@@ -21,6 +21,7 @@ public:
 	collisionPairList checkCollisions( ColliderObject* other );
     void add( ColliderObject* o );
     void clear();
+    void update();
 
     OctTreeNode* getRoot();
 

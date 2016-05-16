@@ -6,6 +6,7 @@ Ship::Ship(Mesh * mesh, Material * material)
 	rigidBody().floating(true);
 	transform.setBaseDirections(vec3(0, 1, 0), vec3(0, 0, -1));
 	health = 100;
+    xray = 100;
 }
 
 float Ship::getHealth()
@@ -13,11 +14,45 @@ float Ship::getHealth()
     return health;
 }
 
+float Ship::getXray()
+{
+    return xray;
+}
+
+void Ship::usingXray( bool value )
+{
+    _usingXray = value;
+}
+
+bool Ship::usingXray()
+{
+    return _usingXray;
+}
+
 void Ship::addHealth(float hp){ health += hp; }
 
 void Ship::update(float dt)
 {
 	processMovement(dt);
+
+    if( _usingXray )
+    {
+        xray -= dt * 20;
+
+        if( xray <= 0 )
+        {
+            xray = 0;
+        }
+    }
+    else
+    {
+        xray += dt * 10;
+
+        if( xray >= 100 )
+        {
+            xray = 100;
+        }
+    }
 }
 
 void Ship::processMovement(float dt)

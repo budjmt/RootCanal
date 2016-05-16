@@ -39,6 +39,12 @@ void OctTree::clear()
     _root = new OctTreeNode( _center, _halfWidths );
 }
 
+void OctTree::update()
+{
+    if (_root)
+        _root->update();
+}
+
 OctTreeNode* OctTree::getRoot() { return _root; }
 
 collisionPairList OctTree::checkCollisions() { return _root->checkCollisions(); }

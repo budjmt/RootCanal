@@ -340,7 +340,8 @@ void RootCanal::DrawScene(float deltaTime, float totalTime)
     //  - Puts the image we're drawing into the window so the user can see it
     //  - Do this exactly ONCE PER FRAME
     //  - Always at the very end of the frame
-    HR( swapChain->Present( 0, 0 ) );
+    if( swapChain )
+        HR( swapChain->Present( 0, 0 ) );
 }
 
 void RootCanal::SetScene( Scene* scene )

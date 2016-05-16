@@ -18,7 +18,7 @@ Cannon::Cannon(Mesh * mesh, Material * material, Mesh* bMesh, Material* bMateria
 void Cannon::spawnBullets(int num) {
 	for (; num; --num) {
 		Bullet* bullet = new Bullet(bulletMesh, bulletMaterial, 0.5f, vec3(), ship);
-		bullet->transform.position(vec3(num * (rand() % 10), num * (rand() % 20), num * (rand() % 5)));
+		bullet->transform.position(vec3((float)(num * (rand() % 10)), (float)(num * (rand() % 20)), (float)(num * (rand() % 5))));
 		bullet->transform.scale(vec3(0.f, 0.f, 0.f));
 		bullet->rigidBody().solid(0);
 		bullet->active = false;
