@@ -75,6 +75,8 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
     addGameObject( tooth );
     addGameObject( text );
 
+    score = 0;
+
     //audioManager = new AudioManager();
 }
 
@@ -122,6 +124,12 @@ void GameState::update( float dt, Mouse* mouse ) {
 
     vec3 shipPos = ship->transform.position();
 
+    // If the ship is where the tooth is, increase the score!
+    if( shipPos.x >= -50 && shipPos.x <= 50 && shipPos.y >= -50 && shipPos.y <= 50 )
+    {
+        score++;
+    }
+
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.forward()              , vec3(0, 1, 1));
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.up() + vec3(0,0.001f,0), vec3(1, 1, 0));
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.right()                , vec3(1, 0, 1));
@@ -141,6 +149,9 @@ void GameState::update( float dt, Mouse* mouse ) {
 
     text->drawText( L"XRAY:", vec3( 0, 50, 0 ), TextJustify::LEFT, color );
     text->drawText( std::to_wstring( (int)ship->getXray() ), vec3( 150, 50, 0 ), TextJustify::LEFT, color );
+
+    text->drawText( L"SCORE:", vec3( 0, 100, 0 ), TextJustify::LEFT, color );
+    text->drawText( std::to_wstring( score ), vec3( 150, 100, 0 ), TextJustify::LEFT, color );
 
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);

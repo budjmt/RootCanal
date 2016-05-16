@@ -37,5 +37,6 @@ private:
 
     void updateCamera( float dt );
 	int renderSwap = 0;
+    int score;
 };
 
