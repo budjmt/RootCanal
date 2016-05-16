@@ -21,11 +21,15 @@ public:
     void draw();
     bool intersects( Collider* other );
     void add( ColliderObject* other );
+    void update();
     void branch();
 
     Collider* getCollider();
     size_t getCount();
     bool isLeaf();
+
+    std::vector<ColliderObject*> getOutsideChildren();
+    void clearOutsideChildren();
 
     std::vector<ColliderObject*>& getContainedChildren();
 
@@ -35,8 +39,8 @@ public:
 private:
 	Transform transform;
     Collider* _collider;
-    size_t _count; // How many colliders?
     std::vector<ColliderObject*> _containedChildren;
+    std::vector<ColliderObject*> _outsideChildren;
     bool _isLeaf;
     OctTreeNode* _nodes[8];
 };

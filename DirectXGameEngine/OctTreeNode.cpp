@@ -5,13 +5,10 @@ OctTreeNode::OctTreeNode( vec3 center, vec3 halfWidths )
 	transform.position( center );
 	_collider = new Collider(&transform, halfWidths, false);
 
-    _containedChildren = std::vector<ColliderObject*>( CAPACITY );
+    _containedChildren = std::vector<ColliderObject*>();
+    _outsideChildren = std::vector<ColliderObject*>();
 
-    _count = 0;
     _isLeaf = true;
-
-    for( size_t i = 0; i < CAPACITY; i++ )
-        _containedChildren[i] = nullptr;
 
     for( size_t i = 0; i < 8; i++ )
         _nodes[i] = nullptr;
@@ -34,7 +31,7 @@ void OctTreeNode::print()
 
     std::cout << std::endl;
 
-    std::cout << "Colliders: " << _count << std::endl;
+    std::cout << "Colliders: " << _containedChildren.size() << std::endl;
 
 	for each(auto child in _containedChildren)
 		if (child)
@@ -169,7 +166,7 @@ collisionPairList OctTreeNode::checkCollisions( ColliderObject* other )
     }
     else
     {
-        for( size_t i = 0; i < 8; i++ )
+        for( size_t i = 0; i < CAPACITY; i++ )
         {
             Collider* nodeGameObject = _nodes[i]->getCollider();
 
@@ -187,6 +184,9 @@ collisionPairList OctTreeNode::checkCollisions( ColliderObject* other )
 
 void OctTreeNode::add( ColliderObject* other )
 {
+    if( !other )
+        return;
+
     AABB otherAABB = other->collider()->aabb();
     AABB thisAABB = _collider->aabb();
     bool intersects = thisAABB.intersects( otherAABB );
@@ -196,14 +196,28 @@ void OctTreeNode::add( ColliderObject* other )
         return;
 
     // Branch if needed
-    if( _count + 1 > CAPACITY )
+    int size = _containedChildren.size();
+    if( size + 1 > (int)CAPACITY )
         branch();
 
     // Add collider to this node (leaf) and increment count
     if( _isLeaf )
     {
-        _containedChildren[_count] = other;
-        _count++;
+        bool canAdd = true;
+
+        for( int i = 0; i < (int)_containedChildren.size(); i++ )
+        {
+            if( _containedChildren[i] == other )
+            {
+                canAdd = false;
+                break;
+            }
+        }
+
+        if( canAdd )
+        {
+            _containedChildren.push_back( other );
+        }
     }
 
     // Or add collider to its children (not a leaf)
@@ -211,6 +225,38 @@ void OctTreeNode::add( ColliderObject* other )
     {
         for( size_t i = 0; i < 8; i++ )
             _nodes[i]->add( other );
+    }
+}
+
+void OctTreeNode::update()
+{
+    for( size_t i = 0; i < CAPACITY; i++ )
+    {
+        if( _nodes[i] )
+        {
+            _nodes[i]->update();
+            std::vector<ColliderObject*> extraChildren = _nodes[i]->getOutsideChildren();
+
+            for( int j = extraChildren.size() - 1; j > 0; j-- )
+            {
+                if( extraChildren[j] )
+                {
+                    add( extraChildren[j] );
+                }
+            }
+
+            _nodes[i]->clearOutsideChildren();
+        }
+    }
+
+    for( int k = _containedChildren.size() - 1; k > 0; k-- )
+    {
+        // If any of the children are outside of this collider, prepare to move it out
+        if( _containedChildren[k] && !_containedChildren[k]->collider()->aabb().intersects( _collider->aabb() ) )
+        {
+            _outsideChildren.push_back( _containedChildren[k] );
+            _containedChildren.erase( _containedChildren.begin() + k );
+        }
     }
 }
 
@@ -239,19 +285,25 @@ void OctTreeNode::branch()
 
     // Add this node's colliders to the children
     // Set this node's contained children to nullptr
-    for( size_t i = 0; i < _count; i++ )
-        for( size_t j = 0; j < 8; j++ )
+    for( size_t i = 0; i < _containedChildren.size(); i++ )
+        for( size_t j = 0; j < CAPACITY; j++ )
             _nodes[j]->add( _containedChildren[i] );
 
-    for( size_t i = 0; i < _count; i++ )
-        _containedChildren[i] = nullptr;
-
-    // Set count = 0
-    _count = 0;
+    _containedChildren.clear();
 }
 
 Collider* OctTreeNode::getCollider() { return _collider; }
-size_t OctTreeNode::getCount() { return _count; }
+size_t OctTreeNode::getCount() { return _containedChildren.size(); }
 bool OctTreeNode::isLeaf() { return _isLeaf; }
+
+std::vector<ColliderObject*> OctTreeNode::getOutsideChildren()
+{
+    return _outsideChildren;
+}
+
+void OctTreeNode::clearOutsideChildren()
+{
+    _outsideChildren.clear();
+}
 
 std::vector<ColliderObject*>& OctTreeNode::getContainedChildren() { return _containedChildren; }

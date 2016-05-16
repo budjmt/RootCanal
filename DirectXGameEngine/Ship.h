@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ColliderObject.h"
+#include "CollisionManager.h"
 
 #define MAX_X 75
 #define MAX_Y 75

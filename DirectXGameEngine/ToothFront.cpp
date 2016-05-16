@@ -9,7 +9,7 @@ ToothFront::ToothFront(Mesh* mesh, Material* material, Camera** cam, ID3D11Devic
 
 	//material->texture()->addTex(opacityRadius->resourceView);
 	material->texture()->addTex(compute->getSRV());
-	material->texture()->addTex(compute->getSRV());
+	//material->texture()->addTex(compute->getSRV());
 	_shape->material(material);
 
 }
@@ -20,7 +20,6 @@ ToothFront::~ToothFront()
 	//delete opacityRadius; 
 	delete compute;
 }
-
 
 void ToothFront::draw(ID3D11DeviceContext* deviceContext) {
 

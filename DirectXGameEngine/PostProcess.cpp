@@ -54,6 +54,7 @@ void PostProcess::draw( ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView*
         }
     } else {
         ppChain = xrayChain;
+        chainSwap = 0;
     }
 
 	SRV* srv = ppSRV;
@@ -85,7 +86,7 @@ void PostProcess::draw( ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView*
 	deviceContext->OMSetRenderTargets(1, &backBufferView, 0);
 	deviceContext->ClearRenderTargetView(backBufferView, color);
 
-	ppVS->SetShader();
+	//ppVS->SetShader();
 
 	ppPS->SetShaderResourceView("pixels", srv);
 	ppPS->SetShader();

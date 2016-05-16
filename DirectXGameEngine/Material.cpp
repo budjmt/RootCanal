@@ -55,11 +55,14 @@ Texture::~Texture() {
 }
 
 Texture* Texture::getTexture( const wchar_t* key ) {
-    return loadedTextures.at(key);
+    if ( loadedTextures.find( key ) != loadedTextures.end() )
+        return loadedTextures.at(key);
+
+    return nullptr;
 }
 
 Texture* Texture::createTexture( const wchar_t* texFile, ID3D11Device* device, ID3D11DeviceContext* deviceContext ) {
-    Texture* texture = new Texture;
+    Texture* texture = new Texture();
 	texture->resourceViews.push_back(nullptr);
     HR( DirectX::CreateWICTextureFromFile( device, deviceContext, texFile, nullptr, &texture->resourceViews[texture->resourceViews.size() - 1] ) );
 	assert(texture->resourceViews.size());
