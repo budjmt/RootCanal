@@ -34,7 +34,7 @@ void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, I
 	postProcess->AddEffect(0,bloom);
 	postProcess->AddEffect(0, crt);
     
-	postProcess->AddEffect(1, crt);
+    postProcess->AddEffect(1, crt);
 
     postProcess->AddEffect( 2, edgeOutlineDetect );
     postProcess->AddEffect( 2, crt );

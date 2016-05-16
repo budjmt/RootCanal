@@ -30,7 +30,7 @@ private:
 	UIText* text;
     Texture* _toonLightingTexture;
 	Ship* ship;
-	Cannon* cannon;
+    std::vector<Cannon*> cannons;
     SimplePixelShader* _pixelShader;
     SimpleVertexShader* _vertexShader;
 	//AudioManager* audioManager;

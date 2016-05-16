@@ -35,7 +35,6 @@ private:
 
 	ID3D11DepthStencilView* depthStencilView;
 
-	int chainSwap = 0;
     SceneType sceneType;
     SceneType prevSceneType;
 };

@@ -6,7 +6,7 @@ Cannon::Cannon(Mesh * mesh, Material * material, Mesh* bMesh, Material* bMateria
 	//body.floating(true);
 	body.fixed(1.f);
 	transform.setBaseDirections(vec3(0, 1, 0), vec3(0, 0, -1));
-	reloadTime = 1.0f;
+	reloadTime = 2.0f;
 	reloadTimer = reloadTime;
 	bulletMesh = bMesh;
 	bulletMaterial = bMaterial;
@@ -17,7 +17,7 @@ Cannon::Cannon(Mesh * mesh, Material * material, Mesh* bMesh, Material* bMateria
 
 void Cannon::spawnBullets(int num) {
 	for (; num; --num) {
-		Bullet* bullet = new Bullet(bulletMesh, bulletMaterial, 0.5f, vec3(), ship);
+		Bullet* bullet = new Bullet(bulletMesh, bulletMaterial, 1.f, vec3(), ship);
 		bullet->transform.position(vec3((float)(num * (rand() % 10)), (float)(num * (rand() % 20)), (float)(num * (rand() % 5))));
 		bullet->transform.scale(vec3(0.f, 0.f, 0.f));
 		bullet->rigidBody().solid(0);
@@ -61,10 +61,10 @@ void Cannon::shoot()
 	reloadTimer = reloadTime;
 	shouldShoot = false;
 
-	// TODO: get the direction to the player
-	vec3 dirToPlayer = vec3(0.f, 1.f, 0.f);
+	vec3 dirToPlayer = ship->transform.getComputed().position() - transform.getComputed().position();
+    dirToPlayer /= sqrtf( vec3::dot( dirToPlayer, dirToPlayer ) );
 	
-	// TODO: balance speed of bullet, currently set to 0.5f
+	// TODO: balance speed of bullet, currently set to 1
 	for (auto bullet : bullets) {
 		if (!bullet->active) {
 			bullet->transform.position(transform.getComputed().position());

@@ -38,11 +38,11 @@ public:
         _nextSceneType = s;
     }
 
-    void forceXraySwitch( bool value ) {
-        _forceXraySwitch = value;
+    void xrayMode( bool value ) {
+        _xrayMode = value;
     }
-    bool forceXraySwitch() {
-        return _forceXraySwitch;
+    bool xrayMode() {
+        return _xrayMode;
     }
 
 private:
@@ -52,5 +52,5 @@ private:
 
     State* _state;
     SceneType _nextSceneType = SceneType::DEFAULT;
-    bool _forceXraySwitch = false;
+    bool _xrayMode = false;
 };

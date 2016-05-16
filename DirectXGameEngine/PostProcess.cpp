@@ -37,8 +37,6 @@ void PostProcess::setSceneType( SceneType type )
     sceneType = type;
 }
 
-#include "Keyboard.h"
-
 void PostProcess::draw( ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView, ID3D11RenderTargetView* backBufferView ) {
     // When there is a change in scene, adjust accordingly
     if( prevSceneType != sceneType )
@@ -55,24 +53,16 @@ void PostProcess::draw( ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView*
         prevSceneType = sceneType;
     }
     else {
-        if( sceneType == SceneType::GAME || StateManager::getInstance().forceXraySwitch() ) {
-            Keyboard& keys = Keyboard::getInstance();
-
-            static bool keyDown = false;
-            if( StateManager::getInstance().forceXraySwitch() || ( keys.isDown( VK_TAB ) && !keyDown ) ) {
-                keyDown = true;
-                if( chainSwap % 2 == 0 ) { ppChain = normalChain; }
-                else { ppChain = xrayChain; }
-                chainSwap++;
-                StateManager::getInstance().forceXraySwitch( false );
-            }
-            if( !keys.isDown( VK_TAB ) && keyDown ) {
-                keyDown = false;
+        if( sceneType == SceneType::GAME ) {
+            // TODO: Figure out why this condition is flipped???
+            if( !StateManager::getInstance().xrayMode() ) {
+                ppChain = xrayChain;
+            } else {
+                ppChain = normalChain;
             }
         }
         else {
             setChain( 0 );
-            chainSwap = 0;
         }
     }
 
