@@ -9,6 +9,9 @@ MenuState::MenuState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 
 	text = new UIText();
 	addGameObject(text);
+
+	audioManager = new AudioManager();
+	audioManager->playFile(_TEXT("../Assets/MenuBeat.wav"), 0.3, true);
 }
 
 void MenuState::update(float dt, Mouse* mouse) {
@@ -16,6 +19,7 @@ void MenuState::update(float dt, Mouse* mouse) {
 
 	if (keys.isDown(' '))
 	{
+		audioManager->stopSound();
 		CollisionManager::getInstance().clear();
 		StateManager::getInstance().changeScene( SceneType::GAME );
 	}

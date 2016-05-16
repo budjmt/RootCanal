@@ -9,6 +9,10 @@ GameOverState::GameOverState( Scene* scene, SimpleVertexShader* vertexShader, Si
 
     text = new UIText();
     addGameObject( text );
+
+	audioManager = new AudioManager();
+	audioManager->playFile(_TEXT("../Assets/Death.wav"), 2.0, false);
+	audioManager->playFile(_TEXT("../Assets/GameOverMusic.wav"), 1.0, true);
 }
 
 void GameOverState::update( float dt, Mouse* mouse ) {
@@ -16,6 +20,7 @@ void GameOverState::update( float dt, Mouse* mouse ) {
 
     if( keys.isDown( ' ' ) )
     {
+		audioManager->stopSound();
         CollisionManager::getInstance().clear();
         StateManager::getInstance().changeScene( SceneType::GAME );
     }

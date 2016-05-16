@@ -25,5 +25,6 @@ public:
 
 private:
 	UIText* text;
+	AudioManager* audioManager;
 };
 

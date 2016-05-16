@@ -28,7 +28,6 @@ MenuScene::MenuScene( Camera** camera ) : Scene()
 MenuScene::~MenuScene()
 {
 	if (menuState) { delete menuState; menuState = nullptr; }
-
 }
 
 void MenuScene::update( float dt )

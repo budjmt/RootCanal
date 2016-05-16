@@ -73,10 +73,14 @@ void AudioManager::playFile(TCHAR* fileName, float vol, bool isMusic)
 
 void AudioManager::stopSound()
 {
-	pSourceVoiceEffect->Stop();
-	pSourceVoiceEffect->FlushSourceBuffers();
-	pSourceVoiceMusic->Stop();
-	pSourceVoiceMusic->FlushSourceBuffers();
+	if (pSourceVoiceEffect != nullptr) {
+		pSourceVoiceEffect->Stop();
+		pSourceVoiceEffect->FlushSourceBuffers();
+	}
+	if (pSourceVoiceMusic != nullptr) {
+		pSourceVoiceMusic->Stop();
+		pSourceVoiceMusic->FlushSourceBuffers();
+	}
 }
 
 HRESULT AudioManager::FindChunk(HANDLE hFile, DWORD fourcc, DWORD & dwChunkSize, DWORD & dwChunkDataPosition)
