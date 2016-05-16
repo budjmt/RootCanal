@@ -1,13 +1,18 @@
 #pragma once
 
-#include <Audio.h>
-
-using namespace DirectX;
+#include <xaudio2.h>
+#include <tchar.h>
 
 class AudioManager {
 public:
 	AudioManager();
-	void update();
+	HRESULT FindChunk(HANDLE hFile, DWORD fourcc, DWORD & dwChunkSize, DWORD & dwChunkDataPosition);
+	HRESULT ReadChunkData(HANDLE hFile, void * buffer, DWORD buffersize, DWORD bufferoffset);
 private:
-	std::unique_ptr<AudioEngine> m_audEngine;
+	IXAudio2* pXAudio2;
+	IXAudio2MasteringVoice* pMasterVoice;
+	IXAudio2SourceVoice* pSourceVoice;
+
+	WAVEFORMATEXTENSIBLE wfx = { 0 };
+	XAUDIO2_BUFFER buffer = { 0 };
 };
