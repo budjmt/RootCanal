@@ -19,7 +19,7 @@ void PostChainManager::setChain(UINT width, UINT height, ID3D11Device* device, I
 	bloom->setMinIntensity(0.9f);
 
 	ca = new ChromaticAberation(width, height, device, deviceContext,sampler);
-	ca->setDistortAmount(1.5f);
+	ca->setDistortAmount(2.5f);
     
 	edgeDetect = new EdgeDetect(width, height, device, deviceContext);
 	edgeDetect->setOutlineWidth(2);

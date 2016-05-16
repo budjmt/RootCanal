@@ -26,24 +26,30 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
     Texture* toothTexture = Texture::createTexture( L"../Assets/toothCloud.png", dx.device, dx.deviceContext );
     toothTexture->addTex( _toonLightingTexture->resourceViews[0] );
 
-    Texture* texture = Texture::createTexture( L"../Assets/texture.png", dx.device, dx.deviceContext );
-    texture->addTex( _toonLightingTexture->resourceViews[0] );
+    Texture* cannonTexture = Texture::createTexture( L"../Assets/cannon_texture.png", dx.device, dx.deviceContext );
+    cannonTexture->addTex( _toonLightingTexture->resourceViews[0] );
+
+    Texture* bulletTexture = Texture::createTexture( L"../Assets/bullet_texture.png", dx.device, dx.deviceContext );
+    bulletTexture->addTex( _toonLightingTexture->resourceViews[0] );
+
     Texture* shipTexture = Texture::createTexture( L"../Assets/shipDiffuse.png", dx.device, dx.deviceContext );
     shipTexture->addTex( _toonLightingTexture->resourceViews[0] );
 
-    Material* material = Material::createMaterial( L"material", texture, vertexShader, pixelShader, _scene->camera() );
+    Material* cannonMaterial = Material::createMaterial( L"cannon", cannonTexture, vertexShader, pixelShader, _scene->camera() );
+    Material* bulletMaterial = Material::createMaterial( L"bullet", bulletTexture, vertexShader, pixelShader, _scene->camera() );
     Material* shipMaterial = Material::createMaterial( L"ship", shipTexture, vertexShader, pixelShader, _scene->camera() );
 
     Material* material2 = Material::createMaterial( L"material2", toothTexture, vertexShader, Shader::getShader<SimplePixelShader>( L"ToothPixel" ), _scene->camera() );
     Material* material3 = Material::createMaterial( L"material3", whiteTexture, vertexShader, pixelShader, _scene->camera() );
 
 
-    Mesh* mesh1 = Mesh::createMesh( "../Assets/ship.obj" );
-    Mesh* mesh2 = Mesh::createMesh( "../Assets/cube.obj" );
+    Mesh* shipMesh = Mesh::createMesh( "../Assets/ship.obj" );
+    Mesh* cubeMesh = Mesh::createMesh( "../Assets/cube.obj" );
+    Mesh* cannonMesh = Mesh::createMesh( "../Assets/cannon.obj" );
+    Mesh* bulletMesh = Mesh::createMesh( "../Assets/bullet.obj" );
 
-	audioManager = new AudioManager();
-
-	audioManager->playFile(_TEXT("../Assets/Music.wav"), 5.0, true);
+    audioManager = new AudioManager();
+    audioManager->playFile(_TEXT("../Assets/Music.wav"), 5.0, true);
 
     ship = new Ship( mesh1, shipMaterial, audioManager);
     ship->transform.rotate( 3.1415f * -.5f, vec3( 0, 0, -1 ) );
@@ -61,23 +67,24 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
     {
         for( int j = 0; j < 4; j++ )
         {
-            Cannon* cannon = new Cannon( mesh2, material, mesh2, material, this, ship );
+            Cannon* cannon = new Cannon( cannonMesh, cannonMaterial, bulletMesh, bulletMaterial, this, ship );
             vec3 pos = vec3( -45 + i * 90.f / 3, -45 + j * 90.f / 3, 0 );
+            cannon->transform.rotate( 3.1415f * -.5f, vec3( -1, 0, 0 ) );
             cannon->transform.position( pos );
-            cannon->transform.scale( vec3( 2, 2, 1 ) );
+            cannon->transform.scale( vec3( 2, 2, 2 ) );
             cannon->spawnBullets( 4 );
             cannons.push_back( cannon );
             CollisionManager::getInstance().addObject( cannon );
         }
     }
 
-    ColliderObject* cube = new ColliderObject( mesh2, material3 );
+    ColliderObject* cube = new ColliderObject( cubeMesh, material3 );
     cube->rigidBody().floating( true );
     cube->transform.position( vec3( 0, 0, 2 ) );
     cube->transform.scale( vec3( 100, 100, 1 ) );
     cube->rigidBody().solid( 0 );
 
-    ToothFront* tooth = new ToothFront( mesh2, material2, _scene->camera(), dx.device );
+    ToothFront* tooth = new ToothFront( cubeMesh, material2, _scene->camera(), dx.device );
     tooth->transform.position( vec3( 0, 0, -1 ) );
     tooth->transform.scale( vec3( 100, 100, 1 ) );
     tooth->ship = ship;
