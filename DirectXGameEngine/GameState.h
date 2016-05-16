@@ -14,6 +14,7 @@
 #include "SimpleShader.h"
 #include "Camera.h"
 #include "AudioManager.h"
+#include <tchar.h>
 
 class Ship;
 
@@ -33,7 +34,7 @@ private:
     std::vector<Cannon*> cannons;
     SimplePixelShader* _pixelShader;
     SimpleVertexShader* _vertexShader;
-	//AudioManager* audioManager;
+	AudioManager* audioManager;
 
     void updateCamera( float dt );
 	int renderSwap = 0;

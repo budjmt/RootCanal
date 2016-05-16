@@ -6,6 +6,7 @@ Bullet::Bullet(Mesh * mesh, Material * material, float s, vec3 dir, Ship *sh)
 	:ColliderObject(mesh, material)
 {
 	rigidBody().floating(true);
+	audioManager = sh->getAudioManager();
 	transform.setBaseDirections(vec3(0, 1, 0), vec3(0, 0, -1));
 	speed = s;
 	direction = dir;
@@ -28,6 +29,7 @@ void Bullet::update(float dt) {
     // TODO: Figure out why collisions aren't registering...
     if( active && collider()->aabb().intersects( ship->collider()->aabb() ) ) {
         active = false;
+		audioManager->playFile(_TEXT("../Assets/Hit.wav"), 1.0, false);
         ship->addHealth( -5.f );
         transform.scale( vec3( 0.f, 0.f, 0.f ) );
         body.solid( 0 );

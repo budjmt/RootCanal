@@ -1,8 +1,9 @@
 #include "Ship.h"
 
-Ship::Ship(Mesh * mesh, Material * material)
+Ship::Ship(Mesh * mesh, Material * material, AudioManager* am)
 	: ColliderObject(mesh, material)
 {
+	audioManager = am;
 	rigidBody().floating(true);
 	transform.setBaseDirections(vec3(0, 1, 0), vec3(0, 0, -1));
 	health = 100;
@@ -17,6 +18,11 @@ float Ship::getHealth()
 float Ship::getXray()
 {
     return xray;
+}
+
+AudioManager * Ship::getAudioManager()
+{
+	return audioManager;
 }
 
 void Ship::usingXray( bool value )
@@ -68,6 +74,7 @@ void Ship::processMovement(float dt)
 
 	if (keys.isDown(VK_UP)) {
 		rigidBody().netForce += rigidBody().mass() * 150 * transform.forward() / dt / 100;
+		audioManager->playFile(_TEXT("../Assets/Dig.wav"), 0.5, false);
 	}
 
 	vec3 shipPos = transform.position();

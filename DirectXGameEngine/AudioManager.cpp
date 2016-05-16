@@ -1,4 +1,4 @@
-/*#include "AudioManager.h"
+#include "AudioManager.h"
 
 #define fourccRIFF 'FFIR'
 #define fourccDATA 'atad'
@@ -9,7 +9,7 @@
 
 /* https://msdn.microsoft.com/en-us/library/windows/desktop/ee415781(v=vs.85).aspx */
 
-/*
+
 AudioManager::AudioManager()
 {
 	pXAudio2 = NULL;
@@ -17,12 +17,13 @@ AudioManager::AudioManager()
 	
 	pMasterVoice = NULL;
 	pXAudio2->CreateMasteringVoice(&pMasterVoice);
-	
-	TCHAR * strFileName = _TEXT("../Audio/Music.wav");
+}
 
+void AudioManager::playFile(TCHAR* fileName, float vol, bool isMusic)
+{
 	// Open the file
 	HANDLE hFile = CreateFile(
-		strFileName,
+		fileName,
 		GENERIC_READ,
 		FILE_SHARE_READ,
 		NULL,
@@ -56,9 +57,26 @@ AudioManager::AudioManager()
 	buffer.pAudioData = pDataBuffer;  //size of the audio buffer in bytes
 	buffer.Flags = XAUDIO2_END_OF_STREAM; // tell the source voice not to expect any data after this buffer
 
-	pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&wfx);
-	pSourceVoice->SubmitSourceBuffer(&buffer);
-	pSourceVoice->Start(0);
+	if (isMusic) {
+		pXAudio2->CreateSourceVoice(&pSourceVoiceMusic, (WAVEFORMATEX*)&wfx);
+		pSourceVoiceMusic->SubmitSourceBuffer(&buffer);
+		pSourceVoiceMusic->SetVolume(vol);
+		pSourceVoiceMusic->Start();
+	}
+	else {
+		pXAudio2->CreateSourceVoice(&pSourceVoiceEffect, (WAVEFORMATEX*)&wfx);
+		pSourceVoiceEffect->SubmitSourceBuffer(&buffer);
+		pSourceVoiceEffect->SetVolume(vol);
+		pSourceVoiceEffect->Start();
+	}
+}
+
+void AudioManager::stopSound()
+{
+	pSourceVoiceEffect->Stop();
+	pSourceVoiceEffect->FlushSourceBuffers();
+	pSourceVoiceMusic->Stop();
+	pSourceVoiceMusic->FlushSourceBuffers();
 }
 
 HRESULT AudioManager::FindChunk(HANDLE hFile, DWORD fourcc, DWORD & dwChunkSize, DWORD & dwChunkDataPosition)
@@ -126,5 +144,3 @@ HRESULT AudioManager::ReadChunkData(HANDLE hFile, void * buffer, DWORD buffersiz
 		hr = HRESULT_FROM_WIN32(GetLastError());
 	return hr;
 }
-
-*/

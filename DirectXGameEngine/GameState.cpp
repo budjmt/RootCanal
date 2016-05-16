@@ -6,6 +6,7 @@
 
 #include "ToothFront.h"
 
+
 GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixelShader* pixelShader )
     : State( scene )
 {
@@ -40,7 +41,11 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
     Mesh* mesh1 = Mesh::createMesh( "../Assets/ship.obj" );
     Mesh* mesh2 = Mesh::createMesh( "../Assets/cube.obj" );
 
-    ship = new Ship( mesh1, shipMaterial );
+	audioManager = new AudioManager();
+
+	audioManager->playFile(_TEXT("../Assets/Music.wav"), 5.0, true);
+
+    ship = new Ship( mesh1, shipMaterial, audioManager);
     ship->transform.rotate( 3.1415f * -.5f, vec3( 0, 0, -1 ) );
     ship->transform.position( vec3( -55, 0, 0 ) );
     CollisionManager::getInstance().addObject( ship );
@@ -91,8 +96,6 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
     addGameObject( text );
 
     score = 0;
-
-    //audioManager = new AudioManager();
 }
 
 #include "Keyboard.h"
@@ -108,13 +111,14 @@ void GameState::toggleRenderMode( bool force ) {
             }
 
             ship->usingXray( true );
+			audioManager->playFile(_TEXT("../Assets/XRayOn.wav"), 2.0, false);
             StateManager::getInstance().xrayMode( true );
 		}
 		else {
 			for (auto m : Material::loadedMaterials) {
 				m.second->setOpacity(1);
 			}
-
+			audioManager->playFile(_TEXT("../Assets/XRayOff.wav"), 2.0, false);
             ship->usingXray( false );
             StateManager::getInstance().xrayMode( false );
 		}
@@ -192,6 +196,7 @@ void GameState::update( float dt, Mouse* mouse ) {
 
     if( ship->getHealth() <= 0 )
     {
+		audioManager->stopSound();
         CollisionManager::getInstance().clear();
         StateManager::getInstance().changeScene( SceneType::GAME_OVER );
     }
