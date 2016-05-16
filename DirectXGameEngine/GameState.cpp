@@ -51,7 +51,7 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
     audioManager = new AudioManager();
     audioManager->playFile(_TEXT("../Assets/Music.wav"), 5.0, true);
 
-    ship = new Ship( mesh1, shipMaterial, audioManager);
+    ship = new Ship(shipMesh, shipMaterial, audioManager);
     ship->transform.rotate( 3.1415f * -.5f, vec3( 0, 0, -1 ) );
     ship->transform.position( vec3( -55, 0, 0 ) );
     CollisionManager::getInstance().addObject( ship );
