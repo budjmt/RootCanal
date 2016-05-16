@@ -205,6 +205,7 @@ void GameState::update( float dt, Mouse* mouse ) {
     {
 		audioManager->stopSound();
         CollisionManager::getInstance().clear();
+        StateManager::getInstance().xrayMode( false );
         StateManager::getInstance().changeScene( SceneType::GAME_OVER );
     }
 }
