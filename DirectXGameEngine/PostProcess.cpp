@@ -10,7 +10,7 @@ PostProcess::PostProcess(ID3D11Device* _device, ID3D11DeviceContext* _deviceCont
 	depthStencilView = _depthStencilView;
 	ppVS = Shader::getShader<SimpleVertexShader>(L"FinalVertex");
 	ppPS = Shader::getShader<SimplePixelShader>(L"FinalPixel");
-    sceneType = SceneType::DEFAULT;
+    prevSceneType = sceneType = SceneType::DEFAULT;
 }
 
 PostProcess::~PostProcess()
@@ -21,12 +21,14 @@ PostProcess::~PostProcess()
 
 void PostProcess::AddEffect(int i, PostProcessBase* effect) {
 	if (i == 0) normalChain.push_back(effect);
+    else if( i == 1 ) outlineChain.push_back( effect );
 	else xrayChain.push_back(effect);
 	//ppChain.push_back(effect);
 }
 
 void PostProcess::setChain(int i) {
 	if (i == 0) ppChain = xrayChain;
+    else if( i == 1 ) ppChain = outlineChain;
 	else ppChain = normalChain;
 }
 
@@ -38,24 +40,40 @@ void PostProcess::setSceneType( SceneType type )
 #include "Keyboard.h"
 
 void PostProcess::draw( ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView, ID3D11RenderTargetView* backBufferView ) {
-
-    if( sceneType == SceneType::GAME || StateManager::getInstance().forceXraySwitch() ) {
-        Keyboard& keys = Keyboard::getInstance();
-
-        static bool keyDown = false;
-        if( StateManager::getInstance().forceXraySwitch() || (keys.isDown( VK_TAB ) && !keyDown) ) {
-            keyDown = true;
-            if( chainSwap % 2 == 0 ) { ppChain = normalChain; }
-            else { ppChain = xrayChain; }
-            chainSwap++;
-            StateManager::getInstance().forceXraySwitch( false );
+    // When there is a change in scene, adjust accordingly
+    if( prevSceneType != sceneType )
+    {
+        if( sceneType == SceneType::GAME )
+        {
+            setChain( 0 );
         }
-        if( !keys.isDown( VK_TAB ) && keyDown ) {
-            keyDown = false;
+        else if( sceneType != SceneType::DEFAULT )
+        {
+            setChain( 2 );
         }
-    } else {
-        ppChain = xrayChain;
-        chainSwap = 0;
+
+        prevSceneType = sceneType;
+    }
+    else {
+        if( sceneType == SceneType::GAME || StateManager::getInstance().forceXraySwitch() ) {
+            Keyboard& keys = Keyboard::getInstance();
+
+            static bool keyDown = false;
+            if( StateManager::getInstance().forceXraySwitch() || ( keys.isDown( VK_TAB ) && !keyDown ) ) {
+                keyDown = true;
+                if( chainSwap % 2 == 0 ) { ppChain = normalChain; }
+                else { ppChain = xrayChain; }
+                chainSwap++;
+                StateManager::getInstance().forceXraySwitch( false );
+            }
+            if( !keys.isDown( VK_TAB ) && keyDown ) {
+                keyDown = false;
+            }
+        }
+        else {
+            setChain( 0 );
+            chainSwap = 0;
+        }
     }
 
 	SRV* srv = ppSRV;

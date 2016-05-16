@@ -96,6 +96,7 @@
     <ClCompile Include="DrawDebug.cpp" />
     <ClCompile Include="DrawMesh.cpp" />
     <ClCompile Include="EdgeDetect.cpp" />
+    <ClCompile Include="EdgeOutlineDetect.cpp" />
     <ClCompile Include="FXAA.cpp" />
     <ClCompile Include="GameEntryPoint.hpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="DrawMesh.h" />
     <ClInclude Include="DXInfo.h" />
     <ClInclude Include="EdgeDetect.h" />
+    <ClInclude Include="EdgeOutlineDetect.h" />
     <ClInclude Include="FXAA.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Event.h" />
@@ -222,6 +224,13 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DisableOptimizations>
+    </FxCompile>
+    <FxCompile Include="EdgeOutlinePS.hlsl">
+      <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DisableOptimizations>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="InitTexture.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>

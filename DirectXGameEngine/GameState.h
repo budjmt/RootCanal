@@ -33,7 +33,7 @@ private:
 	Cannon* cannon;
     SimplePixelShader* _pixelShader;
     SimpleVertexShader* _vertexShader;
-	AudioManager* audioManager;
+	//AudioManager* audioManager;
 
     void updateCamera( float dt );
 	int renderSwap = 0;

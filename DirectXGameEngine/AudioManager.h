@@ -1,6 +1,6 @@
 #pragma once
 
-#include <xaudio2.h>
+/*#include <xaudio2.h>
 #include <tchar.h>
 
 class AudioManager {
@@ -15,4 +15,4 @@ private:
 
 	WAVEFORMATEXTENSIBLE wfx = { 0 };
 	XAUDIO2_BUFFER buffer = { 0 };
-};
+};*/

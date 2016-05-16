@@ -1,577 +1,169 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{e11479ef-8a44-4ba5-9d5a-c14237485115}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Core">
-      <UniqueIdentifier>{76d2ead7-5e42-413a-b40c-d630a183656d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Debug">
-      <UniqueIdentifier>{91d5f3ba-ddd9-45ab-bc70-c415b134a8ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Display">
-      <UniqueIdentifier>{517c953a-c162-4a15-b57b-05815b7e4df7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Event">
-      <UniqueIdentifier>{b5ae8532-221d-4597-8e0b-9cc0f699c906}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Util">
-      <UniqueIdentifier>{b5f9322b-01af-42be-8c0c-272a44937524}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Event\Util">
-      <UniqueIdentifier>{238e5c3a-8435-4af0-accf-a93bf6a021b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Util\Importers">
-      <UniqueIdentifier>{1fe37f08-826f-4230-ab3f-86f22b360685}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Util\ImportData">
-      <UniqueIdentifier>{53bbf165-2503-4394-aab3-e1ebceae8fbf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Core">
-      <UniqueIdentifier>{541b6d00-fa1c-4226-91e8-8eebfd7beb28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Debug">
-      <UniqueIdentifier>{33f6dc0e-0fd2-41dc-9e29-bf2e9e0d92d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Display">
-      <UniqueIdentifier>{5e1d190a-df4a-49bc-91e1-343ffb0165ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Event">
-      <UniqueIdentifier>{4c5ee8d0-586e-4513-9797-1200065da677}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Util">
-      <UniqueIdentifier>{c31bbd2c-ed90-4169-b93e-be383509bd02}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Event\Util">
-      <UniqueIdentifier>{51c9b843-412f-4d60-b74f-14ed450811b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Util\Importers">
-      <UniqueIdentifier>{17bcea4f-8ed3-49e9-9b78-aca993e22c4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Util\ImportData">
-      <UniqueIdentifier>{22d46d9b-825a-4587-a0db-68a48bf04234}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Spatial">
-      <UniqueIdentifier>{f28fdaf5-9187-4b8b-a029-8b6e40575f5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Spatial">
-      <UniqueIdentifier>{b6d1f4a1-2b74-48bb-b997-ead1c3afebca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Misc">
-      <UniqueIdentifier>{23939804-d898-40c1-8e97-eae073e57d99}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Misc">
-      <UniqueIdentifier>{1c660b21-8b11-4ed8-8ca3-8af5a28a5dd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Misc\GameObjects">
-      <UniqueIdentifier>{9f056174-793c-4a72-92e8-822578f11553}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Misc\GameObjects">
-      <UniqueIdentifier>{9d5b827e-2ecb-4667-b02b-986531176241}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\PostProcess">
-      <UniqueIdentifier>{91110437-ab6b-4fae-b248-763c5c3b6a06}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Display\PostProcess">
-      <UniqueIdentifier>{7db83d7e-3045-459a-b138-44e7f7279853}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Display\PostProcess">
-      <UniqueIdentifier>{51b73ce4-0a30-43ac-9a06-189707af5fb7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Misc\UI">
-      <UniqueIdentifier>{0cb080c9-31bf-48e1-a566-7bce1f4645f5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Misc\UI">
-      <UniqueIdentifier>{3f8da48c-5a48-4d9d-9b6c-6dea1f88d705}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Compute">
-      <UniqueIdentifier>{3edaa942-fa97-45bb-8d1e-9813153f29b4}</UniqueIdentifier>
-    </Filter>
+    <FxCompile Include="CRTFilter.hlsl" />
+    <FxCompile Include="InitTexture.hlsl" />
+    <FxCompile Include="Opacity.hlsl" />
+    <FxCompile Include="OpacityPost.hlsl" />
+    <FxCompile Include="Shaders\BloomComposite.hlsl" />
+    <FxCompile Include="Shaders\BloomFilter.hlsl" />
+    <FxCompile Include="Shaders\BlurPS.hlsl" />
+    <FxCompile Include="Shaders\BlurVS.hlsl" />
+    <FxCompile Include="Shaders\ChromaticAberation.hlsl" />
+    <FxCompile Include="Shaders\DebugMeshPixel.hlsl" />
+    <FxCompile Include="Shaders\DebugMeshVertex.hlsl" />
+    <FxCompile Include="Shaders\DebugVecPixel.hlsl" />
+    <FxCompile Include="Shaders\DebugVecVertex.hlsl" />
+    <FxCompile Include="Shaders\Final.hlsl" />
+    <FxCompile Include="Shaders\FinalVS.hlsl" />
+    <FxCompile Include="Shaders\FXAA.hlsl" />
+    <FxCompile Include="Shaders\PixelShader.hlsl" />
+    <FxCompile Include="Shaders\ToonPixelShader.hlsl" />
+    <FxCompile Include="Shaders\VertexShader.hlsl" />
+    <FxCompile Include="ToothPixel.hlsl" />
+    <FxCompile Include="Shaders\EdgePS.hlsl" />
+    <FxCompile Include="EdgeOutlinePS.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="MarchMath.cpp">
-      <Filter>Source Files\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="ImportData.cpp">
-      <Filter>Source Files\Util\ImportData</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="FileImporter.cpp">
-      <Filter>Source Files\Util\Importers</Filter>
-    </ClCompile>
-    <ClCompile Include="FileImportData.cpp">
-      <Filter>Source Files\Util\ImportData</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="Callback.h">
-      <Filter>Header Files\Event\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="DispatcherCallbackMap.cpp">
-      <Filter>Source Files\Event\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="Event.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="EventDispatcher.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="DisplayEvent.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="GameEvent.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyboardEvent.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="MouseEvent.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Source Files\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="OctTreeNode.cpp">
-      <Filter>Source Files\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="OctTree.cpp">
-      <Filter>Source Files\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>Source Files\Display</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawDebug.cpp">
-      <Filter>Source Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Collider.cpp">
-      <Filter>Source Files\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshImporter.cpp">
-      <Filter>Source Files\Util\Importers</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshImportData.cpp">
-      <Filter>Source Files\Util\ImportData</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawable.cpp">
-      <Filter>Source Files\Display</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugBenchmark.cpp">
-      <Filter>Source Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawMesh.cpp">
-      <Filter>Source Files\Display</Filter>
-    </ClCompile>
-    <ClCompile Include="RigidBody.cpp">
-      <Filter>Source Files\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionManager.cpp">
-      <Filter>Source Files\Spatial</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectXGameCore.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="dxerr.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="RootCanal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameEntryPoint.hpp">
-      <Filter>Header Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="ColliderObject.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuScene.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneEvent.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="GameScene.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="GameState.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneTransitionState.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files\Display</Filter>
-    </ClCompile>
-    <ClCompile Include="SimpleShader.cpp">
-      <Filter>Source Files\Display</Filter>
-    </ClCompile>
-    <ClCompile Include="Ship.cpp">
-      <Filter>Source Files\Misc\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files\Misc\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="Cannon.cpp">
-      <Filter>Source Files\Misc\GameObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="ChromaticAberation.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="FXAA.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="EdgeDetect.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="Blur.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="Bloom.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="PostProcess.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="PostProcessBase.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="PostChainManager.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="OpacityRadius.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="ToothFront.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UIObject.cpp">
-      <Filter>Source Files\Misc\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIAxes.cpp">
-      <Filter>Source Files\Misc\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIText.cpp">
-      <Filter>Source Files\Misc\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuState.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="GameOverState.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="GameOverScene.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioManager.cpp">
-      <Filter>Source Files\Misc</Filter>
-    <ClCompile Include="CRT.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="OpacityCompute.cpp">
-      <Filter>Source Files\Display\PostProcess</Filter>
-    </ClCompile>
+    <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="Bloom.cpp" />
+    <ClCompile Include="Blur.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Callback.h" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cannon.cpp" />
+    <ClCompile Include="ChromaticAberation.cpp" />
+    <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="ColliderObject.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="CRT.cpp" />
+    <ClCompile Include="DebugBenchmark.cpp" />
+    <ClCompile Include="DispatcherCallbackMap.cpp" />
+    <ClCompile Include="DisplayEvent.cpp" />
+    <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="DrawDebug.cpp" />
+    <ClCompile Include="DrawMesh.cpp" />
+    <ClCompile Include="EdgeDetect.cpp" />
+    <ClCompile Include="FXAA.cpp" />
+    <ClCompile Include="GameEntryPoint.hpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Event.cpp" />
+    <ClCompile Include="EventDispatcher.cpp" />
+    <ClCompile Include="FileImportData.cpp" />
+    <ClCompile Include="FileImporter.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameEvent.cpp" />
+    <ClCompile Include="GameOverScene.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
+    <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="ImportData.cpp" />
+    <ClCompile Include="KeyboardEvent.cpp" />
+    <ClCompile Include="MarchMath.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
+    <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshImportData.cpp" />
+    <ClCompile Include="MeshImporter.cpp" />
+    <ClCompile Include="MouseEvent.cpp" />
+    <ClCompile Include="OpacityCompute.cpp" />
+    <ClCompile Include="OpacityRadius.cpp" />
+    <ClCompile Include="PostChainManager.cpp" />
+    <ClCompile Include="PostProcess.cpp" />
+    <ClCompile Include="PostProcessBase.cpp" />
+    <ClCompile Include="RootCanal.cpp" />
+    <ClCompile Include="dxerr.cpp" />
+    <ClCompile Include="DirectXGameCore.cpp" />
+    <ClCompile Include="OctTree.cpp" />
+    <ClCompile Include="OctTreeNode.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
+    <ClCompile Include="SceneEvent.cpp" />
+    <ClCompile Include="SceneTransitionState.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="SimpleShader.cpp" />
+    <ClCompile Include="ToothFront.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UIAxes.cpp" />
+    <ClCompile Include="UIObject.cpp" />
+    <ClCompile Include="UIText.cpp" />
+    <ClCompile Include="EdgeOutlineDetect.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="GameException.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="MarchMath.h">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="IImporter.h">
-      <Filter>Header Files\Util\Importers</Filter>
-    </ClInclude>
-    <ClInclude Include="ImportData.h">
-      <Filter>Header Files\Util\ImportData</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="FileImporter.h">
-      <Filter>Header Files\Util\Importers</Filter>
-    </ClInclude>
-    <ClInclude Include="FileImportData.h">
-      <Filter>Header Files\Util\ImportData</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="DispatcherCallbackMap.h">
-      <Filter>Header Files\Event\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Event.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="IEventDispatcher.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="EventDispatcher.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="DisplayEvent.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="GameEvent.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyboardEvent.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseEvent.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Header Files\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Header Files\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="OctTreeNode.h">
-      <Filter>Header Files\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="OctTree.h">
-      <Filter>Header Files\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Header Files\Display</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files\Display</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawDebug.h">
-      <Filter>Header Files\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Collider.h">
-      <Filter>Header Files\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshImporter.h">
-      <Filter>Header Files\Util\Importers</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshImportData.h">
-      <Filter>Header Files\Util\ImportData</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawable.h">
-      <Filter>Header Files\Display</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawMesh.h">
-      <Filter>Header Files\Display</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugBenchmark.h">
-      <Filter>Header Files\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>Header Files\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionManager.h">
-      <Filter>Header Files\Spatial</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectXGameCore.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="dxerr.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="RootCanal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StateManager.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="State.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuState.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="DXInfo.h">
-      <Filter>Header Files\Display</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuScene.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="ColliderObject.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneEvent.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="GameScene.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="GameState.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneTransitionState.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Header Files\Display</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleShader.h">
-      <Filter>Header Files\Display</Filter>
-    </ClInclude>
-    <ClInclude Include="Ship.h">
-      <Filter>Header Files\Misc\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Header Files\Misc\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Cannon.h">
-      <Filter>Header Files\Misc\GameObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="ChromaticAberation.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="FXAA.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="EdgeDetect.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="Blur.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="Bloom.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="PostProcess.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="PostProcessBase.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="PostChainManager.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="OpacityRadius.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="ToothFront.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UIAxes.h">
-      <Filter>Header Files\Misc\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIObject.h">
-      <Filter>Header Files\Misc\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIText.h">
-      <Filter>Header Files\Misc\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="GameOverState.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="GameOverScene.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioManager.h">
-      <Filter>Header Files\Misc</Filter>
-    <ClInclude Include="CRT.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="OpacityCompute.h">
-      <Filter>Header Files\Display\PostProcess</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shaders\PixelShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\VertexShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\DebugMeshPixel.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\DebugMeshVertex.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\DebugVecPixel.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\DebugVecVertex.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\BloomComposite.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\BloomFilter.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\BlurPS.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\BlurVS.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\ChromaticAberation.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\EdgePS.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\Final.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\FinalVS.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\FXAA.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="OpacityPost.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\ToonPixelShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="ToothPixel.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Opacity.hlsl">
-      <Filter>Shaders\Compute</Filter>
-    </FxCompile>
-    <FxCompile Include="InitTexture.hlsl">
-      <Filter>Shaders\Compute</Filter>
-    </FxCompile>
-    <FxCompile Include="CRTFilter.hlsl">
-      <Filter>Shaders\PostProcess</Filter>
-    </FxCompile>
+    <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="Bloom.h" />
+    <ClInclude Include="Blur.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cannon.h" />
+    <ClInclude Include="ChromaticAberation.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="ColliderObject.h" />
+    <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="CRT.h" />
+    <ClInclude Include="DebugBenchmark.h" />
+    <ClInclude Include="DispatcherCallbackMap.h" />
+    <ClInclude Include="DisplayEvent.h" />
+    <ClInclude Include="Drawable.h" />
+    <ClInclude Include="DrawDebug.h" />
+    <ClInclude Include="DrawMesh.h" />
+    <ClInclude Include="DXInfo.h" />
+    <ClInclude Include="EdgeDetect.h" />
+    <ClInclude Include="FXAA.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="EventDispatcher.h" />
+    <ClInclude Include="FileImportData.h" />
+    <ClInclude Include="FileImporter.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameEvent.h" />
+    <ClInclude Include="GameException.h" />
+    <ClInclude Include="GameOverScene.h" />
+    <ClInclude Include="GameOverState.h" />
+    <ClInclude Include="GameScene.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="IEventDispatcher.h" />
+    <ClInclude Include="IImporter.h" />
+    <ClInclude Include="ImportData.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="KeyboardEvent.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="MarchMath.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="MenuScene.h" />
+    <ClInclude Include="MenuState.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshImportData.h" />
+    <ClInclude Include="MeshImporter.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="MouseEvent.h" />
+    <ClInclude Include="OpacityCompute.h" />
+    <ClInclude Include="OpacityRadius.h" />
+    <ClInclude Include="PostChainManager.h" />
+    <ClInclude Include="PostProcess.h" />
+    <ClInclude Include="PostProcessBase.h" />
+    <ClInclude Include="RootCanal.h" />
+    <ClInclude Include="dxerr.h" />
+    <ClInclude Include="DirectXGameCore.h" />
+    <ClInclude Include="OctTree.h" />
+    <ClInclude Include="OctTreeNode.h" />
+    <ClInclude Include="RigidBody.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneEvent.h" />
+    <ClInclude Include="SceneTransitionState.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="Ship.h" />
+    <ClInclude Include="SimpleShader.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="StateManager.h" />
+    <ClInclude Include="ToothFront.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="UIAxes.h" />
+    <ClInclude Include="UIObject.h" />
+    <ClInclude Include="UIText.h" />
+    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="EdgeOutlineDetect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

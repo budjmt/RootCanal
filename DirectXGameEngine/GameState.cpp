@@ -126,11 +126,21 @@ void GameState::update( float dt, Mouse* mouse ) {
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.up() + vec3(0,0.001f,0), vec3(1, 1, 0));
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.right()                , vec3(1, 0, 1));
 
-    text->drawText( L"HP:", vec3(0, 0, 0), TextJustify::LEFT, vec4(1, 1, 1, 1) );
-    text->drawText( std::to_wstring((int)ship->getHealth()), vec3( 150, 0, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
+    vec4 color;
+    if( renderSwap % 2 != 0 )
+    {
+        color = vec4( 0, 0, 0, 1 );
+    }
+    else
+    {
+        color = vec4( 1, 1, 1, 1 );
+    }
 
-    text->drawText( L"XRAY:", vec3( 0, 50, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
-    text->drawText( std::to_wstring( (int)ship->getXray() ), vec3( 150, 50, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
+    text->drawText( L"HP:", vec3(0, 0, 0), TextJustify::LEFT, color );
+    text->drawText( std::to_wstring((int)ship->getHealth()), vec3( 150, 0, 0 ), TextJustify::LEFT, color );
+
+    text->drawText( L"XRAY:", vec3( 0, 50, 0 ), TextJustify::LEFT, color );
+    text->drawText( std::to_wstring( (int)ship->getXray() ), vec3( 150, 50, 0 ), TextJustify::LEFT, color );
 
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);
@@ -173,11 +183,11 @@ void GameState::updateCamera( float dt )
 
     // If the ship is moving enough, we'll start moving the camera ahead so the
     // player can see where they're moving
-    float seekAheadFactor = minf( 20.f, vec3::length( shipVel ) * .3f );
+    float seekAheadFactor = minf( 40.f, vec3::length( shipVel ) * .4f );
     maxCamPos += ship->transform.forward() * seekAheadFactor;
 
     // The camera should pull back from target that it follows (this ship) when the target moves
-    maxCamPos.z = shipPos.z - ( 9.5f + seekAheadFactor * .5f );
+    maxCamPos.z = shipPos.z - ( 9.5f + seekAheadFactor );
 
     vec3 desiredCamPos = vec3::lerp( oldCamPos, maxCamPos, minf( 8.f * dt, 0.65f ) );
 

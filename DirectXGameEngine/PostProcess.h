@@ -5,6 +5,7 @@
 #include "Bloom.h"
 #include "Vertex.h"
 #include "EdgeDetect.h"
+#include "EdgeOutlineDetect.h"
 #include "FXAA.h"
 #include "ChromaticAberation.h"
 #include "CRT.h"
@@ -23,6 +24,7 @@ public:
 private:
 	std::vector<PostProcessBase*> ppChain;
 	std::vector<PostProcessBase*> normalChain;
+    std::vector<PostProcessBase*> outlineChain;
 	std::vector<PostProcessBase*> xrayChain;
 
 	SimpleVertexShader* ppVS;
@@ -35,5 +37,6 @@ private:
 
 	int chainSwap = 0;
     SceneType sceneType;
+    SceneType prevSceneType;
 };
 

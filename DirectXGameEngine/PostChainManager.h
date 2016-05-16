@@ -15,6 +15,7 @@ private:
 	Bloom* bloom;
 	ChromaticAberation* ca;
 	EdgeDetect* edgeDetect;
+    EdgeOutlineDetect* edgeOutlineDetect;
 	CRT* crt;
 };
 

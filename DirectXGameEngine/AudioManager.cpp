@@ -1,4 +1,4 @@
-#include "AudioManager.h"
+/*#include "AudioManager.h"
 
 #define fourccRIFF 'FFIR'
 #define fourccDATA 'atad'
@@ -9,6 +9,7 @@
 
 /* https://msdn.microsoft.com/en-us/library/windows/desktop/ee415781(v=vs.85).aspx */
 
+/*
 AudioManager::AudioManager()
 {
 	pXAudio2 = NULL;
@@ -126,3 +127,4 @@ HRESULT AudioManager::ReadChunkData(HANDLE hFile, void * buffer, DWORD buffersiz
 	return hr;
 }
 
+*/
