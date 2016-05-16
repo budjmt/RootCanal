@@ -11,7 +11,7 @@ GameOverState::GameOverState( Scene* scene, SimpleVertexShader* vertexShader, Si
     addGameObject( text );
 
 	audioManager = new AudioManager();
-	audioManager->playFile(_TEXT("../Assets/Death.wav"), 2.0, false);
+	audioManager->playFile(_TEXT("../Assets/Death.wav"), 0.7, false);
 	audioManager->playFile(_TEXT("../Assets/GameOverMusic.wav"), 1.0, true);
 }
 

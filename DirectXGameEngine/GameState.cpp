@@ -118,14 +118,14 @@ void GameState::toggleRenderMode( bool force ) {
             }
 
             ship->usingXray( true );
-			audioManager->playFile(_TEXT("../Assets/XRayOn.wav"), 2.0, false);
+			audioManager->playFile(_TEXT("../Assets/XRayOn.wav"), 1.0, false);
             StateManager::getInstance().xrayMode( true );
 		}
 		else {
 			for (auto m : Material::loadedMaterials) {
 				m.second->setOpacity(1);
 			}
-			audioManager->playFile(_TEXT("../Assets/XRayOff.wav"), 2.0, false);
+			audioManager->playFile(_TEXT("../Assets/XRayOff.wav"), 1.0, false);
             ship->usingXray( false );
             StateManager::getInstance().xrayMode( false );
 		}
