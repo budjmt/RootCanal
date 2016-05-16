@@ -9,6 +9,7 @@
 #include "ChromaticAberation.h"
 #include "CRT.h"
 #include "Scene.h"
+#include "StateManager.h"
 class PostProcess
 {
 public:

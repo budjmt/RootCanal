@@ -38,6 +38,13 @@ public:
         _nextSceneType = s;
     }
 
+    void forceXraySwitch( bool value ) {
+        _forceXraySwitch = value;
+    }
+    bool forceXraySwitch() {
+        return _forceXraySwitch;
+    }
+
 private:
     StateManager() {}
     StateManager( StateManager const& ) = delete;
@@ -45,4 +52,5 @@ private:
 
     State* _state;
     SceneType _nextSceneType = SceneType::DEFAULT;
+    bool _forceXraySwitch = false;
 };

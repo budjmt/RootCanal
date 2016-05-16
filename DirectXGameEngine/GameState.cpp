@@ -79,21 +79,25 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
 }
 
 #include "Keyboard.h"
-void GameState::toggleRenderMode() {
+void GameState::toggleRenderMode( bool force ) {
 	Keyboard& keys = Keyboard::getInstance();
 
 	static bool keyDown = false;
-	if (keys.isDown(VK_TAB) && !keyDown) {
+	if (force || (keys.isDown(VK_TAB) && !keyDown)) {
 		keyDown = true;
 		if (renderSwap % 2 == 0) {
 			for (auto m : Material::loadedMaterials) {
 				m.second->setOpacity(0.6f);
 			}
+
+             ship->usingXray( true );
 		}
 		else {
 			for (auto m : Material::loadedMaterials) {
 				m.second->setOpacity(1);
 			}
+
+            ship->usingXray( false );
 		}
 		renderSwap++;
 	}
@@ -110,6 +114,12 @@ void GameState::update( float dt, Mouse* mouse ) {
 
     updateCamera( dt );
 
+    if( ship->usingXray() && ship->getXray() == 0 )
+    {
+        toggleRenderMode( true );
+        StateManager::getInstance().forceXraySwitch( true );
+    }
+
     vec3 shipPos = ship->transform.position();
 
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.forward()              , vec3(0, 1, 1));
@@ -117,7 +127,10 @@ void GameState::update( float dt, Mouse* mouse ) {
 	DrawDebug::getInstance().drawDebugVector( shipPos, shipPos + ship->transform.right()                , vec3(1, 0, 1));
 
     text->drawText( L"HP:", vec3(0, 0, 0), TextJustify::LEFT, vec4(1, 1, 1, 1) );
-    text->drawText( std::to_wstring((int)ship->getHealth()), vec3( 100, 0, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
+    text->drawText( std::to_wstring((int)ship->getHealth()), vec3( 150, 0, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
+
+    text->drawText( L"XRAY:", vec3( 0, 50, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
+    text->drawText( std::to_wstring( (int)ship->getXray() ), vec3( 150, 50, 0 ), TextJustify::LEFT, vec4( 1, 1, 1, 1 ) );
 
 	State::update(dt, mouse);
 	CollisionManager::getInstance().update(dt);

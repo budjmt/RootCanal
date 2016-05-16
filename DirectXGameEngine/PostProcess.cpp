@@ -39,15 +39,16 @@ void PostProcess::setSceneType( SceneType type )
 
 void PostProcess::draw( ID3D11ShaderResourceView* ppSRV, ID3D11RenderTargetView* renderTargetView, ID3D11RenderTargetView* backBufferView ) {
 
-    if( sceneType == SceneType::GAME ) {
+    if( sceneType == SceneType::GAME || StateManager::getInstance().forceXraySwitch() ) {
         Keyboard& keys = Keyboard::getInstance();
 
         static bool keyDown = false;
-        if( keys.isDown( VK_TAB ) && !keyDown ) {
+        if( StateManager::getInstance().forceXraySwitch() || (keys.isDown( VK_TAB ) && !keyDown) ) {
             keyDown = true;
             if( chainSwap % 2 == 0 ) { ppChain = normalChain; }
             else { ppChain = xrayChain; }
             chainSwap++;
+            StateManager::getInstance().forceXraySwitch( false );
         }
         if( !keys.isDown( VK_TAB ) && keyDown ) {
             keyDown = false;
