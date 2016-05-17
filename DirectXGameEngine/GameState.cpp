@@ -68,10 +68,10 @@ GameState::GameState( Scene* scene, SimpleVertexShader* vertexShader, SimplePixe
         for( int j = 0; j < 4; j++ )
         {
             Cannon* cannon = new Cannon( cannonMesh, cannonMaterial, bulletMesh, bulletMaterial, this, ship );
-            vec3 pos = vec3( -45 + i * 90.f / 3, -45 + j * 90.f / 3, 0 );
+            vec3 pos = vec3( -45 + i * 90.f / 3, -45 + j * 90.f / 3, .5f );
             cannon->transform.rotate( 3.1415f * -.5f, vec3( -1, 0, 0 ) );
             cannon->transform.position( pos );
-            cannon->transform.scale( vec3( 2, 2, 2 ) );
+            cannon->transform.scale( vec3( 2, 1, 2 ) );
             cannon->spawnBullets( 4 );
             cannons.push_back( cannon );
             CollisionManager::getInstance().addObject( cannon );

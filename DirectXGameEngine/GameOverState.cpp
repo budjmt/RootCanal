@@ -26,9 +26,9 @@ void GameOverState::update( float dt, Mouse* mouse ) {
     }
     else
     {
-        text->drawText( L"GAME OVER", vec3( 300, 250, 0 ), CENTER, vec4( .9f, .9f, .9f, 1.f ) );
-        text->drawText( L"PRESS SPACE", vec3( 300, 350, 0 ), CENTER, vec4( .9f, .9f, .9f, 1.f ) );
-        text->drawText( L"TO TRY AGAIN", vec3( 300, 450, 0 ), CENTER, vec4( .9f, .9f, .9f, 1.f ) );
+        text->drawText( L"GAME OVER", vec3( 600, 250, 0 ), CENTER, vec4( .9f, .9f, .9f, 1.f ) );
+        text->drawText( L"PRESS SPACE", vec3( 600, 350, 0 ), CENTER, vec4( .9f, .9f, .9f, 1.f ) );
+        text->drawText( L"TO TRY AGAIN", vec3( 600, 450, 0 ), CENTER, vec4( .9f, .9f, .9f, 1.f ) );
         State::update( dt, mouse );
     }
 }
