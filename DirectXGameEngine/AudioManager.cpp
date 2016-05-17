@@ -59,15 +59,23 @@ void AudioManager::playFile(TCHAR* fileName, float vol, bool isMusic)
 
 	if (isMusic) {
 		pXAudio2->CreateSourceVoice(&pSourceVoiceMusic, (WAVEFORMATEX*)&wfx);
-		pSourceVoiceMusic->SubmitSourceBuffer(&buffer);
-		pSourceVoiceMusic->SetVolume(vol);
-		pSourceVoiceMusic->Start();
+
+        // TODO: Remove if statement -- find out why game goes silent
+        if( pSourceVoiceMusic ) {
+            pSourceVoiceMusic->SubmitSourceBuffer( &buffer );
+            pSourceVoiceMusic->SetVolume( vol );
+            pSourceVoiceMusic->Start();
+        }
 	}
 	else {
 		pXAudio2->CreateSourceVoice(&pSourceVoiceEffect, (WAVEFORMATEX*)&wfx);
-		pSourceVoiceEffect->SubmitSourceBuffer(&buffer);
-		pSourceVoiceEffect->SetVolume(vol);
-		pSourceVoiceEffect->Start();
+
+        // TODO: Remove if statement -- find out why game goes silent
+        if( pSourceVoiceEffect ) {
+            pSourceVoiceEffect->SubmitSourceBuffer( &buffer );
+            pSourceVoiceEffect->SetVolume( vol );
+            pSourceVoiceEffect->Start();
+        }
 	}
 }
 

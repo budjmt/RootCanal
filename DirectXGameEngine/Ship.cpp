@@ -74,7 +74,7 @@ void Ship::processMovement(float dt)
 
 	if (keys.isDown(VK_UP)) {
 		rigidBody().netForce += rigidBody().mass() * 30 * transform.forward() / dt / 100;
-		audioManager->playFile(_TEXT("../Assets/Dig.wav"), 0.03, false);
+		audioManager->playFile(_TEXT("../Assets/Dig.wav"), 0.03f, false);
 	}
 
 	vec3 shipPos = transform.position();
